@@ -164,7 +164,7 @@ def get_past_events_list():
 def upload_to_imgbb(image_file):
     url = "https://api.imgbb.com/1/upload"
     
-    # Mapeamento corrigido para ler a nova estrutura hierárquica
+    # 👇 AQUI ESTÁ A CORREÇÃO: Lê a nova estrutura [IMGBB] DECKS_KEY
     api_key = st.secrets["IMGBB"]["DECKS_KEY"]
     
     res = requests.post(
