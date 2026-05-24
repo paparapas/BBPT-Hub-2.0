@@ -163,8 +163,19 @@ def get_past_events_list():
 
 def upload_to_imgbb(image_file):
     url = "https://api.imgbb.com/1/upload"
-    res = requests.post(url, data={"key": st.secrets["IMGBB_API_KEY"], "image": base64.b64encode(image_file.getvalue()).decode("utf-8")})
-    if res.status_code == 200: return res.json()["data"]["url"]
+    
+    # Mapeamento corrigido para ler a nova estrutura hierárquica
+    api_key = st.secrets["IMGBB"]["DECKS_KEY"]
+    
+    res = requests.post(
+        url, 
+        data={
+            "key": api_key, 
+            "image": base64.b64encode(image_file.getvalue()).decode("utf-8")
+        }
+    )
+    if res.status_code == 200: 
+        return res.json()["data"]["url"]
     raise Exception("Erro ImgBB")
 
 def save_submission_cloud(player_name, combos, img_file, event_name):
