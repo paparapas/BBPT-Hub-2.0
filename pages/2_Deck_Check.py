@@ -163,8 +163,19 @@ def get_past_events_list():
 
 def upload_to_imgbb(image_file):
     url = "https://api.imgbb.com/1/upload"
-    res = requests.post(url, data={"key": st.secrets["IMGBB_API_KEY"], "image": base64.b64encode(image_file.getvalue()).decode("utf-8")})
-    if res.status_code == 200: return res.json()["data"]["url"]
+    
+    # 👇 AQUI ESTÁ A CORREÇÃO: Lê a nova estrutura [IMGBB] DECKS_KEY
+    api_key = st.secrets["IMGBB"]["DECKS_KEY"]
+    
+    res = requests.post(
+        url, 
+        data={
+            "key": api_key, 
+            "image": base64.b64encode(image_file.getvalue()).decode("utf-8")
+        }
+    )
+    if res.status_code == 200: 
+        return res.json()["data"]["url"]
     raise Exception("Erro ImgBB")
 
 def save_submission_cloud(player_name, combos, img_file, event_name):
@@ -430,7 +441,7 @@ if menu == "📝 Formulário Público":
         st.subheader("⚡ Quick Add (Autocomplete Ativo)")
         c1, c2 = st.columns([3, 1])
         with c1:
-            current_text = st_keyup("Escreve ou cola o teu combo:", value=st.session_state.smart_val, key=f"sk_{st.session_state.keyup_key}", placeholder="Ex: Flat 1-60 Dran Buster")
+            current_text = st.text_input(    "Escreve ou cola o teu combo:",value=st.session_state.smart_val,key=f"sk_{st.session_state.keyup_key}",placeholder="Ex: Flat 1-60 Dran Buster")
             if current_text is not None: st.session_state.smart_val = current_text
             
             if st.session_state.smart_val and not st.session_state.smart_val.endswith(" "):
