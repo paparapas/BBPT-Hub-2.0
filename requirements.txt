@@ -6,6 +6,6 @@ google-auth
 fpdf
 Pillow
 requests
-st-keyup
+git+https://github.com/blackary/st_keyup.git
 supabase
 openpyxl
