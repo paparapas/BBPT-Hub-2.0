@@ -1,0 +1,40 @@
+{
+    "Alpha_Trion_AC_13_004154": {
+        "Event_Name": "Liga BBPT - Etapa de Teste",
+        "Status": "Terminada",
+        "P1_Name": "Alpha_Trion",
+        "P2_Name": "AC_13",
+        "P1_Score": 2,
+        "P2_Score": 4,
+        "Limit": 4,
+        "Phase": "match_over",
+        "Current_Round": 1,
+        "Match_Log": [
+            "\u2694\ufe0f Alpha_Trion (Aero Pegasus | 1-60 | Rush) venceu por Over Finish (+2) contra Aero Pegasus | 1-60 | Rush",
+            "\u2694\ufe0f AC_13 (Bumblebee | 1-70 | High Needle) venceu por Spin Finish (+1) contra Bumblebee | 1-70 | High Needle",
+            "\u2694\ufe0f AC_13 (Hack Viking | 7-55 | Vortex) venceu por Spin Finish (+1) contra Hack Viking | 7-55 | Vortex",
+            "\u2694\ufe0f AC_13 (Aero Pegasus | 1-60 | Rush) venceu por Spin Finish (+1) contra Aero Pegasus | 1-60 | Rush",
+            "\u2694\ufe0f AC_13 (Bumblebee | 1-70 | High Needle) venceu por Spin Finish (+1) contra Bumblebee | 1-70 | High Needle"
+        ],
+        "P1_Active_Deck": [
+            "Aero Pegasus | 1-60 | Rush",
+            "Bumblebee | 1-70 | High Needle",
+            "Hack Viking | 7-55 | Vortex"
+        ],
+        "P2_Active_Deck": [
+            "Aero Pegasus | 1-60 | Rush",
+            "Bumblebee | 1-70 | High Needle",
+            "Hack Viking | 7-55 | Vortex"
+        ],
+        "P1_Deck_Pool": [
+            "Aero Pegasus | 1-60 | Rush",
+            "Bumblebee | 1-70 | High Needle",
+            "Hack Viking | 7-55 | Vortex"
+        ],
+        "P2_Deck_Pool": [
+            "Aero Pegasus | 1-60 | Rush",
+            "Bumblebee | 1-70 | High Needle",
+            "Hack Viking | 7-55 | Vortex"
+        ]
+    }
+}
