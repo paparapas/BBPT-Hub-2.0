@@ -7,43 +7,6 @@ import os
 import json
 import hashlib
 from db_connection import supabase
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import streamlit as st
-import pandas as pd
-from streamlit_cookies_controller import CookieController
-from db_connection import supabase
-
-# ==========================================
-# COOKIES SEGUROS E AUTENTICAÇÃO
-# ==========================================
-@st.cache_resource
-def get_controller():
-    return CookieController()
-
-controller = get_controller()
-
-if "user_role" not in st.session_state:
-    st.session_state.user_role = None
-
-cookie_role = controller.get('user_role')
-if cookie_role in ["owner", "admin", "judge"]:
-    st.session_state.user_role = cookie_role
-
-if st.session_state.user_role == "owner":
-    st.session_state.finance_auth = True
-    
-    
-# ==========================================
-# OTIMIZAÇÃO (CACHE AGRESSIVO SUPABASE)
-# ==========================================
-@st.cache_data(ttl=600) # Guarda peças por 10 min. Elimina lag no telemóvel.
-def get_todas_as_pecas():
-    return supabase.table("parts").select("*").execute().data
-
-# Executa uma única vez a cada 10 min
-pecas_db = get_todas_as_pecas()
-
 
 # ==========================================
 # CONFIGURAÇÃO DE PÁGINA E CSS
