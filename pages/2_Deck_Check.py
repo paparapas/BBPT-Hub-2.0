@@ -16,6 +16,8 @@ from PIL import Image
 from fpdf import FPDF
 from streamlit_cookies_controller import CookieController
 from db_connection import supabase
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 st.set_page_config(page_title="Deck Check & Admin", page_icon="📝", layout="wide")
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -25,21 +27,34 @@ ADMIN_PASSWORD = "bbpt-paparapas"
 JUDGE_PASSWORD = "bbpt-judge"
 
 # ==========================================
-# GESTÃO GLOBAL DE LOGIN (SIDEBAR AJUSTADA)
+# COOKIES SEGUROS E AUTENTICAÇÃO
 # ==========================================
-from streamlit_cookies_controller import CookieController
-import hashlib
+@st.cache_resource
+def get_controller():
+    return CookieController()
 
-controller = CookieController()
-cookie_role = controller.get('user_role')
+controller = get_controller()
 
-if cookie_role in ["owner", "admin", "judge"]:
-    st.session_state.user_role = cookie_role
-elif "user_role" not in st.session_state:
+if "user_role" not in st.session_state:
     st.session_state.user_role = None
 
-logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
-has_logo = os.path.exists(logo_path)
+cookie_role = controller.get('user_role')
+if cookie_role in ["owner", "admin", "judge"]:
+    st.session_state.user_role = cookie_role
+
+if st.session_state.user_role == "owner":
+    st.session_state.finance_auth = True
+    
+    
+# ==========================================
+# OTIMIZAÇÃO (CACHE AGRESSIVO SUPABASE)
+# ==========================================
+@st.cache_data(ttl=600) # Guarda peças por 10 min. Elimina lag no telemóvel.
+def get_todas_as_pecas():
+    return supabase.table("parts").select("*").execute().data
+
+# Executa uma única vez a cada 10 min
+pecas_db = get_todas_as_pecas()
 
 with st.sidebar:
     if has_logo:

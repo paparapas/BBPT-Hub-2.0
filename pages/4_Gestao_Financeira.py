@@ -83,7 +83,7 @@ with st.sidebar:
             st.rerun()
 
 # --- BLOQUEIO PARA QUEM NÃO É ADMIN ---
-if st.session_state.user_role != "admin":
+if st.session_state.user_role != "admin" or st.session_state.user_role != "owner" :
     st.error("🛑 Acesso Restrito: Apenas Administradores podem aceder à Gestão Financeira.")
     st.stop()
 
