@@ -11,7 +11,7 @@ import base64
 from st_keyup import st_keyup
 import tempfile
 import io
-import hashlib # ADICIONADO PARA VERIFICAR A PASSWORD
+import hashlib
 from PIL import Image   
 from fpdf import FPDF
 from streamlit_cookies_controller import CookieController
@@ -20,23 +20,14 @@ from db_connection import supabase
 st.set_page_config(page_title="Deck Check & Admin", page_icon="📝", layout="wide")
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s [%(levelname)s] %(message)s')
 
-# --- PASSWORDS DE ACESSO ---
-ADMIN_PASSWORD = "bbpt-paparapas" 
-JUDGE_PASSWORD = "bbpt-judge"
-
 # ==========================================
 # GESTÃO GLOBAL DE LOGIN (SIDEBAR AJUSTADA)
 # ==========================================
-from streamlit_cookies_controller import CookieController
-import hashlib
+if "user_role" not in st.session_state: st.session_state.user_role = None
 
 controller = CookieController()
-cookie_role = controller.get('user_role')
-
-if cookie_role in ["owner", "admin", "judge"]:
-    st.session_state.user_role = cookie_role
-elif "user_role" not in st.session_state:
-    st.session_state.user_role = None
+c_role = controller.get('user_role')
+if c_role: st.session_state.user_role = c_role
 
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
@@ -48,22 +39,16 @@ with st.sidebar:
     else: st.title("🛡️ BBPT App")
     st.divider()
 
-    # Menu Dinâmico Hierárquico
     opcoes_menu = ["📝 Formulário Público", "🔍 Consulta Pública"]
-    if st.session_state.user_role in ["admin", "owner"]:
-        opcoes_menu.append("⚙️ Painel de Organização")
-    if st.session_state.user_role == "owner":
-        opcoes_menu.append("👥 Gestão de Utilizadores")
-
+    if st.session_state.user_role in ["admin", "owner"]: opcoes_menu.append("⚙️ Painel de Organização")
+    if st.session_state.user_role == "owner": opcoes_menu.append("👥 Gestão de Utilizadores")
     menu = st.radio("Navegação:", opcoes_menu)
     st.divider()
     
-    # Sistema Unificado de Input de Chaves
     if not st.session_state.user_role:
         with st.expander("🔐 Acesso Organização / Judges"):
             pwd = st.text_input("Password:", type="password", key="login_global")
             if st.button("Entrar 🔑", use_container_width=True):
-                # AGORA LÊ DO SECRETS.TOML COM SEGURANÇA
                 if pwd.strip() == st.secrets["PASSWORDS"]["OWNER"]:
                     st.session_state.user_role = "owner"
                     controller.set('user_role', 'owner', max_age=43200)
@@ -81,45 +66,34 @@ with st.sidebar:
         st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.user_role = None
-            st.session_state.finance_auth = False # Garante que limpa a RAM
-            
-            # Tenta apagar os cookies de forma segura, ignorando se não existirem
+            if "finance_auth" in st.session_state: st.session_state.finance_auth = False
             try: controller.remove('user_role')
             except: pass
-            
-            try: controller.remove('finance_auth')
-            except: pass
-            
             st.rerun()
 
 # ==========================================
-# INTEGRAÇÃO SUPABASE E LEITURAS 
+# INTEGRAÇÃO SUPABASE (AGORA SUPER RÁPIDA - TTL=600)
 # ==========================================
-@st.cache_data(ttl=2)
+@st.cache_data(ttl=600)
 def get_active_tournaments():
     try:
         res = supabase.table("tournaments").select("*").eq("is_active", True).execute()
         return [{"id": t["id"], "event_name": t["name"], "checkin_open": t.get("checkin_open", True)} for t in res.data]
-    except Exception as e:
-        return []
+    except Exception as e: return []
 
 def set_active_tournament(event_name):
     try:
         res_count = supabase.table("tournaments").select("id", count="exact").eq("is_active", True).execute()
         if res_count.count >= 3:
-            st.error("🚨 Limite máximo atingido! Já tens 3 torneios ativos em simultâneo. Por favor, arquiva um deles antes de abrir outro.")
+            st.error("🚨 Limite máximo atingido! Já tens 3 torneios ativos em simultâneo.")
             return False
             
         res = supabase.table("tournaments").select("id").eq("name", event_name).execute()
-        if res.data:
-            supabase.table("tournaments").update({"is_active": True, "checkin_open": True}).eq("id", res.data[0]["id"]).execute()
-        else:
-            supabase.table("tournaments").insert({"name": event_name, "is_active": True, "checkin_open": True}).execute()
-        st.cache_data.clear()
+        if res.data: supabase.table("tournaments").update({"is_active": True, "checkin_open": True}).eq("id", res.data[0]["id"]).execute()
+        else: supabase.table("tournaments").insert({"name": event_name, "is_active": True, "checkin_open": True}).execute()
+        st.cache_data.clear() # Limpa a cache para atualizar logo
         return True
-    except Exception as e:
-        st.error(f"Erro ao atualizar status do evento: {e}")
-        return False
+    except Exception as e: return False
 
 def toggle_checkin(t_id, status):
     supabase.table("tournaments").update({"checkin_open": status}).eq("id", t_id).execute()
@@ -129,53 +103,34 @@ def archive_tournament(t_id):
     supabase.table("tournaments").update({"is_active": False, "checkin_open": False}).eq("id", t_id).execute()
     st.cache_data.clear()
 
-@st.cache_data(ttl=5) 
+@st.cache_data(ttl=600) 
 def get_all_records_cached(event_name):
     try:
         res_t = supabase.table("tournaments").select("id").eq("name", event_name).execute()
         if not res_t.data: return []
-        t_id = res_t.data[0]["id"]
-        res_reg = supabase.table("tournament_registrations").select("*, bladers(alias)").eq("tournament_id", t_id).execute()
-        
+        res_reg = supabase.table("tournament_registrations").select("*, bladers(alias)").eq("tournament_id", res_t.data[0]["id"]).execute()
         records = []
         for r in res_reg.data:
             records.append({
-                "id": r["id"],
-                "Event_Name": event_name,
-                "Player": r["bladers"]["alias"] if r.get("bladers") else "Desconhecido",
-                "Combo_1": r.get("combo_1", ""),
-                "Combo_2": r.get("combo_2", ""),
-                "Combo_3": r.get("combo_3", ""),
-                "Combo_4": r.get("combo_4", ""),
+                "id": r["id"], "Event_Name": event_name, "Player": r["bladers"]["alias"] if r.get("bladers") else "Desconhecido",
+                "Combo_1": r.get("combo_1", ""), "Combo_2": r.get("combo_2", ""), "Combo_3": r.get("combo_3", ""), "Combo_4": r.get("combo_4", ""),
                 "Image_URL": r.get("image_url", "")
             })
         return records
-    except Exception as e: 
-        return []
+    except Exception as e: return []
 
-@st.cache_data(ttl=5) 
+@st.cache_data(ttl=600) 
 def get_past_events_list():
     try:
         res = supabase.table("tournaments").select("name").execute()
         return sorted(list(set([t["name"] for t in res.data if t["name"]])))
-    except: 
-        return []
+    except: return []
 
 def upload_to_imgbb(image_file):
     url = "https://api.imgbb.com/1/upload"
-    
-    # 👇 AQUI ESTÁ A CORREÇÃO: Lê a nova estrutura [IMGBB] DECKS_KEY
     api_key = st.secrets["IMGBB"]["DECKS_KEY"]
-    
-    res = requests.post(
-        url, 
-        data={
-            "key": api_key, 
-            "image": base64.b64encode(image_file.getvalue()).decode("utf-8")
-        }
-    )
-    if res.status_code == 200: 
-        return res.json()["data"]["url"]
+    res = requests.post(url, data={"key": api_key, "image": base64.b64encode(image_file.getvalue()).decode("utf-8")})
+    if res.status_code == 200: return res.json()["data"]["url"]
     raise Exception("Erro ImgBB")
 
 def save_submission_cloud(player_name, combos, img_file, event_name):
@@ -200,11 +155,10 @@ def save_submission_cloud(player_name, combos, img_file, event_name):
             
         res_t = supabase.table("tournaments").select("id").eq("name", event_name).execute()
         if not res_t.data: raise Exception("Torneio não encontrado na DB")
-        tourney_id = res_t.data[0]["id"]
         
-        reg_data = {"tournament_id": tourney_id, "blader_id": blader_id, "combo_1": c_strs[0], "combo_2": c_strs[1], "combo_3": c_strs[2], "combo_4": c_strs[3], "image_url": img_url}
+        reg_data = {"tournament_id": res_t.data[0]["id"], "blader_id": blader_id, "combo_1": c_strs[0], "combo_2": c_strs[1], "combo_3": c_strs[2], "combo_4": c_strs[3], "image_url": img_url}
         supabase.table("tournament_registrations").upsert(reg_data, on_conflict="tournament_id, blader_id").execute()
-        st.cache_data.clear()
+        st.cache_data.clear() # Fundamental para que os dados apareçam imediatamente no lobby
     except Exception as e: raise Exception(f"Erro ao salvar na DB: {e}")
 
 # ==========================================
@@ -218,7 +172,7 @@ for i in range(4):
     for k in ["type", "main_blade", "ratchet", "bit", "lock_chip", "assist_blade", "metal_blade", "over_blade"]:
         if f"c_{i}_{k}" not in st.session_state: st.session_state[f"c_{i}_{k}"] = "Standard (BX / UX)" if k == "type" else "--"
 
-@st.cache_data(ttl=300) 
+@st.cache_data(ttl=600) 
 def load_parts():
     try:
         res = supabase.table("parts").select("*").execute()
@@ -237,7 +191,7 @@ def load_parts():
         return {k: sorted(list(set(v))) for k, v in p_dict.items()}, {}
     except: return {k: [] for k in ["bx_ux_blades", "ux_expanded_blades", "cx_blades", "ratchets", "bits", "assist_blades", "metal_blades", "over_blades", "lock_chips"]}, {}
 
-@st.cache_data(ttl=5) 
+@st.cache_data(ttl=600) 
 def get_dynamic_player_list():
     try:
         res = supabase.table("bladers").select("alias").execute()
@@ -298,45 +252,12 @@ def append_suggestion(sug_text):
         st.session_state.smart_val = " ".join(words) + " "
         st.session_state.keyup_key += 1
 
-@st.cache_data(ttl=120)
-def gerar_pdf_decks(records, event_name):
-    pdf = FPDF()
-    pdf.set_auto_page_break(auto=True, margin=15)
-    for d in records:
-        pdf.add_page()
-        pdf.set_font("Arial", 'B', 16)
-        pdf.cell(0, 10, f"Blader: {str(d['Player']).encode('latin-1', 'replace').decode('latin-1')}", ln=True, align='C')
-        pdf.ln(5)
-        pdf.set_font("Arial", size=12)
-        for i in range(1, 5):
-            combo = d.get(f'Combo_{i}')
-            if combo: pdf.cell(0, 8, f"Combo {i}: {str(combo).encode('latin-1', 'replace').decode('latin-1')}", ln=True)
-        pdf.ln(10)
-        if d.get('Image_URL'):
-            try:
-                res = requests.get(d['Image_URL'], timeout=10)
-                if res.status_code == 200:
-                    img = Image.open(io.BytesIO(res.content))
-                    img.thumbnail((600, 600))
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as tmp_file:
-                        if img.mode in ("RGBA", "P"): img = img.convert("RGB")
-                        img.save(tmp_file, format="JPEG")
-                        tmp_path = tmp_file.name
-                    pdf.image(tmp_path, x=45, w=120)
-                    os.remove(tmp_path)
-            except:
-                pdf.set_font("Arial", 'I', 10)
-                pdf.cell(0, 10, "[Erro ao descarregar fotografia]", ln=True, align='C')
-    saida = pdf.output(dest='S')
-    return saida.encode('latin1') if type(saida) is str else bytes(saida)
-
 # ==========================================
 # INTERFACE PRINCIPAL
 # ==========================================
 active_tournaments = get_active_tournaments()
 past_events = get_past_events_list()
 
-# --- MÓDULO 1: FORMULÁRIO PÚBLICO ---
 if menu == "📝 Formulário Público":
     st.title("📝 BBPT League - Deck Check")
     
@@ -345,7 +266,6 @@ if menu == "📝 Formulário Público":
         st.stop()
         
     open_tournaments = [t for t in active_tournaments if t["checkin_open"]]
-    
     if not open_tournaments:
         st.warning("🔒 Check-in Fechado. Todos os torneios em curso já iniciaram a fase de Batalhas!")
         st.stop()
@@ -372,7 +292,6 @@ if menu == "📝 Formulário Público":
         selected_player = c_id1.selectbox("Blader:", opcoes_blader)
         custom_player = c_id2.text_input("Novo Blader:") if selected_player == "Outro (Novo Jogador)" else ""
         
-        # 👇 IMPORTAÇÃO SEGURA DE DECKS DO SUPABASE 👇
         if selected_player not in ["-- Selecionar --", "Outro (Novo Jogador)"]:
             try:
                 res_user = supabase.table("bladers").select("*").eq("alias", selected_player).execute()
@@ -386,10 +305,8 @@ if menu == "📝 Formulário Público":
                             if isinstance(slot_val, str):
                                 try: slot_val = json.loads(slot_val)
                                 except: continue
-                            if "name" in slot_val and slot_val["name"].strip():
-                                display_name = f"{s.replace('_', ' ').title()} - {slot_val['name']}"
-                            else:
-                                display_name = s.replace('_', ' ').title()
+                            if "name" in slot_val and slot_val["name"].strip(): display_name = f"{s.replace('_', ' ').title()} - {slot_val['name']}"
+                            else: display_name = s.replace('_', ' ').title()
                             slots_disponiveis[display_name] = slot_val
 
                     if slots_disponiveis:
@@ -400,7 +317,7 @@ if menu == "📝 Formulário Público":
                             deck_escolhido_nome = c_load1.selectbox("Carregar Deck:", ["-- Escolher --"] + list(slots_disponiveis.keys()))
                             pass_import = c_load2.text_input("Password da Conta:", type="password")
                             
-                            st.write("") # Spacer vertical
+                            st.write("") 
                             if c_load3.button("Validar e Importar", use_container_width=True, type="secondary"):
                                 if deck_escolhido_nome != "-- Escolher --":
                                     pass_hash = hashlib.md5(pass_import.encode()).hexdigest()
@@ -409,18 +326,12 @@ if menu == "📝 Formulário Público":
                                         st.session_state.num_combos = dados_deck.get("size", 3)
                                         
                                         for i, c in enumerate(dados_deck["combos"]):
-                                            # 👇 O TRADUTOR DE CATEGORIAS 👇
                                             builder_type = c.get("type", "Standard (BX / UX)")
-                                            if builder_type in ["Basic (BX)", "Unique (UX)"]:
-                                                translated_type = "Standard (BX / UX)"
-                                            elif builder_type == "Custom (CX)":
-                                                translated_type = "CX"
-                                            elif builder_type == "Expand (CXE)":
-                                                translated_type = "CX Expanded"
-                                            else:
-                                                translated_type = builder_type # Apanha o "UX Expanded" que já é igual
+                                            if builder_type in ["Basic (BX)", "Unique (UX)"]: translated_type = "Standard (BX / UX)"
+                                            elif builder_type == "Custom (CX)": translated_type = "CX"
+                                            elif builder_type == "Expand (CXE)": translated_type = "CX Expanded"
+                                            else: translated_type = builder_type 
                                             
-                                            # Aplica as peças traduzidas à memória
                                             st.session_state[f"c_{i}_type"] = translated_type
                                             st.session_state[f"c_{i}_main_blade"] = c.get("main_blade", "--")
                                             st.session_state[f"c_{i}_ratchet"] = c.get("ratchet", "--")
@@ -432,16 +343,14 @@ if menu == "📝 Formulário Público":
                                             
                                         st.success("✅ Deck importado com sucesso!")
                                         st.rerun()
-                                    else:
-                                        st.error("❌ Password incorreta. Acesso negado.")
-            except Exception as e:
-                pass
+                                    else: st.error("❌ Password incorreta.")
+            except: pass
                 
     with st.container(border=True):
         st.subheader("⚡ Quick Add (Autocomplete Ativo)")
         c1, c2 = st.columns([3, 1])
         with c1:
-            current_text = st.text_input(    "Escreve ou cola o teu combo:",value=st.session_state.smart_val,key=f"sk_{st.session_state.keyup_key}",placeholder="Ex: Flat 1-60 Dran Buster")
+            current_text = st_keyup("Escreve ou cola o teu combo:", value=st.session_state.smart_val, key=f"sk_{st.session_state.keyup_key}", placeholder="Ex: Flat 1-60 Dran Buster")
             if current_text is not None: st.session_state.smart_val = current_text
             
             if st.session_state.smart_val and not st.session_state.smart_val.endswith(" "):
@@ -560,14 +469,10 @@ if menu == "📝 Formulário Público":
                     if chip in used_chips: has_duplicates = True; dup_error_msg = f"Lock Chip '{cd['lock_chip']}' repetido!"
                     used_chips.add(chip)
 
-            if name == "-- Selecionar Jogador --" or not name.strip(): 
-                st.error("⚠️ Por favor, escolhe um jogador da lista ou seleciona 'Outro (Novo Jogador)' para criar um novo.")
-            elif missing_parts: 
-                st.error("⚠️ Preenche todas as opções do teu deck.")
-            elif has_duplicates: 
-                st.error(f"⚠️ **Regra de Deck Check:** {dup_error_msg}")
-            elif not up: 
-                st.error("⚠️ Faltou anexar a prova fotográfica do deck!")
+            if name == "-- Selecionar Jogador --" or not name.strip(): st.error("⚠️ Escolhe um jogador ou cria um novo.")
+            elif missing_parts: st.error("⚠️ Preenche todas as opções do teu deck.")
+            elif has_duplicates: st.error(f"⚠️ **Regra de Deck Check:** {dup_error_msg}")
+            elif not up: st.error("⚠️ Faltou anexar a prova fotográfica do deck!")
             else:
                 with st.spinner("A gravar submissão..."):
                     try:
@@ -577,7 +482,6 @@ if menu == "📝 Formulário Público":
                     except Exception as err:
                         st.error(str(err))
 
-# --- MÓDULO 2: CONSULTA PÚBLICA ---
 elif menu == "🔍 Consulta Pública":
     st.title("🔍 Consulta Pública de Decks")
     st.markdown("Consulta as configurações de equipas submetidas.")
@@ -596,13 +500,10 @@ elif menu == "🔍 Consulta Pública":
                     for i in range(1, 5):
                         if d.get(f'Combo_{i}'): st.write(f"🔹 **Combo {i}:** {d[f'Combo_{i}']}")
                 if d['Image_URL']: col_i.image(d['Image_URL'], use_container_width=True)
-    else:
-        st.info("Ainda não existem registos de eventos.")
+    else: st.info("Ainda não existem registos de eventos.")
 
-# --- MÓDULO 3: PAINEL DE ORGANIZAÇÃO (SÓ ADMIN) ---
-elif menu == "⚙️ Painel de Organização" and st.session_state.user_role == "admin":
+elif menu == "⚙️ Painel de Organização" and st.session_state.user_role in ["admin", "owner"]:
     st.title("🛡️ Admin")
-            
     st.subheader("📢 Gestão de Eventos")
     if past_events:
         with st.expander("📂 Histórico de Eventos (Reabrir)", expanded=False):
@@ -619,15 +520,13 @@ elif menu == "⚙️ Painel de Organização" and st.session_state.user_role == 
         if ev_n.strip():
             set_active_tournament(ev_n.strip())
             st.rerun()
-        else:
-            st.warning("Digita o nome do torneio primeiro!")
+        else: st.warning("Digita o nome do torneio primeiro!")
             
     if col2.button("Limpar Cache 🔄"): st.cache_data.clear(); st.rerun()
     st.divider()
     
     if active_tournaments:
         st.markdown("### 🕹️ Controlo dos Torneios Ativos")
-        st.caption("Podes ter até 3 torneios a decorrer e gerir a fase de cada um individualmente.")
         for t in active_tournaments:
             with st.container(border=True):
                 st.markdown(f"**Torneio:** `{t['event_name']}`")
@@ -646,8 +545,7 @@ elif menu == "⚙️ Painel de Organização" and st.session_state.user_role == 
                 if colB.button("🗄️ Arquivar Torneio (Terminar)", key=f"arch_{t['id']}", type="secondary", use_container_width=True):
                     archive_tournament(t["id"])
                     st.rerun()
-    else:
-        st.info("Não tens nenhum torneio a decorrer de momento.")
+    else: st.info("Não tens nenhum torneio a decorrer de momento.")
         
     st.divider()
     
