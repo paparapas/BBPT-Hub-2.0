@@ -203,17 +203,16 @@ def load_builder_data():
 parts, images_map, spin_map = load_builder_data()
 
 # ==========================================
-# LEITURA DA BASE DE DADOS SUPABASE
+# LEITURA DA BASE DE DADOS SUPABASE (APENAS UMA VEZ E EM CACHE)
 # ==========================================
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=600)
 def load_builder_data():
     parts_dict = {
         "bx_blades": [], "ux_blades": [], "ux_expanded_blades": [], 
         "cx_blades": [], "ratchets": [], "bits": [], 
         "assist_blades": [], "metal_blades": [], "over_blades": [], "lock_chips": []
     }
-    images_dict = {}
-    spin_dict = {}
+    images_dict, spin_dict = {}, {}
     
     try:
         res = supabase.table("parts").select("*").execute()
@@ -221,18 +220,13 @@ def load_builder_data():
             name = str(p["name"]).strip()
             ptype = p["part_type"]
             sys = p.get("system_type", "")
-            
-            # Spin Direction
             spin_raw = str(p.get("spin_direction", "Right")).strip().title()
             spin_val = "Left" if spin_raw == "Left" else "Right"
             spin_dict[name] = f"{spin_val} Spin"
             
-            # Image URL
             img_url = p.get("image_url")
-            if img_url and str(img_url).startswith("http"):
-                images_dict[name] = str(img_url)
+            if img_url and str(img_url).startswith("http"): images_dict[name] = str(img_url)
                 
-            # Classificar as peças
             if ptype == "Bit": parts_dict["bits"].append(name)
             elif ptype == "Ratchet": parts_dict["ratchets"].append(name)
             elif ptype == "Lock Chip": parts_dict["lock_chips"].append(name)
@@ -247,7 +241,6 @@ def load_builder_data():
 
         return {k: sorted(list(set(v))) for k, v in parts_dict.items()}, images_dict, spin_dict
     except Exception as e:
-        st.error(f"Erro ao carregar do Supabase: {e}")
         return parts_dict, {}, {}
 
 parts, images_map, spin_map = load_builder_data()
