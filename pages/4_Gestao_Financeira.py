@@ -2,40 +2,30 @@ import streamlit as st
 import pandas as pd
 import os
 import base64
+import hashlib
 from streamlit_cookies_controller import CookieController
 from db_connection import supabase
-
 
 st.set_page_config(page_title="Gestão Financeira", page_icon="💰", layout="wide")
 
 # --- PASSWORDS DE ACESSO ---
-ADMIN_PASSWORD = "bbpt-paparapas" 
-JUDGE_PASSWORD = "bbpt-judge"
-FINANCE_PASSWORD = "bbpt-finance"
+FINANCE_PASSWORD = st.secrets.get("PASSWORDS", {}).get("FINANCE", "bbpt-finance")
 
 # ==========================================
-# GESTÃO GLOBAL DE LOGIN (SIDEBAR AJUSTADA)
+# GESTÃO BLINDADA DE LOGIN E COOKIES
 # ==========================================
-from streamlit_cookies_controller import CookieController
-import hashlib
+# 1. INICIALIZAR AS VARIÁVEIS NA MEMÓRIA
+if "user_role" not in st.session_state: st.session_state.user_role = None
+if "finance_auth" not in st.session_state: st.session_state.finance_auth = False
 
-# 1. INICIALIZAR AS VARIÁVEIS NA MEMÓRIA ANTES DE QUALQUER LEITURA
-if "user_role" not in st.session_state:
-    st.session_state.user_role = None
-if "finance_auth" not in st.session_state:
-    st.session_state.finance_auth = False
-
-# 2. LER COOKIES
+# 2. LER COOKIES DE FORMA SEGURA
 controller = CookieController()
-cookie_role = controller.get('user_role')
-cookie_finance = controller.get('finance_auth')
+c_role = controller.get('user_role')
+c_fin = controller.get('finance_auth')
 
-# 3. SINCRONIZAR COOKIES COM A MEMÓRIA
-if cookie_role in ["owner", "admin", "judge"]:
-    st.session_state.user_role = cookie_role
-
-if cookie_finance == 'true':
-    st.session_state.finance_auth = True
+# 3. SINCRONIZAR (Só atualiza se o cookie existir, ignorando os "vazios" do refresh)
+if c_role: st.session_state.user_role = c_role
+if c_fin == 'true': st.session_state.finance_auth = True
 
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
@@ -46,14 +36,11 @@ with st.sidebar:
         st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'><h1 style='display:inline;font-size:1.8rem;'></h1></div>", unsafe_allow_html=True)
     else: st.title("🛡️ BBPT App")
     st.divider()
-
     
-    # Sistema Unificado de Input de Chaves
     if not st.session_state.user_role:
         with st.expander("🔐 Acesso Organização / Judges"):
             pwd = st.text_input("Password:", type="password", key="login_global")
             if st.button("Entrar 🔑", use_container_width=True):
-                # AGORA LÊ DO SECRETS.TOML COM SEGURANÇA
                 if pwd.strip() == st.secrets["PASSWORDS"]["OWNER"]:
                     st.session_state.user_role = "owner"
                     controller.set('user_role', 'owner', max_age=43200)
@@ -71,26 +58,22 @@ with st.sidebar:
         st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.user_role = None
-            st.session_state.finance_auth = False # Garante que limpa a RAM
-            
-            # Tenta apagar os cookies de forma segura, ignorando se não existirem
+            st.session_state.finance_auth = False
             try: controller.remove('user_role')
             except: pass
-            
             try: controller.remove('finance_auth')
             except: pass
-            
             st.rerun()
 
-# --- BLOQUEIO PARA QUEM NÃO É ADMIN ---
-if st.session_state.user_role != "admin":
-    st.error("🛑 Acesso Restrito: Apenas Administradores podem aceder à Gestão Financeira.")
+# --- BLOQUEIO PARA QUEM NÃO É ADMIN NEM OWNER ---
+if st.session_state.user_role not in ["admin", "owner"]:
+    st.error("🛑 Acesso Restrito: Apenas Administradores e Owners podem aceder à Gestão Financeira.")
     st.stop()
 
-# --- BLOQUEIO DE SEGUNDA CAMADA (CADEADO FINANCEIRO) ---
+# --- BLOQUEIO DE SEGUNDA CAMADA (CADEADO FINANCEIRO IGUAL PARA OWNER E ADMIN) ---
 if not st.session_state.finance_auth:
     st.warning("🔐 Secção Financeira Trancada.")
-    st.info("Mesmo sendo Administrador, precisas da palavra-passe financeira para abrir o cofre.")
+    st.info("Precisas da palavra-passe financeira para abrir o cofre.")
     with st.container(border=True):
         fin_pwd = st.text_input("Password Financeira:", type="password")
         if st.button("Desbloquear Cofre 🔓", type="primary"):
@@ -108,7 +91,7 @@ if not st.session_state.finance_auth:
 st.title("💰 Checker Financeiro e Check-in")
 st.markdown("Controla as presenças, taxas do torneio, método de pagamento e donativos dos participantes.")
 
-@st.cache_data(ttl=2)
+@st.cache_data(ttl=600) # VELOCIDADE: 10 Minutos de Cache (Limpa ao gravar)
 def get_active_tournaments():
     res = supabase.table("tournaments").select("*").eq("is_active", True).execute()
     return res.data
@@ -171,9 +154,7 @@ for r in registrations:
 
 df = pd.DataFrame(data_for_grid)
 
-# Lógica matemática para separar os valores pagos por método
 df["Valor Total Pago"] = (df["Inscrição Paga?"].astype(int) * new_entry) + (df["Quota Paga?"].astype(int) * new_quota) + df["Donativo (€)"]
-
 total_numerario = df[df["Método Pag."] == "Numerário"]["Valor Total Pago"].sum()
 total_mbway = df[df["Método Pag."] == "MBWay"]["Valor Total Pago"].sum()
 
@@ -184,7 +165,6 @@ receita_quotas = df["Quota Paga?"].sum() * new_quota
 total_donativos = df["Donativo (€)"].sum()
 caixa_total = receita_inscricoes + receita_quotas + total_donativos
 
-# Top Metrics
 col1, col2, col3, col4, col5 = st.columns(5)
 col1.metric("Inscritos", f"{total_inscritos}")
 col2.metric("Presenças", f"{total_presentes}")
@@ -193,7 +173,6 @@ col4.metric("Caixa Quotas", f"{receita_quotas}€")
 col5.metric("❤️ Total Donativos", f"{total_donativos}€")
 
 st.markdown("---")
-# Métricas Totais e de Divisão
 m1, m2, m3 = st.columns([2, 1, 1])
 m1.metric("💰 CAIXA TOTAL DESTE EVENTO", f"{caixa_total}€")
 m2.metric("💵 Físico (Numerário)", f"{total_numerario}€")
@@ -203,7 +182,7 @@ st.markdown("---")
 st.subheader("📋 Grelha de Controlo Financeiro")
 
 edited_df = st.data_editor(
-    df.drop(columns=["Valor Total Pago"]), # Removemos a coluna de cálculo auxiliar da vista
+    df.drop(columns=["Valor Total Pago"]), 
     hide_index=True,
     use_container_width=True,
     disabled=["Blader", "ID_Registo"],
