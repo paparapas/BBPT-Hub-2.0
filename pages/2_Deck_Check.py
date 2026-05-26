@@ -41,7 +41,6 @@ with st.sidebar:
 
     opcoes_menu = ["📝 Formulário Público", "🔍 Consulta Pública"]
     if st.session_state.user_role in ["admin", "owner"]: opcoes_menu.append("⚙️ Painel de Organização")
-    if st.session_state.user_role == "owner": opcoes_menu.append("👥 Gestão de Utilizadores")
     menu = st.radio("Navegação:", opcoes_menu)
     st.divider()
     
@@ -485,22 +484,27 @@ if menu == "📝 Formulário Público":
 elif menu == "🔍 Consulta Pública":
     st.title("🔍 Consulta Pública de Decks")
     st.markdown("Consulta as configurações de equipas submetidas.")
-    nomes_ativos = [t["event_name"] for t in active_tournaments]
-    todos_eventos = sorted(list(set(nomes_ativos + past_events)))
     
-    if todos_eventos:
-        evento_selecionado = st.selectbox("Escolher Evento para Consultar:", todos_eventos)
+    # Filtra apenas os nomes dos torneios que estão ativos
+    nomes_ativos = [t["event_name"] for t in active_tournaments]
+    
+    if nomes_ativos:
+        evento_selecionado = st.selectbox("Escolher Evento para Consultar:", sorted(nomes_ativos))
         recs_public = get_all_records_cached(evento_selecionado)
         st.metric("Total Decks Selados", len(recs_public))
         st.divider()
+        
         for d in recs_public:
             with st.expander(f"👤 Blader: {d['Player']}"):
                 col_c, col_i = st.columns([2, 1])
                 with col_c:
                     for i in range(1, 5):
-                        if d.get(f'Combo_{i}'): st.write(f"🔹 **Combo {i}:** {d[f'Combo_{i}']}")
-                if d['Image_URL']: col_i.image(d['Image_URL'], use_container_width=True)
-    else: st.info("Ainda não existem registos de eventos.")
+                        if d.get(f'Combo_{i}'): 
+                            st.write(f"🔹 **Combo {i}:** {d[f'Combo_{i}']}")
+                if d['Image_URL']: 
+                    col_i.image(d['Image_URL'], use_container_width=True)
+    else: 
+        st.info("De momento não existem eventos ativos para consulta pública.")
 
 elif menu == "⚙️ Painel de Organização" and st.session_state.user_role in ["admin", "owner"]:
     st.title("🛡️ Admin")
