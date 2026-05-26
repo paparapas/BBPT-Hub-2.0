@@ -6,7 +6,7 @@ import base64
 from streamlit_cookies_controller import CookieController
 from db_connection import supabase
 
-st.set_page_config(page_title="Gestão de Utilizadores", page_icon="👥", layout="wide")
+st.set_page_config(page_title="Gestão de Utilizadores", page_icon="logo.png", layout="wide")
 
 # --- SINALIZAR COMPATIBILIDADE COM A SIDEBAR GLOBAL ---
 if "user_role" not in st.session_state:

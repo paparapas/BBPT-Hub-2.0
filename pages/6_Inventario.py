@@ -3,7 +3,7 @@ from streamlit_cookies_controller import CookieController
 from db_connection import supabase
 
 # Configuração da Página
-st.set_page_config(page_title="Gestão Inventário", page_icon="🧩")
+st.set_page_config(page_title="Gestão Inventário", page_icon="logo.png")
 
 # INICIALIZAÇÃO DO CONTROLLER (Fora de qualquer função cacheada para evitar o Warning)
 controller = CookieController()

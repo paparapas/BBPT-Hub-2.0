@@ -9,7 +9,7 @@ from streamlit_cookies_controller import CookieController
 from db_connection import supabase
 
 # 🛑 FORÇAR O MODO "WIDE" E REMOVER ESPAÇOS BRANCOS 🛑
-st.set_page_config(page_title="Battle Logger", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Battle Logger", page_icon="logo.png", layout="wide", initial_sidebar_state="collapsed")
 
 # --- PASSWORDS DE ACESSO ---
 ADMIN_PASSWORD = "bbpt-paparapas" 

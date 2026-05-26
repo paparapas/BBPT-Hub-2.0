@@ -4,7 +4,7 @@ import os
 # ==========================================
 # CONFIGURAÇÃO DE PÁGINA
 # ==========================================
-st.set_page_config(page_title="Documentos BBPT", layout="wide")
+st.set_page_config(page_title="Documentos BBPT", page_icon="logo.png", layout="wide")
 
 st.title("📚 Documentos e Informação Geral")
 st.markdown("Aqui podes consultar e descarregar todas as regras oficiais, regulamentos da liga e guias da BBPT.")

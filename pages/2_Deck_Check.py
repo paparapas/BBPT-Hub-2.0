@@ -17,7 +17,7 @@ from fpdf import FPDF
 from streamlit_cookies_controller import CookieController
 from db_connection import supabase
 
-st.set_page_config(page_title="Deck Check & Admin", page_icon="📝", layout="wide")
+st.set_page_config(page_title="Deck Check & Admin",  page_icon="logo.png", layout="wide")
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s [%(levelname)s] %(message)s')
 
 # ==========================================
