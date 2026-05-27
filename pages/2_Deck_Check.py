@@ -429,6 +429,7 @@ if menu == "📝 Formulário Público":
         has_duplicates, dup_error_msg = False, ""
         used_blades, used_ratchets, used_bits, used_chips, used_assist, used_metal = set(), set(), set(), set(), set(), set()
         
+        # 1. CICLO DE ANÁLISE DOS COMBOS
         for i in range(st.session_state.num_combos):
             ct = st.session_state[f"c_{i}_type"]; cd = {"type": ct, "combo_number": i+1}
             ks = ["main_blade", "ratchet", "bit"] if ct in ["Standard (BX / UX)", "UX Expanded"] else ["lock_chip", "main_blade", "assist_blade", "ratchet", "bit"] if ct == "CX" else ["lock_chip", "metal_blade" , "over_blade" , "assist_blade", "ratchet", "bit"]
@@ -468,18 +469,23 @@ if menu == "📝 Formulário Público":
                     if chip in used_chips: has_duplicates = True; dup_error_msg = f"Lock Chip '{cd['lock_chip']}' repetido!"
                     used_chips.add(chip)
 
-            if name == "-- Selecionar Jogador --" or not name.strip(): st.error("⚠️ Escolhe um jogador ou cria um novo.")
-            elif missing_parts: st.error("⚠️ Preenche todas as opções do teu deck.")
-            elif has_duplicates: st.error(f"⚠️ **Regra de Deck Check:** {dup_error_msg}")
-            elif not up: st.error("⚠️ Faltou anexar a prova fotográfica do deck!")
-            else:
-                with st.spinner("A gravar submissão..."):
-                    try:
-                        save_submission_cloud(name, combos, up, target_event["event_name"])
-                        st.success("✅ O teu Deck foi submetido na base de dados oficial!")
-                        st.balloons()
-                    except Exception as err:
-                        st.error(str(err))
+        # 2. VALIDAÇÃO E SUBMISSÃO (Fora do ciclo 'for')
+        if name == "-- Selecionar Jogador --" or not name.strip(): 
+            st.error("⚠️ Escolhe um jogador ou cria um novo.")
+        elif missing_parts: 
+            st.error("⚠️ Preenche todas as opções do teu deck.")
+        elif has_duplicates: 
+            st.error(f"⚠️ **Regra de Deck Check:** {dup_error_msg}")
+        elif not up: 
+            st.error("⚠️ Faltou anexar a prova fotográfica do deck!")
+        else:
+            with st.spinner("A gravar submissão..."):
+                try:
+                    save_submission_cloud(name, combos, up, target_event["event_name"])
+                    st.success("✅ O teu Deck foi submetido na base de dados oficial!")
+                    st.balloons()
+                except Exception as err:
+                    st.error(str(err))
 
 elif menu == "🔍 Consulta Pública":
     st.title("🔍 Consulta Pública de Decks")
