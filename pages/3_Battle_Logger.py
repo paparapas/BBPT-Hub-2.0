@@ -367,9 +367,16 @@ elif st.session_state.phase == 'setup':
     
     if not lista_jogadores:
         st.warning(f"Ainda não há jogadores submetidos no evento '{st.session_state.active_event}'.")
-        if st.button("Voltar ao Lobby"):
-            st.session_state.phase = 'lobby'
-            st.rerun()
+        if st.button("Voltar ao Lobby", ...): # (mantém as opções do teu botão originais aqui)
+    # Limpeza cirúrgica: apaga a batalha, mantém a password
+            chaves_para_limpar = ['battle_id', 'p1_name', 'p2_name', 'p1_score', 'p2_score', 'match_log', 'history', 'arquivado']
+            for chave in chaves_para_limpar:
+                if chave in st.session_state:
+                    del st.session_state[chave]
+            
+    # Força o regresso à página de seleção de torneio/lobby
+    st.session_state.phase = 'lobby'
+    st.rerun()
     else:
         c1, c2 = st.columns(2)
         with c1:
