@@ -561,18 +561,6 @@ elif st.session_state.phase == 'battle':
             st.session_state.phase = 'ordering'
             st.rerun()
 
-É completamente normal que estejas confuso, eu devia ter sido mais claro nas instruções. Vamos simplificar isto ao máximo.
-
-O problema de fundo é que o teu código estava a tentar ler variáveis (como o p1_score e p1_name) de forma "agressiva" quando mostra o Vencedor e o Match Log, numa altura em que nós acabámos de apagar essas mesmas variáveis na limpeza cirúrgica. Além disso, esquecemo-nos de apagar a variável phase na nossa lista de limpeza, o que faz com que o ecrã não volte ao início.
-
-Para resolveres tudo de uma vez por todas, apaga todo esse bloco que me mostraste e substitui por este abaixo.
-
-Este bloco já tem as proteções .get() em todo o lado e já adiciona a phase à limpeza cirúrgica para que o Streamlit saia desse ecrã assim que clicas em Confirmar.
-
-Copia e substitui por isto:
-Python
-
-
 # ==========================================
 # FASE 4: MATCH OVER
 # ==========================================
