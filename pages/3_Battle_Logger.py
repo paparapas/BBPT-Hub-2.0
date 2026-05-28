@@ -74,7 +74,8 @@ def get_tournament_players(tournament_id):
 
 @st.cache_data(ttl=600)
 def get_matches(tournament_id):
-    res = supabase.table("matches").select("*, player1:p1_id(alias), player2:p2_id(alias)").eq("tournament_id", tournament_id).order("created_at", desc=True).execute()
+    # CORREÇÃO AQUI: Sintaxe exata exigida pelo Supabase para relações duplas na mesma tabela
+    res = supabase.table("matches").select("*, player1:bladers!p1_id(alias), player2:bladers!p2_id(alias)").eq("tournament_id", tournament_id).order("created_at", desc=True).execute()
     return res.data
 
 # Funções de escrita (Limpam a cache para forçar dados novos)
@@ -155,7 +156,6 @@ with tabs[1]:
         st.info("Nenhuma batalha ativa no momento. Inicia um combate na aba anterior.")
     else:
         # ⚡ FRAGMENTO MÁGICO ⚡
-        # Tudo o que está aqui dentro recarrega instantaneamente sem afetar o resto da página!
         @st.fragment
         def painel_de_combate():
             m = st.session_state.active_match
@@ -209,7 +209,6 @@ with tabs[1]:
                 st.session_state.active_match = None
                 st.rerun() # Refresh total para sair
 
-        # Chama a função fragmentada para renderizar o ecrã instantâneo
         painel_de_combate()
 
 # ==========================================
@@ -223,8 +222,12 @@ with tabs[2]:
         st.info("Nenhuma batalha registada neste evento ainda.")
     else:
         for m in matches:
+            # Proteção contra falhas ou contas removidas entretanto
+            p1_name_display = m.get('player1', {}).get('alias', 'Desconhecido') if m.get('player1') else 'Desconhecido'
+            p2_name_display = m.get('player2', {}).get('alias', 'Desconhecido') if m.get('player2') else 'Desconhecido'
+
             if m['status'] == "completed":
-                vencedor = m['player1']['alias'] if m['p1_score'] > m['p2_score'] else m['player2']['alias']
+                vencedor = p1_name_display if m['p1_score'] > m['p2_score'] else p2_name_display
                 cor = "green"
             else:
                 vencedor = "Em Curso..."
@@ -232,7 +235,7 @@ with tabs[2]:
                 
             with st.container(border=True):
                 c1, c2, c3 = st.columns([2, 1, 1])
-                c1.markdown(f"**{m['player1']['alias']}** vs **{m['player2']['alias']}**")
+                c1.markdown(f"**{p1_name_display}** vs **{p2_name_display}**")
                 c2.markdown(f"**{m['p1_score']}** - **{m['p2_score']}**")
                 c3.markdown(f"<span style='color:{cor};'>{vencedor}</span>", unsafe_allow_html=True)
                 
