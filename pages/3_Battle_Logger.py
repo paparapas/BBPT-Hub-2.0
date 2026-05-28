@@ -77,7 +77,6 @@ with st.sidebar:
                 else: st.error("Incorreta!")
     else:
         st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
-        st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.user_role = None
             st.session_state.finance_auth = False # Garante que limpa a RAM
@@ -611,11 +610,14 @@ elif st.session_state.get('phase') == 'match_over':
                     db[b_id]["Status"] = "Terminada" 
                     save_db(db)
 
-            # LIMPEZA CIRÚRGICA FINAL (Agora inclui o 'phase' para voltar ao ecrã inicial)
-            chaves_para_limpar = ['battle_id', 'p1_name', 'p2_name', 'p1_score', 'p2_score', 'match_log', 'history', 'arquivado', 'phase']
+            # LIMPEZA CIRÚRGICA FINAL (Não apaga a phase, muda para o lobby)
+            chaves_para_limpar = ['battle_id', 'p1_name', 'p2_name', 'p1_score', 'p2_score', 'match_log', 'history', 'arquivado']
             for chave in chaves_para_limpar:
                 if chave in st.session_state:
                     del st.session_state[chave]
+            
+            # Força o regresso à página do Lobby
+            st.session_state.phase = 'lobby' 
             st.rerun()
             
     st.divider()
