@@ -558,7 +558,7 @@ elif st.session_state.phase == 'battle':
 elif st.session_state.phase == 'match_over':
     st.balloons()
     st.success("🏆 BATALHA TERMINADA!")
-    st.markdown(f"<h1 style='text-align: center; font-size: 5rem;'>{st.session_state.p1_score} - {st.session_state.p2_score}</h1>", unsafe_allow_html=True)
+    st.markdown(f"<h1 style='text-align: center; font-size: 5rem;'>{st.session_state.get('p1_score', 0)} - {st.session_state.get('p2_score', 0)}</h1>", unsafe_allow_html=True)
     
     if st.session_state.p1_score > st.session_state.p2_score: st.markdown(f"<h2 style='text-align: center;'>Vencedor: 👑 {st.session_state.p1_name}</h2>", unsafe_allow_html=True)
     else: st.markdown(f"<h2 style='text-align: center;'>Vencedor: 👑 {st.session_state.p2_name}</h2>", unsafe_allow_html=True)
