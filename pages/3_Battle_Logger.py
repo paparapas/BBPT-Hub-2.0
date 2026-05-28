@@ -561,21 +561,44 @@ elif st.session_state.phase == 'battle':
             st.session_state.phase = 'ordering'
             st.rerun()
 
+É completamente normal que estejas confuso, eu devia ter sido mais claro nas instruções. Vamos simplificar isto ao máximo.
+
+O problema de fundo é que o teu código estava a tentar ler variáveis (como o p1_score e p1_name) de forma "agressiva" quando mostra o Vencedor e o Match Log, numa altura em que nós acabámos de apagar essas mesmas variáveis na limpeza cirúrgica. Além disso, esquecemo-nos de apagar a variável phase na nossa lista de limpeza, o que faz com que o ecrã não volte ao início.
+
+Para resolveres tudo de uma vez por todas, apaga todo esse bloco que me mostraste e substitui por este abaixo.
+
+Este bloco já tem as proteções .get() em todo o lado e já adiciona a phase à limpeza cirúrgica para que o Streamlit saia desse ecrã assim que clicas em Confirmar.
+
+Copia e substitui por isto:
+Python
+
+
 # ==========================================
 # FASE 4: MATCH OVER
 # ==========================================
-elif st.session_state.phase == 'match_over':
+elif st.session_state.get('phase') == 'match_over':
     st.balloons()
     st.success("🏆 BATALHA TERMINADA!")
-    st.markdown(f"<h1 style='text-align: center; font-size: 5rem;'>{st.session_state.get('p1_score', 0)} - {st.session_state.get('p2_score', 0)}</h1>", unsafe_allow_html=True)
     
-    if st.session_state.p1_score > st.session_state.p2_score: st.markdown(f"<h2 style='text-align: center;'>Vencedor: 👑 {st.session_state.p1_name}</h2>", unsafe_allow_html=True)
-    else: st.markdown(f"<h2 style='text-align: center;'>Vencedor: 👑 {st.session_state.p2_name}</h2>", unsafe_allow_html=True)
+    # 1. LER VALORES EM SEGURANÇA (Para não dar erro se já tiverem sido apagados)
+    score_1 = st.session_state.get('p1_score', 0)
+    score_2 = st.session_state.get('p2_score', 0)
+    nome_1 = st.session_state.get('p1_name', 'Desconhecido')
+    nome_2 = st.session_state.get('p2_name', 'Desconhecido')
+    log_atual = st.session_state.get('match_log', [])
+    
+    st.markdown(f"<h1 style='text-align: center; font-size: 5rem;'>{score_1} - {score_2}</h1>", unsafe_allow_html=True)
+    
+    # 2. CALCULAR O VENCEDOR EM SEGURANÇA
+    if score_1 > score_2: 
+        st.markdown(f"<h2 style='text-align: center;'>Vencedor: 👑 {nome_1}</h2>", unsafe_allow_html=True)
+    elif score_2 > score_1: 
+        st.markdown(f"<h2 style='text-align: center;'>Vencedor: 👑 {nome_2}</h2>", unsafe_allow_html=True)
         
     st.write("")
     col_undo, col_new = st.columns(2)
     with col_undo:
-        if st.session_state.history:
+        if st.session_state.get('history'):
             if st.button("↩️ Desfazer Último Ponto", use_container_width=True):
                 if 'arquivado' in st.session_state: del st.session_state['arquivado']
                 undo_last_action()
@@ -584,15 +607,24 @@ elif st.session_state.phase == 'match_over':
     with col_new:
         if st.button("✅ Confirmar o Resultado e Voltar ao Lobby do Evento", use_container_width=True, type="primary"):
             if 'arquivado' not in st.session_state:
-                archive_match_to_supabase(st.session_state.active_event, st.session_state.battle_id, st.session_state.p1_name, st.session_state.p2_name, st.session_state.p1_score, st.session_state.p2_score, st.session_state.match_log)
+                archive_match_to_supabase(
+                    st.session_state.get('active_event'), 
+                    st.session_state.get('battle_id'), 
+                    nome_1, 
+                    nome_2, 
+                    score_1, 
+                    score_2, 
+                    log_atual
+                )
                 st.session_state.arquivado = True
                 db = load_db()
-                if st.session_state.battle_id in db:
-                    db[st.session_state.battle_id]["Status"] = "Terminada" 
+                b_id = st.session_state.get('battle_id')
+                if b_id and b_id in db:
+                    db[b_id]["Status"] = "Terminada" 
                     save_db(db)
 
-            # LIMPEZA CIRÚRGICA: Apaga só os dados do combate e mantém o login e o evento ativos
-            chaves_para_limpar = ['battle_id', 'p1_name', 'p2_name', 'p1_score', 'p2_score', 'match_log', 'history', 'arquivado']
+            # LIMPEZA CIRÚRGICA FINAL (Agora inclui o 'phase' para voltar ao ecrã inicial)
+            chaves_para_limpar = ['battle_id', 'p1_name', 'p2_name', 'p1_score', 'p2_score', 'match_log', 'history', 'arquivado', 'phase']
             for chave in chaves_para_limpar:
                 if chave in st.session_state:
                     del st.session_state[chave]
@@ -600,4 +632,4 @@ elif st.session_state.phase == 'match_over':
             
     st.divider()
     st.markdown("### Match Log Oficial:")
-    st.dataframe(pd.DataFrame(st.session_state.match_log, columns=["Ação Registada"]), use_container_width=True)
+    st.dataframe(pd.DataFrame(log_atual, columns=["Ação Registada"]), use_container_width=True)
