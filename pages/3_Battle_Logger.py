@@ -203,10 +203,10 @@ def auto_fill_p2():
         if s3 is None: st.session_state.p2_3 = rem
 
 def archive_match_to_supabase(event_name, b_id, p1, p2, p1_score, p2_score, log):
-    try:
+    #try:
         supabase.table("matches").upsert({"id": b_id, "event_name": event_name, "p1_name": p1, "p2_name": p2, "score": f"{p1_score}-{p2_score}", "match_log": " | ".join(log)}).execute()
         st.success(f"✅ Partida do evento '{event_name}' arquivada na nuvem com sucesso!")
-    except Exception as e: st.error(f"❌ Erro ao comunicar com a Base de Dados na Nuvem: {e}")
+    #except Exception as e: st.error(f"❌ Erro ao comunicar com a Base de Dados na Nuvem: {e}")
 
 def sync_from_supabase(event_name):
     try:
