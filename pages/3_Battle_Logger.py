@@ -333,7 +333,7 @@ elif st.session_state.phase == 'lobby':
                     if c_yes.button("✔️", key=f"yes_{b_id}"):
                         del db[b_id]
                         save_db(db)
-                        supabase.table("matches").delete().eq("id", b_id).execute()
+                        supabase.table("match_logs").delete().eq("battle_id", b_id).execute()
                         st.session_state[f"confirm_del_{b_id}"] = False
                         st.rerun()
                     if c_no.button("❌", key=f"no_{b_id}"):
