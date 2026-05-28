@@ -74,9 +74,21 @@ def get_tournament_players(tournament_id):
 
 @st.cache_data(ttl=600)
 def get_matches(tournament_id):
-    # CORREÇÃO AQUI: Sintaxe exata exigida pelo Supabase para relações duplas na mesma tabela
-    res = supabase.table("matches").select("*, player1:bladers!p1_id(alias), player2:bladers!p2_id(alias)").eq("tournament_id", tournament_id).order("created_at", desc=True).execute()
-    return res.data
+    # SOLUÇÃO DEFINITIVA: Pedimos as tabelas separadas e juntamos no Python. Não há espaço para erros de sintaxe de BD!
+    res_matches = supabase.table("matches").select("*").eq("tournament_id", tournament_id).order("created_at", desc=True).execute()
+    matches_data = res_matches.data
+    
+    if not matches_data:
+        return []
+        
+    res_bladers = supabase.table("bladers").select("id, alias").execute()
+    blader_dict = {b["id"]: b["alias"] for b in res_bladers.data}
+    
+    for m in matches_data:
+        m["player1"] = {"alias": blader_dict.get(m["p1_id"], "Desconhecido")}
+        m["player2"] = {"alias": blader_dict.get(m["p2_id"], "Desconhecido")}
+        
+    return matches_data
 
 # Funções de escrita (Limpam a cache para forçar dados novos)
 def create_match(tournament_id, p1_id, p2_id, p1_name, p2_name):
@@ -222,9 +234,8 @@ with tabs[2]:
         st.info("Nenhuma batalha registada neste evento ainda.")
     else:
         for m in matches:
-            # Proteção contra falhas ou contas removidas entretanto
-            p1_name_display = m.get('player1', {}).get('alias', 'Desconhecido') if m.get('player1') else 'Desconhecido'
-            p2_name_display = m.get('player2', {}).get('alias', 'Desconhecido') if m.get('player2') else 'Desconhecido'
+            p1_name_display = m.get('player1', {}).get('alias', 'Desconhecido')
+            p2_name_display = m.get('player2', {}).get('alias', 'Desconhecido')
 
             if m['status'] == "completed":
                 vencedor = p1_name_display if m['p1_score'] > m['p2_score'] else p2_name_display
