@@ -564,7 +564,7 @@ elif st.session_state.phase == 'battle':
 # ==========================================
 # FASE 4: MATCH OVER
 # ==========================================
-    elif st.session_state.get('phase') == 'match_over':
+elif st.session_state.get('phase') == 'match_over':
     st.balloons()
     st.success("🏆 BATALHA TERMINADA!")
     
