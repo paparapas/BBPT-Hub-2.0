@@ -202,11 +202,20 @@ def auto_fill_p2():
         if s2 is None: st.session_state.p2_2 = rem
         if s3 is None: st.session_state.p2_3 = rem
 
-def archive_match_to_supabase(event_name, b_id, p1, p2, p1_score, p2_score, log):
-    #try:
-        supabase.table("matches").upsert({"id": b_id, "event_name": event_name, "p1_name": p1, "p2_name": p2, "score": f"{p1_score}-{p2_score}", "match_log": " | ".join(log)}).execute()
-        st.success(f"✅ Partida do evento '{event_name}' arquivada na nuvem com sucesso!")
-    #except Exception as e: st.error(f"❌ Erro ao comunicar com a Base de Dados na Nuvem: {e}")
+def archive_match_to_supabase(evento, battle_id, p1, p2, score1, score2, log_list):
+    # Formata os dados para o formato Excel (ZeroLogs)
+    log_str = " | ".join(log_list)
+    score_final = f"{score1}-{score2}"
+    
+    # Envia para a tabela NOVA com as colunas corretas
+    supabase.table("match_logs").insert({
+        "event_name": evento,
+        "battle_id": battle_id,
+        "player_1": p1,
+        "player_2": p2,
+        "final_score": score_final,
+        "detailed_log": log_str
+    }).execute()
 
 def sync_from_supabase(event_name):
     try:
