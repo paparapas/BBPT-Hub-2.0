@@ -395,14 +395,23 @@ elif st.session_state.phase == 'setup':
         st.write("")
         col_back, col_start = st.columns(2)
         
-        with aux_col1:
-                if st.button("🚪 Voltar ao Lobby", use_container_width=True):
-                    chaves = ['battle_id', 'p1_name', 'p2_name', 'p1_score', 'p2_score', 'match_log', 'history', 'arquivado', 'p1_deck_pool', 'p2_deck_pool', 'p1_active_deck', 'p2_active_deck', 'limit', 'current_round']
-                    for chave in chaves:
-                        if chave in st.session_state:
-                            del st.session_state[chave]
-                    st.session_state.phase = 'lobby'
-                    st.rerun()
+        with col_back: # (ou aux_col1 na Fase 3)
+            if st.button("🚪 Voltar ao Lobby", use_container_width=True):
+                # 1. Guardar o passe de acesso e o evento atual
+                meu_login = st.session_state.get('user_role')
+                meu_evento = st.session_state.get('active_event')
+                
+                # 2. Limpar a memória toda da batalha sem medo
+                st.session_state.clear()
+                
+                # 3. Restaurar o passe de acesso e o evento
+                if meu_login:
+                    st.session_state.user_role = meu_login
+                if meu_evento:
+                    st.session_state.active_event = meu_evento
+                    
+                st.session_state.phase = 'lobby'
+                st.rerun()
                 
         with col_start:
             if st.button("▶️ Iniciar Batalha", use_container_width=True, type="primary"):
@@ -465,14 +474,23 @@ elif st.session_state.phase == 'ordering':
     st.write("")
     col_back, col_enter = st.columns(2)
     
-    with col_back:
-        if st.button("🚪 Voltar ao Lobby", use_container_width=True):
-            chaves = ['battle_id', 'p1_name', 'p2_name', 'p1_score', 'p2_score', 'match_log', 'history', 'arquivado', 'p1_deck_pool', 'p2_deck_pool', 'p1_active_deck', 'p2_active_deck', 'limit', 'current_round']
-            for chave in chaves:
-                if chave in st.session_state:
-                    del st.session_state[chave]
-            st.session_state.phase = 'lobby'
-            st.rerun()
+    with col_back: # (ou aux_col1 na Fase 3)
+            if st.button("🚪 Voltar ao Lobby", use_container_width=True):
+                # 1. Guardar o passe de acesso e o evento atual
+                meu_login = st.session_state.get('user_role')
+                meu_evento = st.session_state.get('active_event')
+                
+                # 2. Limpar a memória toda da batalha sem medo
+                st.session_state.clear()
+                
+                # 3. Restaurar o passe de acesso e o evento
+                if meu_login:
+                    st.session_state.user_role = meu_login
+                if meu_evento:
+                    st.session_state.active_event = meu_evento
+                    
+                st.session_state.phase = 'lobby'
+                st.rerun()
             
     with col_enter:
         if st.button("⚔️ Entrar na Arena!", use_container_width=True, type="primary"):
@@ -546,13 +564,23 @@ elif st.session_state.phase == 'battle':
             
     st.markdown('<span id="bottom-btns"></span>', unsafe_allow_html=True)
     aux_col1, aux_col2 = st.columns(2)
-    with aux_col1:
-        if st.button("🚪 Voltar ao Lobby", use_container_width=True):
-            evt = st.session_state.active_event
-            st.session_state.clear()
-            st.session_state.active_event = evt
-            st.session_state.phase = 'lobby'
-            st.rerun()
+    with aux_col1: # (ou aux_col1 na Fase 3)
+            if st.button("🚪 Voltar ao Lobby", use_container_width=True):
+                # 1. Guardar o passe de acesso e o evento atual
+                meu_login = st.session_state.get('user_role')
+                meu_evento = st.session_state.get('active_event')
+                
+                # 2. Limpar a memória toda da batalha sem medo
+                st.session_state.clear()
+                
+                # 3. Restaurar o passe de acesso e o evento
+                if meu_login:
+                    st.session_state.user_role = meu_login
+                if meu_evento:
+                    st.session_state.active_event = meu_evento
+                    
+                st.session_state.phase = 'lobby'
+                st.rerun()
             
     with aux_col2:
         if st.session_state.history: st.button("↩️ OOPS! Desfazer Última Ação", use_container_width=True, on_click=undo_last_action)
