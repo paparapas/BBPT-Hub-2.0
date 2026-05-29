@@ -509,86 +509,94 @@ elif st.session_state.phase == 'ordering':
             else: st.error("⚠️ Encontrámos Beys repetidos!")
 
 # ==========================================
-# FASE 3: BATTLE LOOP
+# FASE 3: BATTLE LOOP (ISOLADO PARA VELOCIDADE MÁXIMA)
 # ==========================================
 elif st.session_state.phase == 'battle':
-    st.markdown("""
-    <style>
-        .block-container { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; gap: 0.2rem !important; }
-        div[data-testid="stVerticalBlockBorderWrapper"] > div { padding: 0.5rem !important; gap: 0.2rem !important; }
-        div.stButton > button { min-height: 45px !important; height: auto !important; border-radius: 6px !important; white-space: normal !important; margin-bottom: 0px !important; padding: 2px !important; }
-        div.stButton > button p { font-size: clamp(12px, 2.5vw, 15px) !important; font-weight: 800 !important; line-height: 1 !important; margin: 0 !important; }
-        .element-container:has(#btn-grid-p1) + .element-container > div[data-testid="stHorizontalBlock"], .element-container:has(#btn-grid-p2) + .element-container > div[data-testid="stHorizontalBlock"] { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 0.2rem !important; }
-        .element-container:has(#btn-grid-p1) + .element-container > div[data-testid="stHorizontalBlock"] > div[data-testid="column"], .element-container:has(#btn-grid-p2) + .element-container > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] { width: 50% !important; min-width: 48% !important; flex: 1 1 50% !important; }
-        .element-container:has(#bottom-btns) + .element-container > div[data-testid="stHorizontalBlock"] { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 0.5rem !important; }
-    </style>
-    """, unsafe_allow_html=True)
+    
+    @st.fragment
+    def painel_de_batalha():
+        # Se a fase mudar por causa de uma vitória ou de cancelamento, força a saída do fragmento instantaneamente
+        if st.session_state.phase != 'battle':
+            st.rerun()
 
-    r_idx = st.session_state.current_round
-    bey_p1 = st.session_state.p1_active_deck[r_idx]
-    bey_p2 = st.session_state.p2_active_deck[r_idx]
-    
-    st.markdown(f"<p style='text-align: center; color: gray; margin: 0; padding: 0; font-size: 0.8rem;'><b>RONDA {r_idx + 1}/3 | Jogam até {st.session_state.limit} pts</b></p>", unsafe_allow_html=True)
-    
-    c_p1, c_p2 = st.columns(2)
-    
-    with c_p1:
-        with st.container(border=True):
-            st.markdown(f"<h4 style='text-align: center; margin: 0; padding: 0; line-height: 1.2;'>{st.session_state.p1_name}</h4>", unsafe_allow_html=True)
-            st.markdown(f"<h1 style='text-align: center; font-size: clamp(3rem, 8vw, 4rem); color: #4CAF50; line-height: 0.9; margin: 0; padding: 0;'>{st.session_state.p1_score}</h1>", unsafe_allow_html=True)
-            st.markdown(f"<p style='text-align: center; color: gray; font-size: 0.75rem; margin: 0 0 5px 0; padding: 0; line-height: 1;'>🛡️ {bey_p1}</p>", unsafe_allow_html=True)
-            
-            st.markdown('<span id="btn-grid-p1"></span>', unsafe_allow_html=True)
-            btn1_p1, btn2_p1 = st.columns(2)
-            with btn1_p1:
-                st.button("🌀 Spin (+1)", key="p1_spin", use_container_width=True, on_click=register_result, args=(st.session_state.p1_name, "Spin Finish", 1, bey_p1, bey_p2))
-                st.button("💥 Burst (+2)", key="p1_burst", use_container_width=True, on_click=register_result, args=(st.session_state.p1_name, "Burst Finish", 2, bey_p1, bey_p2))
-            with btn2_p1:
-                st.button("💨 Over (+2)", key="p1_over", use_container_width=True, on_click=register_result, args=(st.session_state.p1_name, "Over Finish", 2, bey_p1, bey_p2))
-                st.button("⚡ X-Treme (+3)", key="p1_extreme", use_container_width=True, type="primary", on_click=register_result, args=(st.session_state.p1_name, "X-Treme Finish", 3, bey_p1, bey_p2))
+        st.markdown("""
+        <style>
+            .block-container { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; gap: 0.2rem !important; }
+            div[data-testid="stVerticalBlockBorderWrapper"] > div { padding: 0.5rem !important; gap: 0.2rem !important; }
+            div.stButton > button { min-height: 45px !important; height: auto !important; border-radius: 6px !important; white-space: normal !important; margin-bottom: 0px !important; padding: 2px !important; }
+            div.stButton > button p { font-size: clamp(12px, 2.5vw, 15px) !important; font-weight: 800 !important; line-height: 1 !important; margin: 0 !important; }
+            .element-container:has(#btn-grid-p1) + .element-container > div[data-testid="stHorizontalBlock"], .element-container:has(#btn-grid-p2) + .element-container > div[data-testid="stHorizontalBlock"] { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 0.2rem !important; }
+            .element-container:has(#btn-grid-p1) + .element-container > div[data-testid="stHorizontalBlock"] > div[data-testid="column"], .element-container:has(#btn-grid-p2) + .element-container > div[data-testid="stHorizontalBlock"] > div[data-testid="column"] { width: 50% !important; min-width: 48% !important; flex: 1 1 50% !important; }
+            .element-container:has(#bottom-btns) + .element-container > div[data-testid="stHorizontalBlock"] { display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; gap: 0.5rem !important; }
+        </style>
+        """, unsafe_allow_html=True)
 
-    with c_p2:
-        with st.container(border=True):
-            st.markdown(f"<h4 style='text-align: center; margin: 0; padding: 0; line-height: 1.2;'>{st.session_state.p2_name}</h4>", unsafe_allow_html=True)
-            st.markdown(f"<h1 style='text-align: center; font-size: clamp(3rem, 8vw, 4rem); color: #FF4B4B; line-height: 0.9; margin: 0; padding: 0;'>{st.session_state.p2_score}</h1>", unsafe_allow_html=True)
-            st.markdown(f"<p style='text-align: center; color: gray; font-size: 0.75rem; margin: 0 0 5px 0; padding: 0; line-height: 1;'>🛡️ {bey_p2}</p>", unsafe_allow_html=True)
-            
-            st.markdown('<span id="btn-grid-p2"></span>', unsafe_allow_html=True)
-            btn1_p2, btn2_p2 = st.columns(2)
-            with btn1_p2:
-                st.button("🌀 Spin (+1)", key="p2_spin", use_container_width=True, on_click=register_result, args=(st.session_state.p2_name, "Spin Finish", 1, bey_p2, bey_p1))
-                st.button("💥 Burst (+2)", key="p2_burst", use_container_width=True, on_click=register_result, args=(st.session_state.p2_name, "Burst Finish", 2, bey_p2, bey_p1))
-            with btn2_p2:
-                st.button("💨 Over (+2)", key="p2_over", use_container_width=True, on_click=register_result, args=(st.session_state.p2_name, "Over Finish", 2, bey_p2, bey_p1))
-                st.button("⚡ X-Treme (+3)", key="p2_extreme", use_container_width=True, type="primary", on_click=register_result, args=(st.session_state.p2_name, "X-Treme Finish", 3, bey_p2, bey_p1))
-            
-    st.markdown('<span id="bottom-btns"></span>', unsafe_allow_html=True)
-    aux_col1, aux_col2 = st.columns(2)
-    with aux_col1: # (ou aux_col1 na Fase 3)
+        r_idx = st.session_state.current_round
+        bey_p1 = st.session_state.p1_active_deck[r_idx]
+        bey_p2 = st.session_state.p2_active_deck[r_idx]
+        
+        st.markdown(f"<p style='text-align: center; color: gray; margin: 0; padding: 0; font-size: 0.8rem;'><b>RONDA {r_idx + 1}/3 | Jogam até {st.session_state.limit} pts</b></p>", unsafe_allow_html=True)
+        
+        c_p1, c_p2 = st.columns(2)
+        
+        with c_p1:
+            with st.container(border=True):
+                st.markdown(f"<h4 style='text-align: center; margin: 0; padding: 0; line-height: 1.2;'>{st.session_state.p1_name}</h4>", unsafe_allow_html=True)
+                st.markdown(f"<h1 style='text-align: center; font-size: clamp(3rem, 8vw, 4rem); color: #4CAF50; line-height: 0.9; margin: 0; padding: 0;'>{st.session_state.p1_score}</h1>", unsafe_allow_html=True)
+                st.markdown(f"<p style='text-align: center; color: gray; font-size: 0.75rem; margin: 0 0 5px 0; padding: 0; line-height: 1;'>🛡️ {bey_p1}</p>", unsafe_allow_html=True)
+                
+                st.markdown('<span id="btn-grid-p1"></span>', unsafe_allow_html=True)
+                btn1_p1, btn2_p1 = st.columns(2)
+                with btn1_p1:
+                    st.button("🌀 Spin (+1)", key="p1_spin", use_container_width=True, on_click=register_result, args=(st.session_state.p1_name, "Spin Finish", 1, bey_p1, bey_p2))
+                    st.button("💥 Burst (+2)", key="p1_burst", use_container_width=True, on_click=register_result, args=(st.session_state.p1_name, "Burst Finish", 2, bey_p1, bey_p2))
+                with btn2_p1:
+                    st.button("💨 Over (+2)", key="p1_over", use_container_width=True, on_click=register_result, args=(st.session_state.p1_name, "Over Finish", 2, bey_p1, bey_p2))
+                    st.button("⚡ X-Treme (+3)", key="p1_extreme", use_container_width=True, type="primary", on_click=register_result, args=(st.session_state.p1_name, "X-Treme Finish", 3, bey_p1, bey_p2))
+
+        with c_p2:
+            with st.container(border=True):
+                st.markdown(f"<h4 style='text-align: center; margin: 0; padding: 0; line-height: 1.2;'>{st.session_state.p2_name}</h4>", unsafe_allow_html=True)
+                st.markdown(f"<h1 style='text-align: center; font-size: clamp(3rem, 8vw, 4rem); color: #FF4B4B; line-height: 0.9; margin: 0; padding: 0;'>{st.session_state.p2_score}</h1>", unsafe_allow_html=True)
+                st.markdown(f"<p style='text-align: center; color: gray; font-size: 0.75rem; margin: 0 0 5px 0; padding: 0; line-height: 1;'>🛡️ {bey_p2}</p>", unsafe_allow_html=True)
+                
+                st.markdown('<span id="btn-grid-p2"></span>', unsafe_allow_html=True)
+                btn1_p2, btn2_p2 = st.columns(2)
+                with btn1_p2:
+                    st.button("🌀 Spin (+1)", key="p2_spin", use_container_width=True, on_click=register_result, args=(st.session_state.p2_name, "Spin Finish", 1, bey_p2, bey_p1))
+                    st.button("💥 Burst (+2)", key="p2_burst", use_container_width=True, on_click=register_result, args=(st.session_state.p2_name, "Burst Finish", 2, bey_p2, bey_p1))
+                with btn2_p2:
+                    st.button("💨 Over (+2)", key="p2_over", use_container_width=True, on_click=register_result, args=(st.session_state.p2_name, "Over Finish", 2, bey_p2, bey_p1))
+                    st.button("⚡ X-Treme (+3)", key="p2_extreme", use_container_width=True, type="primary", on_click=register_result, args=(st.session_state.p2_name, "X-Treme Finish", 3, bey_p2, bey_p1))
+                
+        st.markdown('<span id="bottom-btns"></span>', unsafe_allow_html=True)
+        aux_col1, aux_col2 = st.columns(2)
+        with aux_col1:
             if st.button("🚪 Voltar ao Lobby", use_container_width=True):
-                # 1. Guardar o passe de acesso e o evento atual
+                # 1. GUARDA A PASSWORD E O EVENTO NO BOLSO
                 meu_login = st.session_state.get('user_role')
                 meu_evento = st.session_state.get('active_event')
                 
-                # 2. Limpar a memória toda da batalha sem medo
+                # 2. LIMPA TUDO (Bomba atómica sem medo)
                 st.session_state.clear()
                 
-                # 3. Restaurar o passe de acesso e o evento
-                if meu_login:
-                    st.session_state.user_role = meu_login
-                if meu_evento:
-                    st.session_state.active_event = meu_evento
+                # 3. DEVOLVE À MEMÓRIA ANTES DE RECARREGAR
+                if meu_login: st.session_state.user_role = meu_login
+                if meu_evento: st.session_state.active_event = meu_evento
                     
                 st.session_state.phase = 'lobby'
                 st.rerun()
-            
-    with aux_col2:
-        if st.session_state.history: st.button("↩️ OOPS! Desfazer Última Ação", use_container_width=True, on_click=undo_last_action)
+                
+        with aux_col2:
+            if st.session_state.history: st.button("↩️ OOPS! Desfazer Última Ação", use_container_width=True, on_click=undo_last_action)
 
-    if st.session_state.current_round == 0:
-        if st.button("🔄 Corrigir Ordem dos Beys", use_container_width=True):
-            st.session_state.phase = 'ordering'
-            st.rerun()
+        if st.session_state.current_round == 0:
+            if st.button("🔄 Corrigir Ordem dos Beys", use_container_width=True):
+                st.session_state.phase = 'ordering'
+                st.rerun()
+
+    # EXECUTA A FUNÇÃO ISOLADA
+    painel_de_batalha()
 
 # ==========================================
 # FASE 4: MATCH OVER
