@@ -4,6 +4,7 @@ import base64
 import os
 import time
 from datetime import datetime
+import re
 from streamlit_cookies_controller import CookieController
 from db_connection import supabase
 
@@ -84,16 +85,12 @@ if not has_access:
                     st.error("⚠️ Preenche todos os campos!")
                 else:
                     try:
-                        # Limpa o input do alias (lowercase) para fazer match e extrai o nome capitalizado correto da lista
-                        import re
                         raw_input = re.sub(r'^\d+[\.\s]*', '', blader_alias).strip().lower()
 
-                        # Procura o Blader na tabela de aliases, sem distinção de maiúsculas/minúsculas
+                        # Procura o Blader na tabela de aliases
                         res = supabase.table("bladers").select("*").ilike("alias", blader_alias).execute()
 
-                        # Se não encontrar por ilike, usa a tabela de KNOWN_ALIASES
                         if not res.data:
-                            # Importar KNOWN_ALIASES
                             KNOWN_ALIASES = {
                                 "onez": "OneZarolho", "enzo": "OneZarolho", "onezarolho": "OneZarolho",
                                 "4exter": "Dexter", "exter": "Dexter", "paparapas": "Paparapas", "miguelbigg": "MiguelBigG",
@@ -107,8 +104,10 @@ if not has_access:
 
                         if res.data:
                             user_data = res.data[0]
-                            # Verifica a password que está gravada
+                            # Tentar primeiro 'password_hash', depois 'password'
                             pass_na_bd = user_data.get("password_hash")
+                            if not pass_na_bd:
+                                pass_na_bd = user_data.get("password")
                             
                             if str(pass_na_bd) == str(blader_pwd):
                                 st.session_state.blader_user = user_data["alias"]
@@ -118,11 +117,12 @@ if not has_access:
                                 st.rerun()
                             else:
                                 st.error("❌ Password incorreta para este Blader!")
-                                # 🔍 RAIO-X PARA DEBUG (Apagamos isto depois de descobrir o erro)
-                                st.warning(f"🕵️ MODO RAIO-X: A base de dados (coluna 'password_hash') diz que a tua pass é: '{pass_na_bd}'")
+                                st.warning(f"🕵️ MODO RAIO-X: A base de dados diz que a tua pass é: '{pass_na_bd}'")
                                 st.info(f"O que tu escreveste na caixa foi: '{blader_pwd}'")
                         else:
                             st.error("❌ Blader não encontrado na base de dados!")
+                    except Exception as e:
+                        st.error(f"❌ Erro na ligação: {e}")
                         
     with tab_org:
         with st.form("login_org_form"):
@@ -170,7 +170,6 @@ else:
     # Converter para DataFrame para manipulação ágil em memória
     df_master = pd.DataFrame(raw_logs)
     
-    # Removemos a lógica de agrupamento por ligas que pediste e substituímos por uma listagem direta de todos os torneios
     torneios_disponiveis = sorted(df_master['event_name'].dropna().unique().tolist())
     
     # --- FILTRO 1: SELECIONAR TORNEIO(S) ---
