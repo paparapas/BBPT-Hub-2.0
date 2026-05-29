@@ -1,5 +1,5 @@
 {
-    "last_updated": "2026-05-29 22:51:52",
+    "last_updated": "2026-05-29 22:58:00",
     "league_critical": {
         "standings_top8": [
             {
@@ -927,7 +927,7 @@
                 "Rank": 12
             },
             {
-                "Player": "HallKein",
+                "Player": "HaalKein",
                 "Events Played": 7,
                 "Events Missed": 2,
                 "Battles Won": 28,
@@ -1589,7 +1589,7 @@
                 "Rank": 12
             },
             {
-                "Player": "HallKein",
+                "Player": "HaalKein",
                 "Events Played": 7,
                 "Events Missed": 2,
                 "Battles Won": 28,
@@ -2165,8 +2165,8 @@
             }
         ],
         "advanced_metrics": {
-            "upset_season": "Alpha_Trion def. HallKein! (Overcame 208 Elo)",
-            "upset_week": "Alpha_Trion def. HallKein! (Overcame 208 Elo)",
+            "upset_season": "Alpha_Trion def. HaalKein! (Overcame 208 Elo)",
+            "upset_week": "Alpha_Trion def. HaalKein! (Overcame 208 Elo)",
             "gatekeeper": "BernaB7999 (Swiss WR: 70.0% | Top Cut WR: 0.0%)",
             "meta_health": "6.15 Pts",
             "kings": [
@@ -2278,7 +2278,7 @@
             },
             {
                 "Rank": 15,
-                "Player": "HallKein",
+                "Player": "HaalKein",
                 "Power Rating (Elo)": 1062,
                 "Win Rate": "51.2%",
                 "Games Played": 82
@@ -2786,7 +2786,7 @@
                         "Win Likelihood (Elo)": "41.7%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 3,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "48.3%"
@@ -3012,7 +3012,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 2,
                         "PointsConceded": 4,
@@ -3124,7 +3124,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 5,
@@ -3220,7 +3220,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 4,
                         "PointsConceded": 5,
@@ -3276,7 +3276,7 @@
                         "Win Likelihood (Elo)": "39.6%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 3,
                         "Wins": 2,
                         "Win Likelihood (Elo)": "52.1%"
@@ -3764,7 +3764,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 2,
@@ -3836,7 +3836,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 3,
                         "PointsConceded": 4,
@@ -3884,7 +3884,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 6,
                         "PointsConceded": 2,
@@ -4352,7 +4352,7 @@
                 "tournaments_won": 1,
                 "matchups": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 8,
                         "Wins": 3,
                         "Win Likelihood (Elo)": "44.0%"
@@ -4668,7 +4668,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 0,
@@ -4724,7 +4724,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 1,
@@ -4796,7 +4796,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 0,
@@ -4940,7 +4940,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 6,
@@ -5068,7 +5068,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 4,
@@ -5244,7 +5244,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 4,
@@ -5260,7 +5260,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 6,
@@ -5348,7 +5348,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 4,
@@ -5356,7 +5356,7 @@
                         "Type": "Swiss"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Lok0game' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 1020\n- Torneios: 15 jogados | 1 vencidos\n- Histórico de Pódios: 1x 1st, 1x 3rd, 1x 4th, 1x 5th, 2x 6th, 1x 7th, 1x 16th, 1x 21st\n- Partidas: 96 jogadas (51 Vitórias, Win Rate Geral: 53.1%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 3.11 pontos marcados vs 3.09 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 53.3% | Win Rate nas Rondas de Eliminação (Top Cut) = 52.4%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 7 jogos registados | Win Rate nestes jogos de alta tensão = 71.4%\n- Matchups Notáveis: Jogou contra 39 adversários distintos. Tem tido mais sucesso contra WydeX e a sua maior 'Nemesis' tem sido HallKein.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Lok0game' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 1020\n- Torneios: 15 jogados | 1 vencidos\n- Histórico de Pódios: 1x 1st, 1x 3rd, 1x 4th, 1x 5th, 2x 6th, 1x 7th, 1x 16th, 1x 21st\n- Partidas: 96 jogadas (51 Vitórias, Win Rate Geral: 53.1%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 3.11 pontos marcados vs 3.09 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 53.3% | Win Rate nas Rondas de Eliminação (Top Cut) = 52.4%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 7 jogos registados | Win Rate nestes jogos de alta tensão = 71.4%\n- Matchups Notáveis: Jogou contra 39 adversários distintos. Tem tido mais sucesso contra WydeX e a sua maior 'Nemesis' tem sido HaalKein.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
             "MiguelBigG": {
                 "elo_global": 975,
@@ -6428,7 +6428,7 @@
                         "Win Likelihood (Elo)": "61.0%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "55.4%"
@@ -6520,7 +6520,7 @@
                 ],
                 "raw_matches": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 2,
@@ -6616,7 +6616,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 2,
                         "PointsConceded": 4,
@@ -7296,7 +7296,7 @@
                         "Win Likelihood (Elo)": "31.5%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 5,
                         "Wins": 2,
                         "Win Likelihood (Elo)": "37.6%"
@@ -7678,7 +7678,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 2,
@@ -7742,7 +7742,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 4,
@@ -8030,7 +8030,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 1,
@@ -8190,7 +8190,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 3,
                         "PointsConceded": 6,
@@ -8270,7 +8270,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 5,
@@ -8550,7 +8550,7 @@
                         "Win Likelihood (Elo)": "30.9%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "42.6%"
@@ -8636,7 +8636,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 4,
@@ -8898,7 +8898,7 @@
                         "Win Likelihood (Elo)": "55.5%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "38.7%"
@@ -9018,7 +9018,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 2,
@@ -9364,7 +9364,7 @@
                         "Win Likelihood (Elo)": "63.9%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 3,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "63.6%"
@@ -9618,7 +9618,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 4,
@@ -9810,7 +9810,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 4,
@@ -9842,7 +9842,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 2,
@@ -10086,7 +10086,7 @@
                         "Win Likelihood (Elo)": "40.3%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "49.7%"
@@ -10244,7 +10244,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 0,
@@ -10652,7 +10652,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 3,
                         "PointsConceded": 6,
@@ -10860,7 +10860,7 @@
                         "Win Likelihood (Elo)": "67.0%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 4,
                         "Wins": 4,
                         "Win Likelihood (Elo)": "51.0%"
@@ -11040,7 +11040,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 3,
@@ -11232,7 +11232,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 2,
@@ -11304,7 +11304,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 6,
                         "PointsConceded": 1,
@@ -11408,7 +11408,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 1,
@@ -11466,7 +11466,7 @@
                 "tournaments_won": 0,
                 "matchups": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "38.8%"
@@ -11530,7 +11530,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 3,
@@ -11538,7 +11538,7 @@
                         "Type": "Swiss"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Rafael5' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 983\n- Torneios: 1 jogados | 0 vencidos\n- Histórico de Pódios: Nenhum Top 8\n- Partidas: 5 jogadas (2 Vitórias, Win Rate Geral: 40.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 2.60 pontos marcados vs 3.40 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 40.0% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 0 jogos registados | Win Rate nestes jogos de alta tensão = 0.0%\n- Matchups Notáveis: Jogou contra 5 adversários distintos. Tem tido mais sucesso contra HallKein e a sua maior 'Nemesis' tem sido Gabriel 💯.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Rafael5' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 983\n- Torneios: 1 jogados | 0 vencidos\n- Histórico de Pódios: Nenhum Top 8\n- Partidas: 5 jogadas (2 Vitórias, Win Rate Geral: 40.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 2.60 pontos marcados vs 3.40 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 40.0% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 0 jogos registados | Win Rate nestes jogos de alta tensão = 0.0%\n- Matchups Notáveis: Jogou contra 5 adversários distintos. Tem tido mais sucesso contra HaalKein e a sua maior 'Nemesis' tem sido Gabriel 💯.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
             "XAZUS": {
                 "elo_global": 1109,
@@ -11626,7 +11626,7 @@
                         "Win Likelihood (Elo)": "50.9%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 3,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "56.7%"
@@ -11902,7 +11902,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 5,
@@ -12070,7 +12070,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 4,
@@ -12254,7 +12254,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 5,
@@ -12490,7 +12490,7 @@
                 "tournaments_won": 0,
                 "matchups": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "38.8%"
@@ -12530,7 +12530,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 3,
@@ -12562,9 +12562,9 @@
                         "Type": "Swiss"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Gabriel 💯' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 983\n- Torneios: 1 jogados | 0 vencidos\n- Histórico de Pódios: Nenhum Top 8\n- Partidas: 5 jogadas (2 Vitórias, Win Rate Geral: 40.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 2.40 pontos marcados vs 3.20 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 40.0% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 0 jogos registados | Win Rate nestes jogos de alta tensão = 0.0%\n- Matchups Notáveis: Jogou contra 5 adversários distintos. Tem tido mais sucesso contra HallKein e a sua maior 'Nemesis' tem sido NesS_1724.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Gabriel 💯' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 983\n- Torneios: 1 jogados | 0 vencidos\n- Histórico de Pódios: Nenhum Top 8\n- Partidas: 5 jogadas (2 Vitórias, Win Rate Geral: 40.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 2.40 pontos marcados vs 3.20 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 40.0% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 0 jogos registados | Win Rate nestes jogos de alta tensão = 0.0%\n- Matchups Notáveis: Jogou contra 5 adversários distintos. Tem tido mais sucesso contra HaalKein e a sua maior 'Nemesis' tem sido NesS_1724.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
-            "HallKein": {
+            "HaalKein": {
                 "elo_global": 1062,
                 "win_rate": 51.2,
                 "total_matches": 82,
@@ -13476,7 +13476,7 @@
                         "Type": "Swiss"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'HallKein' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 1062\n- Torneios: 13 jogados | 0 vencidos\n- Histórico de Pódios: 1x 5th, 3x 6th, 2x 7th, 1x 13th\n- Partidas: 82 jogadas (42 Vitórias, Win Rate Geral: 51.2%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 3.17 pontos marcados vs 3.02 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 54.7% | Win Rate nas Rondas de Eliminação (Top Cut) = 38.9%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 6 jogos registados | Win Rate nestes jogos de alta tensão = 66.7%\n- Matchups Notáveis: Jogou contra 41 adversários distintos. Tem tido mais sucesso contra Lok0game e a sua maior 'Nemesis' tem sido Shaggy_10.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'HaalKein' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 1062\n- Torneios: 13 jogados | 0 vencidos\n- Histórico de Pódios: 1x 5th, 3x 6th, 2x 7th, 1x 13th\n- Partidas: 82 jogadas (42 Vitórias, Win Rate Geral: 51.2%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 3.17 pontos marcados vs 3.02 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 54.7% | Win Rate nas Rondas de Eliminação (Top Cut) = 38.9%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 6 jogos registados | Win Rate nestes jogos de alta tensão = 66.7%\n- Matchups Notáveis: Jogou contra 41 adversários distintos. Tem tido mais sucesso contra Lok0game e a sua maior 'Nemesis' tem sido Shaggy_10.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
             "OneZarolho": {
                 "elo_global": 946,
@@ -13498,7 +13498,7 @@
                         "Win Likelihood (Elo)": "39.5%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 4,
                         "Wins": 3,
                         "Win Likelihood (Elo)": "33.8%"
@@ -13938,7 +13938,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 0,
@@ -14082,7 +14082,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 2,
@@ -14154,7 +14154,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 4,
@@ -14170,7 +14170,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 3,
@@ -14378,7 +14378,7 @@
                         "Type": "Top Cut"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'OneZarolho' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 946\n- Torneios: 14 jogados | 0 vencidos\n- Histórico de Pódios: 1x 4th, 1x 5th, 1x 7th, 1x 8th, 1x 14th, 1x 27th\n- Partidas: 82 jogadas (34 Vitórias, Win Rate Geral: 41.5%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 2.68 pontos marcados vs 3.26 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 42.9% | Win Rate nas Rondas de Eliminação (Top Cut) = 33.3%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 15 jogos registados | Win Rate nestes jogos de alta tensão = 40.0%\n- Matchups Notáveis: Jogou contra 39 adversários distintos. Tem tido mais sucesso contra HallKein e a sua maior 'Nemesis' tem sido Shaggy_10.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'OneZarolho' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 946\n- Torneios: 14 jogados | 0 vencidos\n- Histórico de Pódios: 1x 4th, 1x 5th, 1x 7th, 1x 8th, 1x 14th, 1x 27th\n- Partidas: 82 jogadas (34 Vitórias, Win Rate Geral: 41.5%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 2.68 pontos marcados vs 3.26 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 42.9% | Win Rate nas Rondas de Eliminação (Top Cut) = 33.3%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 15 jogos registados | Win Rate nestes jogos de alta tensão = 40.0%\n- Matchups Notáveis: Jogou contra 39 adversários distintos. Tem tido mais sucesso contra HaalKein e a sua maior 'Nemesis' tem sido Shaggy_10.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
             "Alpha_Trion": {
                 "elo_global": 942,
@@ -14418,7 +14418,7 @@
                         "Win Likelihood (Elo)": "45.4%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 3,
                         "Wins": 3,
                         "Win Likelihood (Elo)": "33.4%"
@@ -14656,7 +14656,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 2,
@@ -14904,7 +14904,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 3,
@@ -15088,7 +15088,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 1,
@@ -15144,7 +15144,7 @@
                         "Type": "Top Cut"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Alpha_Trion' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 942\n- Torneios: 11 jogados | 0 vencidos\n- Histórico de Pódios: 1x 4th, 2x 7th, 2x 8th, 1x 18th, 2x 22nd\n- Partidas: 68 jogadas (29 Vitórias, Win Rate Geral: 42.6%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 3.01 pontos marcados vs 3.49 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 49.1% | Win Rate nas Rondas de Eliminação (Top Cut) = 20.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 6 jogos registados | Win Rate nestes jogos de alta tensão = 50.0%\n- Matchups Notáveis: Jogou contra 35 adversários distintos. Tem tido mais sucesso contra HallKein e a sua maior 'Nemesis' tem sido Juanlamaquina.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Alpha_Trion' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 942\n- Torneios: 11 jogados | 0 vencidos\n- Histórico de Pódios: 1x 4th, 2x 7th, 2x 8th, 1x 18th, 2x 22nd\n- Partidas: 68 jogadas (29 Vitórias, Win Rate Geral: 42.6%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 3.01 pontos marcados vs 3.49 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 49.1% | Win Rate nas Rondas de Eliminação (Top Cut) = 20.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 6 jogos registados | Win Rate nestes jogos de alta tensão = 50.0%\n- Matchups Notáveis: Jogou contra 35 adversários distintos. Tem tido mais sucesso contra HaalKein e a sua maior 'Nemesis' tem sido Juanlamaquina.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
             "RodTex": {
                 "elo_global": 1015,
@@ -15354,7 +15354,7 @@
                         "Win Likelihood (Elo)": "62.7%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 4,
                         "Wins": 3,
                         "Win Likelihood (Elo)": "62.4%"
@@ -15654,7 +15654,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 6,
                         "PointsConceded": 0,
@@ -15798,7 +15798,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 2,
@@ -16174,7 +16174,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 6,
                         "PointsConceded": 0,
@@ -16198,7 +16198,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 6,
@@ -16276,7 +16276,7 @@
                         "Win Likelihood (Elo)": "42.8%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "37.0%"
@@ -16478,7 +16478,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 3,
                         "PointsConceded": 5,
@@ -16494,7 +16494,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 4,
                         "PointsConceded": 5,
@@ -16828,7 +16828,7 @@
                         "Win Likelihood (Elo)": "60.9%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "55.0%"
@@ -17410,7 +17410,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 4,
@@ -17642,7 +17642,7 @@
                         "Win Likelihood (Elo)": "61.1%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "41.6%"
@@ -17740,7 +17740,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 0,
@@ -17830,7 +17830,7 @@
                         "Win Likelihood (Elo)": "33.2%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "45.2%"
@@ -17970,7 +17970,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 6,
@@ -18162,7 +18162,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 4,
@@ -18320,7 +18320,7 @@
                         "Win Likelihood (Elo)": "38.9%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "31.2%"
@@ -18548,7 +18548,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 3,
@@ -18758,7 +18758,7 @@
                         "Win Likelihood (Elo)": "48.2%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 3,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "49.1%"
@@ -18952,7 +18952,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 3,
                         "PointsConceded": 5,
@@ -18968,7 +18968,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 1,
@@ -19080,7 +19080,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 6,
@@ -19474,7 +19474,7 @@
                         "Win Likelihood (Elo)": "54.3%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "37.1%"
@@ -19578,7 +19578,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 0,
@@ -19816,7 +19816,7 @@
                         "Win Likelihood (Elo)": "47.7%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "29.3%"
@@ -19872,7 +19872,7 @@
                 ],
                 "raw_matches": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 4,
@@ -20748,7 +20748,7 @@
                         "Win Likelihood (Elo)": "43.1%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "31.5%"
@@ -20878,7 +20878,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 2,
                         "PointsConceded": 6,
@@ -20902,7 +20902,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 5,
@@ -20998,7 +20998,7 @@
                         "Type": "Swiss"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'ChaoticSwizzler' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 927\n- Torneios: 4 jogados | 0 vencidos\n- Histórico de Pódios: 1x 17th\n- Partidas: 19 jogadas (6 Vitórias, Win Rate Geral: 31.6%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 2.37 pontos marcados vs 3.95 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 31.6% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 3 jogos registados | Win Rate nestes jogos de alta tensão = 66.7%\n- Matchups Notáveis: Jogou contra 17 adversários distintos. Tem tido mais sucesso contra DatStarboii31 e a sua maior 'Nemesis' tem sido HallKein.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'ChaoticSwizzler' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 927\n- Torneios: 4 jogados | 0 vencidos\n- Histórico de Pódios: 1x 17th\n- Partidas: 19 jogadas (6 Vitórias, Win Rate Geral: 31.6%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 2.37 pontos marcados vs 3.95 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 31.6% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 3 jogos registados | Win Rate nestes jogos de alta tensão = 66.7%\n- Matchups Notáveis: Jogou contra 17 adversários distintos. Tem tido mais sucesso contra DatStarboii31 e a sua maior 'Nemesis' tem sido HaalKein.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
             "Gyoza Vegetale": {
                 "elo_global": 967,
@@ -21008,7 +21008,7 @@
                 "tournaments_won": 0,
                 "matchups": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "36.7%"
@@ -21034,7 +21034,7 @@
                 ],
                 "raw_matches": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 0,
@@ -21066,7 +21066,7 @@
                         "Type": "Swiss"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Gyoza Vegetale' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 967\n- Torneios: 1 jogados | 0 vencidos\n- Histórico de Pódios: Nenhum Top 8\n- Partidas: 4 jogadas (1 Vitórias, Win Rate Geral: 25.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 1.50 pontos marcados vs 3.00 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 25.0% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 0 jogos registados | Win Rate nestes jogos de alta tensão = 0.0%\n- Matchups Notáveis: Jogou contra 4 adversários distintos. Tem tido mais sucesso contra HallKein e a sua maior 'Nemesis' tem sido Wez.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Gyoza Vegetale' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 967\n- Torneios: 1 jogados | 0 vencidos\n- Histórico de Pódios: Nenhum Top 8\n- Partidas: 4 jogadas (1 Vitórias, Win Rate Geral: 25.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 1.50 pontos marcados vs 3.00 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 25.0% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 0 jogos registados | Win Rate nestes jogos de alta tensão = 0.0%\n- Matchups Notáveis: Jogou contra 4 adversários distintos. Tem tido mais sucesso contra HaalKein e a sua maior 'Nemesis' tem sido Wez.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
             "Wez": {
                 "elo_global": 972,
@@ -21150,7 +21150,7 @@
                         "Win Likelihood (Elo)": "44.8%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "51.5%"
@@ -21220,7 +21220,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 5,
@@ -21252,7 +21252,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 7,
                         "PointsConceded": 2,
@@ -21788,7 +21788,7 @@
                         "Win Likelihood (Elo)": "33.4%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "33.2%"
@@ -21938,7 +21938,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 2,
@@ -22304,7 +22304,7 @@
                         "Win Likelihood (Elo)": "41.1%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "25.8%"
@@ -22474,7 +22474,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 4,
@@ -22574,7 +22574,7 @@
                         "Win Likelihood (Elo)": "36.9%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "38.9%"
@@ -22588,7 +22588,7 @@
                 ],
                 "raw_matches": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 2,
                         "PointsConceded": 5,
@@ -23624,7 +23624,7 @@
                         "Win Likelihood (Elo)": "76.4%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 2,
                         "Win Likelihood (Elo)": "62.3%"
@@ -24000,7 +24000,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 2,
@@ -24064,7 +24064,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 0,
@@ -24430,7 +24430,7 @@
                         "Win Likelihood (Elo)": "74.1%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 2,
                         "Win Likelihood (Elo)": "59.4%"
@@ -24714,7 +24714,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 2,
@@ -24778,7 +24778,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 1,
@@ -24904,7 +24904,7 @@
                         "Win Likelihood (Elo)": "33.3%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 2,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "39.5%"
@@ -25174,7 +25174,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 3,
                         "PointsConceded": 6,
@@ -25238,7 +25238,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 4,
@@ -25286,7 +25286,7 @@
                         "Type": "Swiss"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Suricate_PT' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 988\n- Torneios: 6 jogados | 1 vencidos\n- Histórico de Pódios: 1x 1st, 1x 6th, 1x 11th, 1x 16th, 1x 19th\n- Partidas: 34 jogadas (17 Vitórias, Win Rate Geral: 50.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 3.35 pontos marcados vs 2.97 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 46.4% | Win Rate nas Rondas de Eliminação (Top Cut) = 66.7%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 4 jogos registados | Win Rate nestes jogos de alta tensão = 50.0%\n- Matchups Notáveis: Jogou contra 24 adversários distintos. Tem tido mais sucesso contra Gordinho_PT e a sua maior 'Nemesis' tem sido HallKein.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Suricate_PT' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 988\n- Torneios: 6 jogados | 1 vencidos\n- Histórico de Pódios: 1x 1st, 1x 6th, 1x 11th, 1x 16th, 1x 19th\n- Partidas: 34 jogadas (17 Vitórias, Win Rate Geral: 50.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 3.35 pontos marcados vs 2.97 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 46.4% | Win Rate nas Rondas de Eliminação (Top Cut) = 66.7%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 4 jogos registados | Win Rate nestes jogos de alta tensão = 50.0%\n- Matchups Notáveis: Jogou contra 24 adversários distintos. Tem tido mais sucesso contra Gordinho_PT e a sua maior 'Nemesis' tem sido HaalKein.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             },
             "Hyero": {
                 "elo_global": 954,
@@ -26326,7 +26326,7 @@
                         "Win Likelihood (Elo)": "61.0%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "44.4%"
@@ -26472,7 +26472,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 3,
@@ -26666,7 +26666,7 @@
                         "Win Likelihood (Elo)": "53.1%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "36.4%"
@@ -26844,7 +26844,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 4,
                         "PointsConceded": 0,
@@ -26990,7 +26990,7 @@
                         "Win Likelihood (Elo)": "35.2%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "44.3%"
@@ -27060,7 +27060,7 @@
                         "Type": "Top Cut"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 1,
                         "PointsConceded": 5,
@@ -27148,7 +27148,7 @@
                         "Win Likelihood (Elo)": "39.1%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "43.9%"
@@ -27188,7 +27188,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 2,
                         "PointsConceded": 6,
@@ -27336,7 +27336,7 @@
                         "Win Likelihood (Elo)": "50.7%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "45.0%"
@@ -27344,7 +27344,7 @@
                 ],
                 "raw_matches": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 3,
                         "PointsConceded": 4,
@@ -27400,7 +27400,7 @@
                         "Win Likelihood (Elo)": "46.0%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 1,
                         "Win Likelihood (Elo)": "40.4%"
@@ -27426,7 +27426,7 @@
                 ],
                 "raw_matches": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "W",
                         "PointsScored": 5,
                         "PointsConceded": 3,
@@ -27562,7 +27562,7 @@
                         "Win Likelihood (Elo)": "29.0%"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "40.4%"
@@ -27600,7 +27600,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 2,
                         "PointsConceded": 5,
@@ -27626,7 +27626,7 @@
                 "tournaments_won": 0,
                 "matchups": [
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Games": 1,
                         "Wins": 0,
                         "Win Likelihood (Elo)": "33.6%"
@@ -27668,7 +27668,7 @@
                         "Type": "Swiss"
                     },
                     {
-                        "Opponent": "HallKein",
+                        "Opponent": "HaalKein",
                         "Result": "L",
                         "PointsScored": 0,
                         "PointsConceded": 4,
@@ -27684,7 +27684,7 @@
                         "Type": "Swiss"
                     }
                 ],
-                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Gordo_PT' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 944\n- Torneios: 1 jogados | 0 vencidos\n- Histórico de Pódios: 1x 18th\n- Partidas: 4 jogadas (0 Vitórias, Win Rate Geral: 0.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 1.50 pontos marcados vs 4.00 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 0.0% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 2 jogos registados | Win Rate nestes jogos de alta tensão = 0.0%\n- Matchups Notáveis: Jogou contra 4 adversários distintos. Tem tido mais sucesso contra HallKein e a sua maior 'Nemesis' tem sido HallKein.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
+                "ai_prompt": "Atua como um treinador de elite de Beyblade X. Analisa detalhadamente as estatísticas competitivas do jogador 'Gordo_PT' fornecidas abaixo e cria um relatório de performance.\n\n📋 DADOS GERAIS:\n- ELO Global: 944\n- Torneios: 1 jogados | 0 vencidos\n- Histórico de Pódios: 1x 18th\n- Partidas: 4 jogadas (0 Vitórias, Win Rate Geral: 0.0%)\n\n⚙️ ESTATÍSTICAS AVANÇADAS:\n- Eficiência de Pontos: Média de 1.50 pontos marcados vs 4.00 pontos sofridos por jogo.\n- Pressão Competitiva: Win Rate nas Rondas Iniciais (Swiss/RR) = 0.0% | Win Rate nas Rondas de Eliminação (Top Cut) = 0.0%\n- Fator 'Clutch' (Jogos decididos pela diferença de apenas 1 ponto): 2 jogos registados | Win Rate nestes jogos de alta tensão = 0.0%\n- Matchups Notáveis: Jogou contra 4 adversários distintos. Tem tido mais sucesso contra HaalKein e a sua maior 'Nemesis' tem sido HaalKein.\n\nINSTRUÇÕES DE RESPOSTA (CRÍTICO):\nA tua resposta deve conter EXATAMENTE 5 blocos correspondentes aos 5 Títulos Obrigatórios abaixo. \nPara cada título, deves fornecer uma análise profunda ('Takeaway') e uma dica prática ('Coach's Tip') baseada EXCLUSIVAMENTE nos números acima.\n\nUsa exatamente este formato:\n**[Insere aqui o Título Obrigatório]**\nTakeaway: [A tua análise]\n💡 Coach's Tip: [O teu conselho tático]\n\nTítulos Obrigatórios a usar:\n1. 🩸 Pressão e Desempenho (Rondas Iniciais vs Eliminação)\n2. ⚖️ Eficiência de Pontos (Ataque vs Defesa)\n3. 🎯 Análise de Matchups e Rivalidades\n4. 🏆 Consistência em Torneios e ELO Global\n5. ⚔️ Fator \"Clutch\" (Desempenho em Jogos Renhidos)\n"
             }
         },
         "advanced_metrics": {
