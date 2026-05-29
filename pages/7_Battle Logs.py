@@ -8,7 +8,7 @@ from streamlit_cookies_controller import CookieController
 from db_connection import supabase
 
 # 🛑 FORÇAR O MODO "WIDE" E AJUSTAR PADRÕES 🛑
-st.set_page_config(page_title="Logs de Batalha", page_icon="📋", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="BattleLogs", page_icon="📋", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
 <style>
@@ -68,7 +68,7 @@ with st.sidebar:
 has_access = (st.session_state.user_role in ["admin", "owner", "judge"]) or (st.session_state.blader_user is not None)
 
 if not has_access:
-    st.title("📋 Consulta de Logs de Batalha")
+    st.title("📋 Consulta de BattleLogs")
     st.warning("🔐 Esta página requer autenticação. Introduz as tuas credenciais de Blader (como no Deck Builder) ou da Organização.")
     
     tab_blader, tab_org = st.tabs(["👤 Login Blader", "🛡️ Login Organização / Judge"])
@@ -84,8 +84,27 @@ if not has_access:
                     st.error("⚠️ Preenche todos os campos!")
                 else:
                     try:
-                        # Procura o Blader na tabela do Supabase
-                        res = supabase.table("bladers").select("*").eq("alias", blader_alias).execute()
+                        # Limpa o input do alias (lowercase) para fazer match e extrai o nome capitalizado correto da lista
+                        import re
+                        raw_input = re.sub(r'^\d+[\.\s]*', '', blader_alias).strip().lower()
+
+                        # Procura o Blader na tabela de aliases, sem distinção de maiúsculas/minúsculas
+                        res = supabase.table("bladers").select("*").ilike("alias", blader_alias).execute()
+
+                        # Se não encontrar por ilike, usa a tabela de KNOWN_ALIASES
+                        if not res.data:
+                            # Importar KNOWN_ALIASES
+                            KNOWN_ALIASES = {
+                                "onez": "OneZarolho", "enzo": "OneZarolho", "onezarolho": "OneZarolho",
+                                "4exter": "Dexter", "exter": "Dexter", "paparapas": "Paparapas", "miguelbigg": "MiguelBigG",
+                                "velos77": "Velos77", "brunoveloso": "Velos77", 
+                                "haalkein": "HaalKein", "hallkein": "HaalKein", 
+                                "gordinho_pt": "Gordinho_PT", "gordo_pt": "Gordinho_PT"
+                            }
+                            if raw_input in KNOWN_ALIASES:
+                                official_alias = KNOWN_ALIASES[raw_input]
+                                res = supabase.table("bladers").select("*").eq("alias", official_alias).execute()
+
                         if res.data:
                             user_data = res.data[0]
                             # Verifica a password
@@ -127,7 +146,7 @@ if not has_access:
 # ==========================================
 # MÓDULO PRINCIPAL DE EXTRAÇÃO DE LOGS
 # ==========================================
-st.title("📋 Histórico & Logs de Batalha Oficiais")
+st.title("📋 Histórico & BattleLogs Oficiais")
 st.markdown("Filtra, analisa e exporta as sequências de combates diretamente da base de dados no formato **BattleLogs**.")
 
 # 🔄 Função de Cache para puxar os dados brutos de forma rápida
@@ -148,26 +167,10 @@ else:
     # Converter para DataFrame para manipulação ágil em memória
     df_master = pd.DataFrame(raw_logs)
     
-    # ⚙️ Mapeamento Dinâmico de Ligas 
-    # Extraímos o nome da Liga baseado no formato do nome do evento
-    def extrair_liga(nome_evento):
-        if not nome_evento: return "Liga Geral"
-        if " - " in str(nome_evento):
-            return str(nome_evento).split(" - ")[0].strip()
-        return "Liga Oficial BBPT"
-
-    df_master['liga_calculada'] = df_master['event_name'].apply(extrair_liga)
+    # Removemos a lógica de agrupamento por ligas que pediste e substituímos por uma listagem direta de todos os torneios
+    torneios_disponiveis = sorted(df_master['event_name'].dropna().unique().tolist())
     
-    # --- FILTRO 1: SELECIONAR A LIGA ---
-    ligas_disponiveis = sorted(df_master['liga_calculada'].unique().tolist())
-    liga_selecionada = st.selectbox("1️⃣ Escolha a Liga:", ligas_disponiveis)
-    
-    # Filtrar o DataFrame apenas para a Liga escolhida
-    df_liga = df_master[df_master['liga_calculada'] == liga_selecionada]
-    
-    # --- FILTRO 2: SELECIONAR TORNEIO(S) ---
-    torneios_da_liga = sorted(df_liga['event_name'].dropna().unique().tolist())
-    
+    # --- FILTRO 1: SELECIONAR TORNEIO(S) ---
     col_t1, col_t2 = st.columns([3, 1])
     with col_t2:
         st.write("") # Alinhamento vertical
@@ -175,13 +178,14 @@ else:
         
     with col_t1:
         if todos_torneios_cb:
-            torneios_selecionados = torneios_da_liga
-            st.multiselect("2️⃣ Torneio(s) Selecionado(s):", torneios_da_liga, default=torneios_da_liga, disabled=True)
+            torneios_selecionados = torneios_disponiveis
+            st.multiselect("1️⃣ Torneio(s) Selecionado(s):", torneios_disponiveis, default=torneios_disponiveis, disabled=True)
         else:
-            torneios_selecionados = st.multiselect("2️⃣ Escolha um ou mais Torneios em simultâneo:", torneios_da_liga)
+            torneios_selecionados = st.multiselect("1️⃣ Escolha um ou mais Torneios em simultâneo:", torneios_disponiveis)
             
-    # --- FILTRO 3: SELECIONAR JOGADOR (OPCIONAL) ---
-    df_filtrado_torneio = df_liga[df_liga['event_name'].isin(torneios_selecionados)]
+    # --- FILTRO 2: SELECIONAR JOGADOR (OPCIONAL) ---
+    # Extrai todos os jogadores únicos que participaram nos torneios selecionados
+    df_filtrado_torneio = df_master[df_master['event_name'].isin(torneios_selecionados)]
     
     jogadores_unicos = set()
     if not df_filtrado_torneio.empty:
@@ -195,7 +199,7 @@ else:
     if st.session_state.blader_user and st.session_state.blader_user in lista_jogadores:
         default_player_idx = lista_jogadores.index(st.session_state.blader_user)
         
-    jogador_selecionado = st.selectbox("3️⃣ Filtrar por um Player específico (Opcional):", lista_jogadores, index=default_player_idx)
+    jogador_selecionado = st.selectbox("2️⃣ Filtrar por um Player específico (Opcional):", lista_jogadores, index=default_player_idx)
     
     # --- PROCESSAMENTO FINAL DOS DADOS ---
     if not torneios_selecionados:
@@ -247,7 +251,7 @@ else:
             else:
                 sufixo = "Torneios_Selecionados"
                 
-            nome_ficheiro_csv = f"BattleLogs_{liga_selecionada.replace(' ', '_')}_{sufixo}.csv"
+            nome_ficheiro_csv = f"BattleLogs_{sufixo}.csv"
             
             st.download_button(
                 label="📥 Descarregar logs e exportar para CSV (BattleLogs)",
