@@ -5,6 +5,7 @@ import os
 import time
 from datetime import datetime
 import re
+import hashlib # <--- IMPORTANTE: Adicionado para descodificar as tuas passwords
 from streamlit_cookies_controller import CookieController
 from db_connection import supabase
 
@@ -104,12 +105,12 @@ if not has_access:
 
                         if res.data:
                             user_data = res.data[0]
-                            # Tentar primeiro 'password_hash', depois 'password'
                             pass_na_bd = user_data.get("password_hash")
-                            if not pass_na_bd:
-                                pass_na_bd = user_data.get("password")
                             
-                            if str(pass_na_bd) == str(blader_pwd):
+                            # ✨ CORREÇÃO AQUI: Transforma o teu "1234" na Hash que está na base de dados
+                            input_pwd_md5 = hashlib.md5(blader_pwd.encode('utf-8')).hexdigest()
+                            
+                            if pass_na_bd == input_pwd_md5:
                                 st.session_state.blader_user = user_data["alias"]
                                 controller.set('blader_user', user_data["alias"], max_age=43200)
                                 st.success(f"Bem-vindo, {user_data['alias']}! A carregar os logs...")
@@ -117,8 +118,6 @@ if not has_access:
                                 st.rerun()
                             else:
                                 st.error("❌ Password incorreta para este Blader!")
-                                st.warning(f"🕵️ MODO RAIO-X: A base de dados diz que a tua pass é: '{pass_na_bd}'")
-                                st.info(f"O que tu escreveste na caixa foi: '{blader_pwd}'")
                         else:
                             st.error("❌ Blader não encontrado na base de dados!")
                     except Exception as e:
