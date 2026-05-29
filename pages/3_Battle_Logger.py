@@ -171,7 +171,7 @@ def register_result(winner_name, finish_type, points, bey_winner, bey_loser):
     else:
         st.session_state.current_round += 1
         if st.session_state.current_round > 2: st.session_state.phase = 'ordering'
-    auto_save_battle()
+    # auto_save_battle() foi removido para velocidade máxima. A memória (session_state) guarda os pontos de forma instantânea.
 
 def undo_last_action():
     if st.session_state.history:
@@ -358,155 +358,148 @@ elif st.session_state.phase == 'lobby':
 # FASE 1: SETUP E DRAFTING
 # ==========================================
 elif st.session_state.phase == 'setup':
-    st.markdown(f"### 1. Configuração da Partida")
-    st.caption(f"A indexar a: **{st.session_state.active_event}**")
-    st.write("")
     
-    current_db = get_real_players_and_combos(st.session_state.active_event)
-    lista_jogadores = list(current_db.keys())
-    
-    if not lista_jogadores:
-        st.warning(f"Ainda não há jogadores submetidos no evento '{st.session_state.active_event}'.")
-        if st.button("Voltar ao Lobby"):
-            st.session_state.phase = 'lobby'
-            st.rerun()
-    else:
-        c1, c2 = st.columns(2)
-        with c1:
-            p1_name = st.selectbox("Jogador 1:", options=lista_jogadores, index=None)
-            p1_pool = current_db.get(p1_name, []) if p1_name else []
-            st.markdown("**Ordem Inicial (Escolhe 3 de 4):**")
-            p1_1 = st.selectbox("1º Beyblade (P1)", p1_pool, index=None, key="setup_p1_1", disabled=not p1_name)
-            p1_2 = st.selectbox("2º Beyblade (P1)", p1_pool, index=None, key="setup_p1_2", disabled=not p1_name)
-            p1_3 = st.selectbox("3º Beyblade (P1)", p1_pool, index=None, key="setup_p1_3", disabled=not p1_name)
-            p1_draft = [p1_1, p1_2, p1_3]
-
-        with c2:
-            p2_name = st.selectbox("Jogador 2:", options=lista_jogadores, index=None)
-            p2_pool = current_db.get(p2_name, []) if p2_name else []
-            st.markdown("**Ordem Inicial (Escolhe 3 de 4):**")
-            p2_1 = st.selectbox("1º Beyblade (P2)", p2_pool, index=None, key="setup_p2_1", disabled=not p2_name)
-            p2_2 = st.selectbox("2º Beyblade (P2)", p2_pool, index=None, key="setup_p2_2", disabled=not p2_name)
-            p2_3 = st.selectbox("3º Beyblade (P2)", p2_pool, index=None, key="setup_p2_3", disabled=not p2_name)
-            p2_draft = [p2_1, p2_2, p2_3]
-
-        limit = st.radio("Limite de Pontos:", [4, 5, 7], horizontal=True)
-
+    @st.fragment
+    def painel_de_setup():
+        st.markdown(f"### 1. Configuração da Partida")
+        st.caption(f"A indexar a: **{st.session_state.active_event}**")
         st.write("")
-        col_back, col_start = st.columns(2)
         
-        with col_back: # (ou aux_col1 na Fase 3)
-            if st.button("🚪 Voltar ao Lobby", use_container_width=True):
-                # 1. Guardar o passe de acesso e o evento atual
-                meu_login = st.session_state.get('user_role')
-                meu_evento = st.session_state.get('active_event')
-                
-                # 2. Limpar a memória toda da batalha sem medo
-                st.session_state.clear()
-                
-                # 3. Restaurar o passe de acesso e o evento
-                if meu_login:
-                    st.session_state.user_role = meu_login
-                if meu_evento:
-                    st.session_state.active_event = meu_evento
-                    
+        current_db = get_real_players_and_combos(st.session_state.active_event)
+        lista_jogadores = list(current_db.keys())
+        
+        if not lista_jogadores:
+            st.warning(f"Ainda não há jogadores submetidos no evento '{st.session_state.active_event}'.")
+            if st.button("Voltar ao Lobby"):
                 st.session_state.phase = 'lobby'
                 st.rerun()
-                
-        with col_start:
-            if st.button("▶️ Iniciar Batalha", use_container_width=True, type="primary"):
-                if p1_name and p2_name and p1_name == p2_name:
-                    st.error("⚠️ Um jogador não pode batalhar contra si próprio!")
-                elif p1_name and p2_name and None not in p1_draft and None not in p2_draft:
-                    if len(set(p1_draft)) == 3 and len(set(p2_draft)) == 3:
-                        st.session_state.p1_name = p1_name
-                        st.session_state.p2_name = p2_name
-                        st.session_state.p1_deck_pool = p1_draft.copy()
-                        st.session_state.p2_deck_pool = p2_draft.copy()
-                        st.session_state.p1_active_deck = p1_draft.copy()
-                        st.session_state.p2_active_deck = p2_draft.copy()
-                        st.session_state.limit = limit
-                        st.session_state.p1_score = 0
-                        st.session_state.p2_score = 0
-                        st.session_state.current_round = 0
-                        st.session_state.match_log = []
-                        
-                        timestamp = datetime.now().strftime("%H%M%S")
-                        st.session_state.battle_id = f"{p1_name}_{p2_name}_{timestamp}"
-                        st.session_state.phase = 'battle'
-                        
-                        for k in ['setup_p1_1', 'setup_p1_2', 'setup_p1_3', 'setup_p2_1', 'setup_p2_2', 'setup_p2_3']: 
-                            if k in st.session_state: del st.session_state[k]
-                            
-                        auto_save_battle() 
-                        st.rerun()
-                    else: st.error("⚠️ Encontrámos Beys repetidos na seleção!")
-                else: st.warning("⚠️ Seleciona os dois jogadores e a ordem completa!")
+        else:
+            c1, c2 = st.columns(2)
+            with c1:
+                p1_name = st.selectbox("Jogador 1:", options=lista_jogadores, index=None)
+                p1_pool = current_db.get(p1_name, []) if p1_name else []
+                st.markdown("**Ordem Inicial (Escolhe 3 de 4):**")
+                p1_1 = st.selectbox("1º Beyblade (P1)", p1_pool, index=None, key="setup_p1_1", disabled=not p1_name)
+                p1_2 = st.selectbox("2º Beyblade (P1)", p1_pool, index=None, key="setup_p1_2", disabled=not p1_name)
+                p1_3 = st.selectbox("3º Beyblade (P1)", p1_pool, index=None, key="setup_p1_3", disabled=not p1_name)
+                p1_draft = [p1_1, p1_2, p1_3]
 
+            with c2:
+                p2_name = st.selectbox("Jogador 2:", options=lista_jogadores, index=None)
+                p2_pool = current_db.get(p2_name, []) if p2_name else []
+                st.markdown("**Ordem Inicial (Escolhe 3 de 4):**")
+                p2_1 = st.selectbox("1º Beyblade (P2)", p2_pool, index=None, key="setup_p2_1", disabled=not p2_name)
+                p2_2 = st.selectbox("2º Beyblade (P2)", p2_pool, index=None, key="setup_p2_2", disabled=not p2_name)
+                p2_3 = st.selectbox("3º Beyblade (P2)", p2_pool, index=None, key="setup_p2_3", disabled=not p2_name)
+                p2_draft = [p2_1, p2_2, p2_3]
+
+            limit = st.radio("Limite de Pontos:", [4, 5, 7], horizontal=True)
+
+            st.write("")
+            col_back, col_start = st.columns(2)
+            
+            with col_back:
+                if st.button("🚪 Voltar ao Lobby", use_container_width=True):
+                    meu_login = st.session_state.get('user_role')
+                    meu_evento = st.session_state.get('active_event')
+                    st.session_state.clear()
+                    if meu_login: st.session_state.user_role = meu_login
+                    if meu_evento: st.session_state.active_event = meu_evento
+                    st.session_state.phase = 'lobby'
+                    st.rerun()
+                    
+            with col_start:
+                if st.button("▶️ Iniciar Batalha", use_container_width=True, type="primary"):
+                    if p1_name and p2_name and p1_name == p2_name:
+                        st.error("⚠️ Um jogador não pode batalhar contra si próprio!")
+                    elif p1_name and p2_name and None not in p1_draft and None not in p2_draft:
+                        if len(set(p1_draft)) == 3 and len(set(p2_draft)) == 3:
+                            st.session_state.p1_name = p1_name
+                            st.session_state.p2_name = p2_name
+                            st.session_state.p1_deck_pool = p1_draft.copy()
+                            st.session_state.p2_deck_pool = p2_draft.copy()
+                            st.session_state.p1_active_deck = p1_draft.copy()
+                            st.session_state.p2_active_deck = p2_draft.copy()
+                            st.session_state.limit = limit
+                            st.session_state.p1_score = 0
+                            st.session_state.p2_score = 0
+                            st.session_state.current_round = 0
+                            st.session_state.match_log = []
+                            
+                            timestamp = datetime.now().strftime("%H%M%S")
+                            st.session_state.battle_id = f"{p1_name}_{p2_name}_{timestamp}"
+                            st.session_state.phase = 'battle'
+                            
+                            for k in ['setup_p1_1', 'setup_p1_2', 'setup_p1_3', 'setup_p2_1', 'setup_p2_2', 'setup_p2_3']: 
+                                if k in st.session_state: del st.session_state[k]
+                                
+                            auto_save_battle() # Guarda apenas quando a batalha arranca
+                            st.rerun()
+                        else: st.error("⚠️ Encontrámos Beys repetidos na seleção!")
+                    else: st.warning("⚠️ Seleciona os dois jogadores e a ordem completa!")
+
+    painel_de_setup()
 # ==========================================
 # FASE 2: ORDERING / RESHUFFLE
 # ==========================================
 elif st.session_state.phase == 'ordering':
-    st.markdown("""
-    <div style='background-color: #ff4b4b; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px;'>
-        <h1 style='color: white; margin: 0; font-size: 3rem;'>🚨 RESHUFFLE 🚨</h1>
-        <p style='color: white; font-size: 1.2rem; margin: 0;'>Escolham a nova ordem secreta dos Beys!</p>
-    </div>
-    """, unsafe_allow_html=True)
     
-    st.info("💡 Dica: Ao escolheres 2 combos, o 3º preenche automaticamente.")
-    
-    if st.session_state.history: st.button("↩️ OOPS! Desfazer Última Ação", use_container_width=True, on_click=undo_last_action)
-    
-    c1, c2 = st.columns(2)
-    with c1:
-        st.markdown(f"### 🟢 {st.session_state.p1_name}")
-        p1_1 = st.selectbox("1º Beyblade (P1)", st.session_state.p1_deck_pool, index=None, key="p1_1", on_change=auto_fill_p1)
-        p1_2 = st.selectbox("2º Beyblade (P1)", st.session_state.p1_deck_pool, index=None, key="p1_2", on_change=auto_fill_p1)
-        p1_3 = st.selectbox("3º Beyblade (P1)", st.session_state.p1_deck_pool, index=None, key="p1_3", on_change=auto_fill_p1)
+    @st.fragment
+    def painel_de_ordem():
+        st.markdown("""
+        <div style='background-color: #ff4b4b; padding: 15px; border-radius: 10px; text-align: center; margin-bottom: 20px;'>
+            <h1 style='color: white; margin: 0; font-size: 3rem;'>🚨 RESHUFFLE 🚨</h1>
+            <p style='color: white; font-size: 1.2rem; margin: 0;'>Escolham a nova ordem secreta dos Beys!</p>
+        </div>
+        """, unsafe_allow_html=True)
         
-    with c2:
-        st.markdown(f"### 🔴 {st.session_state.p2_name}")
-        p2_1 = st.selectbox("1º Beyblade (P2)", st.session_state.p2_deck_pool, index=None, key="p2_1", on_change=auto_fill_p2)
-        p2_2 = st.selectbox("2º Beyblade (P2)", st.session_state.p2_deck_pool, index=None, key="p2_2", on_change=auto_fill_p2)
-        p2_3 = st.selectbox("3º Beyblade (P2)", st.session_state.p2_deck_pool, index=None, key="p2_3", on_change=auto_fill_p2)
+        st.info("💡 Dica: Ao escolheres 2 combos, o 3º preenche automaticamente.")
+        
+        if st.session_state.history: st.button("↩️ OOPS! Desfazer Última Ação", use_container_width=True, on_click=undo_last_action)
+        
+        c1, c2 = st.columns(2)
+        with c1:
+            st.markdown(f"### 🟢 {st.session_state.p1_name}")
+            p1_1 = st.selectbox("1º Beyblade (P1)", st.session_state.p1_deck_pool, index=None, key="p1_1", on_change=auto_fill_p1)
+            p1_2 = st.selectbox("2º Beyblade (P1)", st.session_state.p1_deck_pool, index=None, key="p1_2", on_change=auto_fill_p1)
+            p1_3 = st.selectbox("3º Beyblade (P1)", st.session_state.p1_deck_pool, index=None, key="p1_3", on_change=auto_fill_p1)
+            
+        with c2:
+            st.markdown(f"### 🔴 {st.session_state.p2_name}")
+            p2_1 = st.selectbox("1º Beyblade (P2)", st.session_state.p2_deck_pool, index=None, key="p2_1", on_change=auto_fill_p2)
+            p2_2 = st.selectbox("2º Beyblade (P2)", st.session_state.p2_deck_pool, index=None, key="p2_2", on_change=auto_fill_p2)
+            p2_3 = st.selectbox("3º Beyblade (P2)", st.session_state.p2_deck_pool, index=None, key="p2_3", on_change=auto_fill_p2)
 
-    st.write("")
-    col_back, col_enter = st.columns(2)
-    
-    with col_back: # (ou aux_col1 na Fase 3)
+        st.write("")
+        col_back, col_enter = st.columns(2)
+        
+        with col_back:
             if st.button("🚪 Voltar ao Lobby", use_container_width=True):
-                # 1. Guardar o passe de acesso e o evento atual
                 meu_login = st.session_state.get('user_role')
                 meu_evento = st.session_state.get('active_event')
-                
-                # 2. Limpar a memória toda da batalha sem medo
                 st.session_state.clear()
-                
-                # 3. Restaurar o passe de acesso e o evento
-                if meu_login:
-                    st.session_state.user_role = meu_login
-                if meu_evento:
-                    st.session_state.active_event = meu_evento
-                    
+                if meu_login: st.session_state.user_role = meu_login
+                if meu_evento: st.session_state.active_event = meu_evento
                 st.session_state.phase = 'lobby'
                 st.rerun()
-            
-    with col_enter:
-        if st.button("⚔️ Entrar na Arena!", use_container_width=True, type="primary"):
-            p1_choices = [p1_1, p1_2, p1_3]
-            p2_choices = [p2_1, p2_2, p2_3]
-            
-            if None in p1_choices or None in p2_choices: st.error("⚠️ Preenche os 3 lugares!")
-            elif len(set(p1_choices)) == 3 and len(set(p2_choices)) == 3:
-                st.session_state.p1_active_deck = p1_choices
-                st.session_state.p2_active_deck = p2_choices
-                st.session_state.current_round = 0 
-                st.session_state.phase = 'battle'
-                for k in ['p1_1', 'p1_2', 'p1_3', 'p2_1', 'p2_2', 'p2_3']: del st.session_state[k]
-                auto_save_battle() 
-                st.rerun()
-            else: st.error("⚠️ Encontrámos Beys repetidos!")
+                
+        with col_enter:
+            if st.button("⚔️ Entrar na Arena!", use_container_width=True, type="primary"):
+                p1_choices = [p1_1, p1_2, p1_3]
+                p2_choices = [p2_1, p2_2, p2_3]
+                
+                if None in p1_choices or None in p2_choices: st.error("⚠️ Preenche os 3 lugares!")
+                elif len(set(p1_choices)) == 3 and len(set(p2_choices)) == 3:
+                    st.session_state.p1_active_deck = p1_choices
+                    st.session_state.p2_active_deck = p2_choices
+                    st.session_state.current_round = 0 
+                    st.session_state.phase = 'battle'
+                    for k in ['p1_1', 'p1_2', 'p1_3', 'p2_1', 'p2_2', 'p2_3']: del st.session_state[k]
+                    auto_save_battle() # Guarda apenas na transição de fase
+                    st.rerun()
+                else: st.error("⚠️ Encontrámos Beys repetidos!")
+
+    painel_de_ordem()
 
 # ==========================================
 # FASE 3: BATTLE LOOP (ISOLADO PARA VELOCIDADE MÁXIMA)
