@@ -107,8 +107,10 @@ if not has_access:
 
                         if res.data:
                             user_data = res.data[0]
-                            # Verifica a password
-                            if user_data.get("password_hash") == blader_pwd:
+                            # Verifica a password que está gravada
+                            pass_na_bd = user_data.get("password_hash")
+                            
+                            if str(pass_na_bd) == str(blader_pwd):
                                 st.session_state.blader_user = user_data["alias"]
                                 controller.set('blader_user', user_data["alias"], max_age=43200)
                                 st.success(f"Bem-vindo, {user_data['alias']}! A carregar os logs...")
@@ -116,10 +118,11 @@ if not has_access:
                                 st.rerun()
                             else:
                                 st.error("❌ Password incorreta para este Blader!")
+                                # 🔍 RAIO-X PARA DEBUG (Apagamos isto depois de descobrir o erro)
+                                st.warning(f"🕵️ MODO RAIO-X: A base de dados (coluna 'password_hash') diz que a tua pass é: '{pass_na_bd}'")
+                                st.info(f"O que tu escreveste na caixa foi: '{blader_pwd}'")
                         else:
                             st.error("❌ Blader não encontrado na base de dados!")
-                    except Exception as e:
-                        st.error(f"❌ Erro na ligação: {e}")
                         
     with tab_org:
         with st.form("login_org_form"):
