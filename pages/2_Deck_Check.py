@@ -185,8 +185,12 @@ def load_parts():
             elif ptype == "Metal Blade": p_dict["metal_blades"].append(name)
             elif ptype == "Over Blade": p_dict["over_blades"].append(name)
             elif ptype == "Blade":
-                if sys == "CX": p_dict["cx_blades"].append(name)
-                else: p_dict["bx_ux_blades"].append(name)
+                if sys == "CX": 
+                    p_dict["cx_blades"].append(name)
+                elif sys == "UX Expanded" or sys == "Expanded": 
+                    p_dict["ux_expanded_blades"].append(name)
+                else: 
+                    p_dict["bx_ux_blades"].append(name)
         return {k: sorted(list(set(v))) for k, v in p_dict.items()}, {}
     except: return {k: [] for k in ["bx_ux_blades", "ux_expanded_blades", "cx_blades", "ratchets", "bits", "assist_blades", "metal_blades", "over_blades", "lock_chips"]}, {}
 
