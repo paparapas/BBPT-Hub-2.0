@@ -21,7 +21,7 @@ st.markdown("""
     .block-container { 
         padding-top: 2rem !important; 
         padding-bottom: 0.5rem !important; 
-        max-width: 95% !important; 
+        max-width: 85% !important; 
     }
 
     /* FORÇAR O APARECIMENTO DO BOTÃO DA SIDEBAR NO MOBILE */
