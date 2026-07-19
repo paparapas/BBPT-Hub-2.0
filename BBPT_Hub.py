@@ -53,18 +53,18 @@ with st.sidebar:
     
     st.divider()
 
-if st.button("Entrar 🔑", use_container_width=True):
-                role = None
-                if pwd.strip() == st.secrets["PASSWORDS"].get("OWNER"): role = "owner"
-                elif pwd.strip() == st.secrets["PASSWORDS"].get("ADMIN"): role = "admin"
-                elif pwd.strip() == st.secrets["PASSWORDS"].get("JUDGE"): role = "judge"
-                
-                if role:
-                    st.query_params["role"] = role
-                    st.query_params["token"] = generate_daily_token(role)
-                    st.session_state.user_role = role
-                    st.rerun() # Essencial para atualizar o URL
-                else: st.error("Incorreta!")
+    if st.button("Entrar 🔑", use_container_width=True):
+                    role = None
+                    if pwd.strip() == st.secrets["PASSWORDS"].get("OWNER"): role = "owner"
+                    elif pwd.strip() == st.secrets["PASSWORDS"].get("ADMIN"): role = "admin"
+                    elif pwd.strip() == st.secrets["PASSWORDS"].get("JUDGE"): role = "judge"
+                    
+                    if role:
+                        st.query_params["role"] = role
+                        st.query_params["token"] = generate_daily_token(role)
+                        st.session_state.user_role = role
+                        st.rerun() # Essencial para atualizar o URL
+                    else: st.error("Incorreta!")
     else:
         st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
