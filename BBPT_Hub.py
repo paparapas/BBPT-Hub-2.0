@@ -61,17 +61,18 @@ with st.sidebar:
             # O botão só processa o que foi escrito no input acima
             if st.button("Entrar 🔑", use_container_width=True):
                 if pwd_input:
-                    pwd_clean = pwd_input.strip()
                     role = None
-                    
-                    if pwd_clean == st.secrets["PASSWORDS"].get("OWNER"): role = "owner"
-                    elif pwd_clean == st.secrets["PASSWORDS"].get("ADMIN"): role = "admin"
-                    elif pwd_clean == st.secrets["PASSWORDS"].get("JUDGE"): role = "judge"
+                    if pwd_input.strip() == st.secrets["PASSWORDS"].get("OWNER"): role = "owner"
+                    elif pwd_input.strip() == st.secrets["PASSWORDS"].get("ADMIN"): role = "admin"
+                    elif pwd_input.strip() == st.secrets["PASSWORDS"].get("JUDGE"): role = "judge"
                     
                     if role:
+                        # 1. Definimos o estado da sessão
+                        st.session_state.user_role = role
+                        # 2. Definimos os parâmetros do URL explicitamente
                         st.query_params["role"] = role
                         st.query_params["token"] = generate_daily_token(role)
-                        st.session_state.user_role = role
+                        # 3. Forçamos o reload da página
                         st.rerun()
                     else: 
                         st.error("Password Incorreta!")
