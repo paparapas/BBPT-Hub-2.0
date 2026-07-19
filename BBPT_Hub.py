@@ -53,10 +53,15 @@ with st.sidebar:
     
     st.divider()
 
-    if st.button("Entrar 🔑", use_container_width=True):
-                # Verifica se pwd não é None antes de fazer o strip
-                if pwd is not None:
-                    pwd_clean = pwd.strip()
+    if not st.session_state.user_role:
+        with st.expander("🔐 Acesso Organização / Judges"):
+            # O input TEM de estar aqui fora para poderes escrever nele
+            pwd_input = st.text_input("Password:", type="password", key="login_global")
+            
+            # O botão só processa o que foi escrito no input acima
+            if st.button("Entrar 🔑", use_container_width=True):
+                if pwd_input:
+                    pwd_clean = pwd_input.strip()
                     role = None
                     
                     if pwd_clean == st.secrets["PASSWORDS"].get("OWNER"): role = "owner"
@@ -69,7 +74,7 @@ with st.sidebar:
                         st.session_state.user_role = role
                         st.rerun()
                     else: 
-                        st.error("Incorreta!")
+                        st.error("Password Incorreta!")
                 else:
                     st.warning("Por favor, introduz a password.")
     else:
