@@ -53,33 +53,24 @@ with st.sidebar:
     
     st.divider()
 
-    if not st.session_state.user_role:
-        with st.expander("🔐 Acesso Organização / Judges"):
-            pwd = st.text_input("Password:", type="password", key="login_global")
-            if st.button("Entrar 🔑", use_container_width=True):
-                # Validação contra secrets
-                if pwd.strip() == st.secrets["PASSWORDS"].get("OWNER"):
-                    st.query_params["role"] = "owner"
-                    st.query_params["token"] = generate_daily_token("owner")
-                    st.session_state.user_role = "owner"
-                    st.rerun()
-                elif pwd.strip() == st.secrets["PASSWORDS"].get("ADMIN"):
-                    st.query_params["role"] = "admin"
-                    st.query_params["token"] = generate_daily_token("admin")
-                    st.session_state.user_role = "admin"
-                    st.rerun()
-                elif pwd.strip() == st.secrets["PASSWORDS"].get("JUDGE"):
-                    st.query_params["role"] = "judge"
-                    st.query_params["token"] = generate_daily_token("judge")
-                    st.session_state.user_role = "judge"
-                    st.rerun()
+if st.button("Entrar 🔑", use_container_width=True):
+                role = None
+                if pwd.strip() == st.secrets["PASSWORDS"].get("OWNER"): role = "owner"
+                elif pwd.strip() == st.secrets["PASSWORDS"].get("ADMIN"): role = "admin"
+                elif pwd.strip() == st.secrets["PASSWORDS"].get("JUDGE"): role = "judge"
+                
+                if role:
+                    st.query_params["role"] = role
+                    st.query_params["token"] = generate_daily_token(role)
+                    st.session_state.user_role = role
+                    st.rerun() # Essencial para atualizar o URL
                 else: st.error("Incorreta!")
     else:
         st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.user_role = None
-            st.query_params.clear()
-            st.rerun()
+            st.query_params.clear() # Isto limpa o token do URL
+            st.rerun()   
 
 # ==========================================
 # 2. CARREGAR DADOS HISTÓRICOS (HÍBRIDO)
