@@ -4,16 +4,13 @@ import json
 import base64
 import os
 import time
-from datetime import datetime
-from streamlit_cookies_controller import CookieController
+from datetime import datetime, date
+import hashlib
+import re
 from db_connection import supabase
 
 # 🛑 FORÇAR O MODO "WIDE" E REMOVER ESPAÇOS BRANCOS 🛑
 st.set_page_config(page_title="Battle Logger", page_icon="logo.png", layout="wide", initial_sidebar_state="collapsed")
-
-# --- PASSWORDS DE ACESSO ---
-ADMIN_PASSWORD = "bbpt-paparapas" 
-JUDGE_PASSWORD = "bbpt-judge"
 
 st.markdown("""
 <style>
@@ -23,19 +20,32 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
+# 🔐 GESTÃO DE SEGURANÇA (URL MAGIC TOKENS)
+# ==========================================
+# Função para gerar tokens diários baseados no role
+def generate_daily_token(role):
+    # Vai buscar as passwords aos secrets consoante o cargo
+    pwd = st.secrets["PASSWORDS"].get(role.upper(), "default_secret")
+    today_str = date.today().isoformat()
+    secret_string = f"{role}_{pwd}_{today_str}"
+    return hashlib.md5(secret_string.encode('utf-8')).hexdigest()
+
+# 1. LER O URL INSTANTANEAMENTE E ATRIBUIR ROLE
+if "user_role" not in st.session_state: st.session_state.user_role = None
+
+url_params = st.query_params
+if "role" in url_params and "token" in url_params:
+    expected_token = generate_daily_token(url_params["role"])
+    # Se o crachá do URL bater certo com o gerado para o dia de hoje
+    if url_params["token"] == expected_token:
+        st.session_state.user_role = url_params["role"]
+    else:
+        # Se for um token antigo ou adulterado, limpa-o imediatamente
+        st.query_params.clear()
+
+# ==========================================
 # GESTÃO GLOBAL DE LOGIN (SIDEBAR AJUSTADA)
 # ==========================================
-from streamlit_cookies_controller import CookieController
-import hashlib
-
-controller = CookieController()
-cookie_role = controller.get('user_role')
-
-if cookie_role in ["owner", "admin", "judge"]:
-    st.session_state.user_role = cookie_role
-elif "user_role" not in st.session_state:
-    st.session_state.user_role = None
-
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
 
@@ -61,37 +71,32 @@ with st.sidebar:
         with st.expander("🔐 Acesso Organização / Judges"):
             pwd = st.text_input("Password:", type="password", key="login_global")
             if st.button("Entrar 🔑", use_container_width=True):
-                # AGORA LÊ DO SECRETS.TOML COM SEGURANÇA
+                # INJETA LOGO NO URL QUANDO FAZ LOGIN COM SUCESSO
                 if pwd.strip() == st.secrets["PASSWORDS"]["OWNER"]:
+                    st.query_params["role"] = "owner"
+                    st.query_params["token"] = generate_daily_token("owner")
                     st.session_state.user_role = "owner"
-                    controller.set('user_role', 'owner', max_age=43200)
                     st.rerun()
                 elif pwd.strip() == st.secrets["PASSWORDS"]["ADMIN"]:
+                    st.query_params["role"] = "admin"
+                    st.query_params["token"] = generate_daily_token("admin")
                     st.session_state.user_role = "admin"
-                    controller.set('user_role', 'admin', max_age=43200)
                     st.rerun()
                 elif pwd.strip() == st.secrets["PASSWORDS"]["JUDGE"]:
+                    st.query_params["role"] = "judge"
+                    st.query_params["token"] = generate_daily_token("judge")
                     st.session_state.user_role = "judge"
-                    controller.set('user_role', 'judge', max_age=43200)
                     st.rerun()
                 else: st.error("Incorreta!")
     else:
         st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.user_role = None
-            st.session_state.finance_auth = False # Garante que limpa a RAM
-            
-            # Tenta apagar os cookies de forma segura, ignorando se não existirem
-            try: controller.remove('user_role')
-            except: pass
-            
-            try: controller.remove('finance_auth')
-            except: pass
-            
+            st.query_params.clear() # Limpa imediatamente o token mágico do URL
             st.rerun()
 
 # --- BLOQUEIO DE PÁGINA PARA PÚBLICO ---
-if st.session_state.user_role not in ["admin", "judge"]:
+if st.session_state.user_role not in ["admin", "judge", "owner"]:
     st.warning("🛑 Acesso Restrito: Apenas a Organização e os Juízes (Judges) podem aceder ao Battle Logger.")
     st.stop()
 
@@ -171,7 +176,6 @@ def register_result(winner_name, finish_type, points, bey_winner, bey_loser):
     else:
         st.session_state.current_round += 1
         if st.session_state.current_round > 2: st.session_state.phase = 'ordering'
-    # auto_save_battle() foi removido para velocidade máxima. A memória (session_state) guarda os pontos de forma instantânea.
 
 def undo_last_action():
     if st.session_state.history:
@@ -202,11 +206,8 @@ def auto_fill_p2():
         if s3 is None: st.session_state.p2_3 = rem
 
 def archive_match_to_supabase(evento, battle_id, p1, p2, score1, score2, log_list):
-    # Formata os dados para o formato Excel (ZeroLogs)
     log_str = " | ".join(log_list)
     score_final = f"{score1}-{score2}"
-    
-    # Envia para a tabela NOVA com as colunas corretas
     supabase.table("match_logs").insert({
         "event_name": evento,
         "battle_id": battle_id,
