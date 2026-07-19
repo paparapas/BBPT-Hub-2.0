@@ -4,7 +4,9 @@ import json
 import base64
 import os
 import re
-from streamlit_cookies_controller import CookieController
+from datetime import date  # <--- Essencial ter isto
+import hashlib             # <--- Essencial ter isto
+from db_connection import supabase
 
 # 1. Configuração da Página
 st.set_page_config(page_title="BBPT Hub", page_icon="logo.png", layout="wide")
