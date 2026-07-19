@@ -15,7 +15,15 @@ st.set_page_config(page_title="Battle Logger", page_icon="logo.png", layout="wid
 st.markdown("""
 <style>
     header[data-testid="stHeader"] { display: none !important; }
-    .block-container { padding-top: 2rem !important; padding-bottom: 0.5rem !important; max-width: 100% !important; }
+    .block-container { 
+        padding-top: 2rem !important; 
+        padding-bottom: 0.5rem !important; 
+        max-width: 95% !important; /* Ligeiramente menos que 100% ajuda o Safari a renderizar a sidebar */
+    }
+    /* Forçar a sidebar a ser acessível no mobile */
+    section[data-testid="stSidebar"] {
+        z-index: 1000 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
