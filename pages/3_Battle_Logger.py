@@ -9,34 +9,18 @@ import hashlib
 import re
 from db_connection import supabase
 
-# 🛑 FORÇAR O MODO "WIDE" E REMOVER ESPAÇOS BRANCOS 🛑
-st.set_page_config(page_title="Battle Logger", page_icon="logo.png", layout="wide", initial_sidebar_state="expanded")
+# 🛑 CONFIGURAÇÃO LIMPA E PADRÃO PARA SIDEBAR 🛑
+st.set_page_config(
+    page_title="Battle Logger", 
+    page_icon="logo.png", 
+    layout="wide", 
+    initial_sidebar_state="expanded" # Isto FORÇA a sidebar a aparecer
+)
 
 st.markdown("""
 <style>
-    /* Esconder o header original */
+    /* Apenas escondemos o header, sem mexer na estrutura da sidebar */
     header[data-testid="stHeader"] { display: none !important; }
-    
-    /* Espaçamento do container */
-    .block-container { 
-        padding-top: 2rem !important; 
-        padding-bottom: 0.5rem !important; 
-        max-width: 95% !important; 
-    }
-
-    /* FORÇAR O APARECIMENTO DO BOTÃO DA SIDEBAR NO MOBILE */
-    [data-testid="stSidebarCollapsedControl"] {
-        display: block !important;
-        position: fixed !important;
-        top: 10px !important;
-        left: 10px !important;
-        z-index: 999999 !important;
-    }
-
-    /* Garantir que a sidebar fica por cima de tudo quando aberta */
-    [data-testid="stSidebar"] {
-        z-index: 99999 !important;
-    }
 </style>
 """, unsafe_allow_html=True)
 
