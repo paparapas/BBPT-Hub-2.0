@@ -66,7 +66,8 @@ with st.sidebar:
                         st.rerun() # Essencial para atualizar o URL
                     else: st.error("Incorreta!")
     else:
-        st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
+        role_text = st.session_state.user_role.upper() if st.session_state.user_role else "UNKNOWN"
+        st.success(f"🔓 Modo {role_text} Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.user_role = None
             st.query_params.clear() # Isto limpa o token do URL
