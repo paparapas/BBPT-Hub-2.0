@@ -14,28 +14,24 @@ st.set_page_config(page_title="Battle Logger", page_icon="logo.png", layout="wid
 
 st.markdown("""
 <style>
-    /* Esconder o header original */
-    header[data-testid="stHeader"] { display: none !important; }
-    
-    /* Espaçamento do container */
-    .block-container { 
-        padding-top: 2rem !important; 
-        padding-bottom: 0.5rem !important; 
-        max-width: 85% !important; 
+    /* Forçar o botão da sidebar a estar sempre visível */
+    button[kind="header"] {
+        display: block !important;
+        visibility: visible !important;
     }
 
-    /* FORÇAR O APARECIMENTO DO BOTÃO DA SIDEBAR NO MOBILE */
+    /* Garantir que o contêiner da seta não é removido */
     [data-testid="stSidebarCollapsedControl"] {
         display: block !important;
+        visibility: visible !important;
         position: fixed !important;
-        top: 10px !important;
-        left: 10px !important;
+        left: 0 !important;
         z-index: 999999 !important;
     }
-
-    /* Garantir que a sidebar fica por cima de tudo quando aberta */
+    
+    /* Impedir que o telemóvel oculte a sidebar se for clicada */
     [data-testid="stSidebar"] {
-        z-index: 99999 !important;
+        display: block !important;
     }
 </style>
 """, unsafe_allow_html=True)
