@@ -3,10 +3,9 @@ import pandas as pd
 import base64
 import os
 import time
-from datetime import datetime
+from datetime import datetime, date
 import re
-import hashlib # <--- IMPORTANTE: Adicionado para descodificar as tuas passwords
-from streamlit_cookies_controller import CookieController
+import hashlib
 from db_connection import supabase
 
 # 🛑 FORÇAR O MODO "WIDE" E AJUSTAR PADRÕES 🛑
@@ -20,22 +19,32 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# GESTÃO GLOBAL DE LOGIN & COOKIES
+# 🔐 GESTÃO DE SEGURANÇA (URL MAGIC TOKENS)
 # ==========================================
-if "user_role" not in st.session_state:
-    st.session_state.user_role = None
-if "blader_user" not in st.session_state:
-    st.session_state.blader_user = None
+# A senha única de administração
+ADMIN_PASSWORD = st.secrets["PASSWORDS"].get("ADMIN", "bbpt-paparapas")
 
-controller = CookieController()
-cookie_role = controller.get('user_role')
-cookie_blader = controller.get('blader_user')
+def generate_daily_token(role):
+    # Gera um token que mistura a password com a data de hoje. Expira à meia-noite.
+    today_str = date.today().isoformat()
+    secret_string = f"{role}_{ADMIN_PASSWORD}_{today_str}"
+    return hashlib.md5(secret_string.encode('utf-8')).hexdigest()
 
-if cookie_role in ["owner", "admin", "judge"]:
-    st.session_state.user_role = cookie_role
-if cookie_blader:
-    st.session_state.blader_user = cookie_blader
+# 1. LER O URL INSTANTANEAMENTE
+if "role" not in st.session_state: st.session_state.role = None
+if "blader_user" not in st.session_state: st.session_state.blader_user = None
 
+url_params = st.query_params
+if "role" in url_params and "token" in url_params:
+    expected_token = generate_daily_token(url_params["role"])
+    # Se o crachá do URL bater certo com o gerado para o dia de hoje
+    if url_params["token"] == expected_token:
+        st.session_state.role = url_params["role"]
+    else:
+        # Se for um token antigo ou adulterado, limpa-o imediatamente
+        st.query_params.clear()
+        
+# 2. LOGOUT GLOBAL FUNCIONA PARA ADMIN E BLADER
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
 
@@ -48,32 +57,26 @@ with st.sidebar:
         st.title("🛡️ BBPT App")
     st.divider()
     
-    # Mostrar status de login atual
-    if st.session_state.user_role:
-        st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
-    elif st.session_state.blader_user:
-        st.success(f"👤 Blader: {st.session_state.blader_user} Ativo")
+    if st.session_state.role: st.success(f"🔓 Modo {st.session_state.role.upper()} Ativo")
+    elif st.session_state.blader_user: st.success(f"👤 Blader: {st.session_state.blader_user} Ativo")
         
-    if st.session_state.user_role or st.session_state.blader_user:
+    if st.session_state.role or st.session_state.blader_user:
         if st.button("Sair (Logout) 🔒", use_container_width=True):
-            st.session_state.user_role = None
+            st.session_state.role = None
             st.session_state.blader_user = None
-            try: controller.remove('user_role')
-            except: pass
-            try: controller.remove('blader_user')
-            except: pass
+            st.query_params.clear() # Limpa imediatamente o token mágico do URL
             st.rerun()
 
 # ==========================================
-# ECRÃ DE AUTENTICAÇÃO (BLADER OU ORG/JUDGE)
+# ECRÃ DE AUTENTICAÇÃO (BLADER OU ADMIN)
 # ==========================================
-has_access = (st.session_state.user_role in ["admin", "owner", "judge"]) or (st.session_state.blader_user is not None)
+has_access = (st.session_state.role == "admin") or (st.session_state.blader_user is not None)
 
 if not has_access:
     st.title("📋 Consulta de BattleLogs")
-    st.warning("🔐 Esta página requer autenticação. Introduz as tuas credenciais de Blader (como no Deck Builder) ou da Organização.")
+    st.warning("🔐 Esta página requer autenticação. Introduz as tuas credenciais de Blader ou entra como Staff.")
     
-    tab_blader, tab_org = st.tabs(["👤 Login Blader", "🛡️ Login Organização / Judge"])
+    tab_blader, tab_org = st.tabs(["👤 Login Blader", "🛡️ Login Staff"])
     
     with tab_blader:
         with st.form("login_blader_form"):
@@ -87,10 +90,7 @@ if not has_access:
                 else:
                     try:
                         raw_input = re.sub(r'^\d+[\.\s]*', '', blader_alias).strip().lower()
-
-                        # Procura o Blader na tabela de aliases
                         res = supabase.table("bladers").select("*").ilike("alias", blader_alias).execute()
-
                         if not res.data:
                             KNOWN_ALIASES = {
                                 "onez": "OneZarolho", "enzo": "OneZarolho", "onezarolho": "OneZarolho",
@@ -106,40 +106,29 @@ if not has_access:
                         if res.data:
                             user_data = res.data[0]
                             pass_na_bd = user_data.get("password_hash")
-                            
-                            # ✨ CORREÇÃO AQUI: Transforma o teu "1234" na Hash que está na base de dados
                             input_pwd_md5 = hashlib.md5(blader_pwd.encode('utf-8')).hexdigest()
                             
                             if pass_na_bd == input_pwd_md5:
                                 st.session_state.blader_user = user_data["alias"]
-                                controller.set('blader_user', user_data["alias"], max_age=43200)
+                                # NOTA: Os jogadores Blader normais NÃO recebem token no URL para evitar partilhas
                                 st.success(f"Bem-vindo, {user_data['alias']}! A carregar os logs...")
                                 time.sleep(1)
                                 st.rerun()
-                            else:
-                                st.error("❌ Password incorreta para este Blader!")
-                        else:
-                            st.error("❌ Blader não encontrado na base de dados!")
-                    except Exception as e:
-                        st.error(f"❌ Erro na ligação: {e}")
+                            else: st.error("❌ Password incorreta para este Blader!")
+                        else: st.error("❌ Blader não encontrado na base de dados!")
+                    except Exception as e: st.error(f"❌ Erro na ligação: {e}")
                         
     with tab_org:
         with st.form("login_org_form"):
-            pwd_org = st.text_input("Password de Organização / Judge:", type="password")
-            submit_org = st.form_submit_button("Entrar como Staff 🔑", use_container_width=True)
+            pwd_org = st.text_input("Password de Staff:", type="password")
+            submit_org = st.form_submit_button("Entrar 🔑", use_container_width=True)
             
             if submit_org:
-                if pwd_org.strip() == st.secrets.get("PASSWORDS", {}).get("OWNER", "bbpt-owner123"):
-                    st.session_state.user_role = "owner"
-                    controller.set('user_role', 'owner', max_age=43200)
-                    st.rerun()
-                elif pwd_org.strip() == st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas"):
-                    st.session_state.user_role = "admin"
-                    controller.set('user_role', 'admin', max_age=43200)
-                    st.rerun()
-                elif pwd_org.strip() == st.secrets.get("PASSWORDS", {}).get("JUDGE", "bbpt-judge"):
-                    st.session_state.user_role = "judge"
-                    controller.set('user_role', 'judge', max_age=43200)
+                if pwd_org.strip() == ADMIN_PASSWORD:
+                    # Injeta o crachá de segurança no URL
+                    st.query_params["role"] = "admin"
+                    st.query_params["token"] = generate_daily_token("admin")
+                    st.session_state.role = "admin"
                     st.rerun()
                 else:
                     st.error("❌ Password de Staff Incorreta!")
@@ -151,7 +140,6 @@ if not has_access:
 st.title("📋 Histórico & BattleLogs Oficiais")
 st.markdown("Filtra, analisa e exporta as sequências de combates diretamente da base de dados no formato **BattleLogs**.")
 
-# 🔄 Função de Cache para puxar os dados brutos de forma rápida
 @st.cache_data(ttl=15)
 def fetch_raw_match_logs():
     try:
@@ -166,15 +154,12 @@ raw_logs = fetch_raw_match_logs()
 if not raw_logs:
     st.info("ℹ️ Ainda não existem registos de batalhas guardados na tabela `match_logs` do Supabase.")
 else:
-    # Converter para DataFrame para manipulação ágil em memória
     df_master = pd.DataFrame(raw_logs)
-    
     torneios_disponiveis = sorted(df_master['event_name'].dropna().unique().tolist())
     
-    # --- FILTRO 1: SELECIONAR TORNEIO(S) ---
     col_t1, col_t2 = st.columns([3, 1])
     with col_t2:
-        st.write("") # Alinhamento vertical
+        st.write("") 
         todos_torneios_cb = st.checkbox("Selecionar todos os Torneios", value=False)
         
     with col_t1:
@@ -184,8 +169,6 @@ else:
         else:
             torneios_selecionados = st.multiselect("1️⃣ Escolha um ou mais Torneios em simultâneo:", torneios_disponiveis)
             
-    # --- FILTRO 2: SELECIONAR JOGADOR (OPCIONAL) ---
-    # Extrai todos os jogadores únicos que participaram nos torneios selecionados
     df_filtrado_torneio = df_master[df_master['event_name'].isin(torneios_selecionados)]
     
     jogadores_unicos = set()
@@ -195,14 +178,12 @@ else:
         
     lista_jogadores = ["Todos os Players"] + sorted(list(jogadores_unicos))
     
-    # Se for um Blader autenticado (não Admin), sugerimos preencher o filtro com o nome dele automaticamente
     default_player_idx = 0
     if st.session_state.blader_user and st.session_state.blader_user in lista_jogadores:
         default_player_idx = lista_jogadores.index(st.session_state.blader_user)
         
     jogador_selecionado = st.selectbox("2️⃣ Filtrar por um Player específico (Opcional):", lista_jogadores, index=default_player_idx)
     
-    # --- PROCESSAMENTO FINAL DOS DADOS ---
     if not torneios_selecionados:
         st.info("💡 Seleciona pelo menos um torneio ou ativa a caixa 'Selecionar todos os Torneios' para ver os resultados.")
     else:
@@ -214,17 +195,13 @@ else:
         if df_final.empty:
             st.warning("⚠️ Não foram encontrados registos de batalhas para os filtros selecionados.")
         else:
-            # Reordenar e renomear colunas para o formato BattleLogs
             cols_to_extract = ['created_at', 'event_name', 'battle_id', 'player_1', 'player_2', 'final_score', 'detailed_log']
-            # Para garantir segurança caso os combos existam na BD
             if 'combo_p1' in df_final.columns and 'combo_p2' in df_final.columns:
                 cols_to_extract = ['created_at', 'event_name', 'battle_id', 'player_1', 'combo_p1', 'player_2', 'combo_p2', 'final_score', 'detailed_log']
             
-            # Só extrai as colunas que efetivamente existem no df_final
             cols_to_extract = [c for c in cols_to_extract if c in df_final.columns]
             df_battle_logs = df_final[cols_to_extract].copy()
             
-            # Renomear as colunas
             rename_dict = {
                 'created_at': 'Data_Hora', 'event_name': 'Evento', 'battle_id': 'Battle_ID', 
                 'player_1': 'Jogador_1', 'combo_p1': 'Combo_P1', 'player_2': 'Jogador_2', 
@@ -232,32 +209,23 @@ else:
             }
             df_battle_logs.rename(columns=rename_dict, inplace=True)
             
-            # Limpar formato da data
             if 'Data_Hora' in df_battle_logs.columns:
                 df_battle_logs['Data_Hora'] = pd.to_datetime(df_battle_logs['Data_Hora']).dt.strftime('%Y-%m-%d %H:%M:%S')
             
             st.success(f"📋 Encontrados {len(df_battle_logs)} combates registados!")
             st.dataframe(df_battle_logs, use_container_width=True, hide_index=True)
             
-            # ==========================================
-            # BOTÃO DE EXTRACÇÃO (COSPER CSV)
-            # ==========================================
             st.markdown("---")
             csv_bytes = df_battle_logs.to_csv(index=False).encode('utf-8-sig')
             
-            if jogador_selecionado != "Todos os Players":
-                sufixo = f"Player_{jogador_selecionado}"
-            elif todos_torneios_cb:
-                sufixo = "Todos_Os_Torneios"
-            else:
-                sufixo = "Torneios_Selecionados"
+            if jogador_selecionado != "Todos os Players": sufixo = f"Player_{jogador_selecionado}"
+            elif todos_torneios_cb: sufixo = "Todos_Os_Torneios"
+            else: sufixo = "Torneios_Selecionados"
                 
-            nome_ficheiro_csv = f"BattleLogs_{sufixo}.csv"
-            
             st.download_button(
                 label="📥 Descarregar logs e exportar para CSV (BattleLogs)",
                 data=csv_bytes,
-                file_name=nome_ficheiro_csv,
+                file_name=f"BattleLogs_{sufixo}.csv",
                 mime="text/csv",
                 type="primary",
                 use_container_width=True
