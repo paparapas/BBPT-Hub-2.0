@@ -6,20 +6,32 @@ import os
 import re
 from streamlit_cookies_controller import CookieController
 
-# 1. Configuração da Página (Define o título do separador do browser)
+# 1. Configuração da Página
 st.set_page_config(page_title="BBPT Hub", page_icon="logo.png", layout="wide")
+
+# ==========================================
+# 🔐 GESTÃO DE SEGURANÇA (URL MAGIC TOKENS)
+# ==========================================
+def generate_daily_token(role):
+    # Usa a password do Admin para garantir segurança sem expô-la
+    pwd = st.secrets["PASSWORDS"].get("ADMIN", "bbpt-paparapas")
+    today_str = date.today().isoformat()
+    return hashlib.md5(f"{role}_{pwd}_{today_str}".encode('utf-8')).hexdigest()
+
+# 1. LER O URL INSTANTANEAMENTE
+if "user_role" not in st.session_state: st.session_state.user_role = None
+
+url_params = st.query_params
+if "role" in url_params and "token" in url_params:
+    expected_token = generate_daily_token(url_params["role"])
+    if url_params["token"] == expected_token:
+        st.session_state.user_role = url_params["role"]
+    else:
+        st.query_params.clear()
 
 # ==========================================
 # GESTÃO GLOBAL DE LOGIN E SIDEBAR
 # ==========================================
-controller = CookieController()
-cookie_role = controller.get('user_role')
-
-if cookie_role in ["owner", "admin", "judge"]:
-    st.session_state.user_role = cookie_role
-elif "user_role" not in st.session_state:
-    st.session_state.user_role = None
-
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
 
@@ -32,46 +44,39 @@ with st.sidebar:
         st.title("🛡️Hub")
     st.divider()
 
-    # O MENU DE SELECÇÃO DE LIGAS HISTÓRICAS
     page = st.radio("Módulos do Hub Histórico:", [
-        "Liga Critical", 
-        "Liga Fénix Negra", 
-        "Torneio de Equipas - Liga Versus", 
-        "Rankings Globais", 
-        "Ad-Hoc: Blader Profile", 
-        "Contactos & Organização"
+        "Liga Critical", "Liga Fénix Negra", "Torneio de Equipas - Liga Versus", 
+        "Rankings Globais", "Ad-Hoc: Blader Profile", "Contactos & Organização"
     ])
     
     st.divider()
 
-    # FORMULÁRIO DE LOGIN DE CONTA
     if not st.session_state.user_role:
         with st.expander("🔐 Acesso Organização / Judges"):
             pwd = st.text_input("Password:", type="password", key="login_global")
             if st.button("Entrar 🔑", use_container_width=True):
-                if pwd.strip() == st.secrets.get("PASSWORDS", {}).get("OWNER", "bbpt-owner123"):
+                # Validação contra secrets
+                if pwd.strip() == st.secrets["PASSWORDS"].get("OWNER"):
+                    st.query_params["role"] = "owner"
+                    st.query_params["token"] = generate_daily_token("owner")
                     st.session_state.user_role = "owner"
-                    controller.set('user_role', 'owner', max_age=43200)
                     st.rerun()
-                elif pwd.strip() == st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas"):
+                elif pwd.strip() == st.secrets["PASSWORDS"].get("ADMIN"):
+                    st.query_params["role"] = "admin"
+                    st.query_params["token"] = generate_daily_token("admin")
                     st.session_state.user_role = "admin"
-                    controller.set('user_role', 'admin', max_age=43200)
                     st.rerun()
-                elif pwd.strip() == st.secrets.get("PASSWORDS", {}).get("JUDGE", "bbpt-judge"):
+                elif pwd.strip() == st.secrets["PASSWORDS"].get("JUDGE"):
+                    st.query_params["role"] = "judge"
+                    st.query_params["token"] = generate_daily_token("judge")
                     st.session_state.user_role = "judge"
-                    controller.set('user_role', 'judge', max_age=43200)
                     st.rerun()
-                else: 
-                    st.error("Incorreta!")
+                else: st.error("Incorreta!")
     else:
         st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.user_role = None
-            if "finance_auth" in st.session_state: 
-                st.session_state.finance_auth = False
-            
-            if controller.get('user_role') is not None: controller.remove('user_role')
-            if controller.get('finance_auth') is not None: controller.remove('finance_auth')
+            st.query_params.clear()
             st.rerun()
 
 # ==========================================
