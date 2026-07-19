@@ -20,6 +20,14 @@ def generate_daily_token(role):
     today_str = date.today().isoformat()
     return hashlib.md5(f"{role}_{pwd}_{today_str}".encode('utf-8')).hexdigest()
 
+# 3. Função para gerar links que já incluem o token automaticamente
+def get_authenticated_url(path):
+    if st.session_state.user_role:
+        role = st.session_state.user_role
+        token = generate_daily_token(role)
+        return f"{path}?role={role}&token={token}"
+    return path
+
 # 1. LER O URL INSTANTANEAMENTE
 if "user_role" not in st.session_state: st.session_state.user_role = None
 
