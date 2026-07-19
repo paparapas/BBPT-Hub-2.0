@@ -18,7 +18,7 @@ st.markdown("""
     .block-container { 
         padding-top: 2rem !important; 
         padding-bottom: 0.5rem !important; 
-        max-width: 85% !important; /* Ligeiramente menos que 100% ajuda o Safari a renderizar a sidebar */
+        max-width: 50% !important; /* Ligeiramente menos que 100% ajuda o Safari a renderizar a sidebar */
     }
     /* Forçar a sidebar a ser acessível no mobile */
     section[data-testid="stSidebar"] {
