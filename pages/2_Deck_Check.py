@@ -507,7 +507,7 @@ elif menu == "🔍 Consulta Pública":
     else: 
         st.info("De momento não existem eventos ativos para consulta pública.")
 
-elif menu == "⚙️ Painel de Organização" and st.session_state.user_role in ["admin", "owner"]:
+elif menu == "⚙️ Painel de Organização":
     st.title("🛡️ Admin")
     st.subheader("📢 Gestão de Eventos")
     if past_events:
