@@ -3,28 +3,48 @@ import os
 import base64
 from db_connection import supabase
 
+# Configuração da Página
 st.set_page_config(page_title="Gestão Inventário", page_icon="logo.png")
 
 # ==========================================
-# 🔐 AUTENTICAÇÃO ESTÁTICA (LINK ADMIN)
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE
 # ==========================================
+secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
+
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
 admin_key_url = st.query_params.get("admin")
-secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
 
-# Se o URL tiver ?admin=TUA_PASSWORD, entra automaticamente
 if admin_key_url == secret_admin_pass:
     st.session_state.is_admin = True
+elif st.session_state.is_admin:
+    # O TRUQUE MÁGICO: Re-injeta no URL se a navegação nativa o limpar
+    st.query_params["admin"] = secret_admin_pass
+else:
+    st.session_state.is_admin = False
 
+# ==========================================
+# 🔐 VERIFICAÇÃO DE AUTENTICAÇÃO
+# ==========================================
 if not st.session_state.is_admin:
     st.warning("🔒 Acesso Exclusivo à Administração BBPT.")
-    st.info("Deves aceder a esta página através do teu link de Admin seguro.")
+    
+    # Mantivemos a caixa estética para caso acedam sem o link
+    admin_pwd_input = st.text_input("Introduz a Password de Admin:", type="password")
+    
+    if st.button("Autenticar 🔑", type="primary"):
+        if admin_pwd_input.strip() == secret_admin_pass:
+            st.session_state.is_admin = True
+            st.query_params["admin"] = secret_admin_pass
+            st.success("Autenticado!")
+            st.rerun()
+        else:
+            st.error("Password incorreta!")
     st.stop() 
 
 # ==========================================
-# 🧩 GESTÃO DE INVENTÁRIO (SÓ CHEGA AQUI SE FOR ADMIN)
+# 🧩 GESTÃO DE INVENTÁRIO
 # ==========================================
 st.title("🧩 Registar Nova Peça")
 st.markdown("Bem-vindo, Admin. Adiciona novas peças diretamente ao Supabase.")
