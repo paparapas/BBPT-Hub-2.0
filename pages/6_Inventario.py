@@ -16,12 +16,10 @@ if "is_admin" not in st.session_state:
 
 admin_key_url = st.query_params.get("admin")
 
+# Valida o URL. Se estiver limpo, confia na memória da Sessão!
 if admin_key_url == secret_admin_pass:
     st.session_state.is_admin = True
-elif st.session_state.is_admin:
-    # O TRUQUE MÁGICO: Re-injeta no URL se a navegação nativa o limpar
-    st.query_params["admin"] = secret_admin_pass
-else:
+elif admin_key_url is not None and admin_key_url != secret_admin_pass:
     st.session_state.is_admin = False
 
 # ==========================================
