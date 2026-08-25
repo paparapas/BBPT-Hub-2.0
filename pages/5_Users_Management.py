@@ -3,23 +3,23 @@ import pandas as pd
 import hashlib
 import os
 import base64
-from streamlit_cookies_controller import CookieController
 from db_connection import supabase
 
 st.set_page_config(page_title="Gestão de Utilizadores", page_icon="logo.png", layout="wide")
 
-# --- SINALIZAR COMPATIBILIDADE COM A SIDEBAR GLOBAL ---
-if "user_role" not in st.session_state:
-    st.session_state.user_role = None
-
 # ==========================================
-# GESTÃO DA SIDEBAR E SEGURANÇA DE COOKIES
+# 🔐 AUTENTICAÇÃO ESTÁTICA (LINK ADMIN)
 # ==========================================
-controller = CookieController()
-cookie_role = controller.get('user_role')
-if cookie_role in ["owner", "admin", "judge"]:
-    st.session_state.user_role = cookie_role
+if "is_admin" not in st.session_state:
+    st.session_state.is_admin = False
 
+admin_key_url = st.query_params.get("admin")
+secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
+
+if admin_key_url == secret_admin_pass:
+    st.session_state.is_admin = True
+
+# Gestão visual da Sidebar
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
 
@@ -31,48 +31,26 @@ with st.sidebar:
             f"""
             <div style="display: flex; align-items: center; margin-bottom: 20px;">
                 <img src="data:image/png;base64,{encoded_logo}" width="150" style="margin-right: 10px;">
-                <h1 style="margin: 0; padding: 0; font-size: 1.8rem;"></h1>
             </div>
             """, unsafe_allow_html=True
         )
     st.divider()
     
-    if st.session_state.user_role:
-        st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
-        if st.button("Sair (Logout) 🔒", use_container_width=True):
-            # 1. Limpa a memória RAM do Streamlit
-            st.session_state.user_role = None
-            if "finance_auth" in st.session_state:
-                st.session_state.finance_auth = False
-            
-            # 2. Verifica se os cookies existem ANTES de os tentar apagar
-            if controller.get('user_role') is not None:
-                controller.remove('user_role')
-                
-            if controller.get('finance_auth') is not None:
-                controller.remove('finance_auth')
-                
-            # 3. Recarrega a página
-            st.rerun()
+    if st.session_state.is_admin:
+        st.success("🔓 Modo ADMIN Ativo")
+    else:
+        st.info("Acesso Restrito")
 
 # --- BLOQUEIO ABSOLUTO DE ACESSO AO ECRÃ ---
-if st.session_state.user_role != "owner":
-    st.warning("🔒 Acesso Exclusivo ao Owner do Ecossistema BBPT.")
-    owner_pwd_input = st.text_input("Introduz a Password de Owner para prosseguir:", type="password")
-    if st.button("Autenticar Owner 🔑", type="primary"):
-        if owner_pwd_input.strip() == st.secrets["PASSWORDS"]["OWNER"]:
-            st.session_state.user_role = "owner"
-            controller.set('user_role', 'owner', max_age=43200)
-            st.success("Autenticado!")
-            st.rerun()
-        else:
-            st.error("Password de Owner incorreta!")
+if not st.session_state.is_admin:
+    st.warning("🔒 Acesso Exclusivo à Administração BBPT.")
+    st.info("Deves aceder a esta página através do teu link de Admin seguro.")
     st.stop()
 
 # ==========================================
 # CÓDIGO OPERACIONAL DE GESTÃO DE BLADERS
 # ==========================================
-st.title("👥 Painel de Controlo de Utilizadores (Owner)")
+st.title("👥 Painel de Controlo de Utilizadores")
 st.markdown("Cria novas contas de Bladers ou redefine credenciais de acesso em tempo real.")
 
 @st.cache_data(ttl=5)
