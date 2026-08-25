@@ -37,31 +37,21 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 🔐 GESTÃO DE SEGURANÇA (URL MAGIC TOKENS)
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE
 # ==========================================
-# Função para gerar tokens diários baseados no role
-def generate_daily_token(role):
-    # Vai buscar as passwords aos secrets consoante o cargo
-    pwd = st.secrets["PASSWORDS"].get(role.upper(), "default_secret")
-    today_str = date.today().isoformat()
-    secret_string = f"{role}_{pwd}_{today_str}"
-    return hashlib.md5(secret_string.encode('utf-8')).hexdigest()
+if "is_admin" not in st.session_state:
+    st.session_state.is_admin = False
 
-# 1. LER O URL INSTANTANEAMENTE E ATRIBUIR ROLE
-if "user_role" not in st.session_state: st.session_state.user_role = None
+secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
 
-url_params = st.query_params
-if "role" in url_params and "token" in url_params:
-    expected_token = generate_daily_token(url_params["role"])
-    # Se o crachá do URL bater certo com o gerado para o dia de hoje
-    if url_params["token"] == expected_token:
-        st.session_state.user_role = url_params["role"]
-    else:
-        # Se for um token antigo ou adulterado, limpa-o imediatamente
-        st.query_params.clear()
+if st.query_params.get("admin") == secret_admin_pass:
+    st.session_state.is_admin = True
+
+if st.session_state.is_admin and st.query_params.get("admin") != secret_admin_pass:
+    st.query_params["admin"] = secret_admin_pass
 
 # ==========================================
-# GESTÃO GLOBAL DE LOGIN (SIDEBAR AJUSTADA)
+# GESTÃO GLOBAL DA SIDEBAR
 # ==========================================
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
@@ -73,48 +63,26 @@ with st.sidebar:
     else: st.title("🛡️ BBPT App")
     st.divider()
 
-    # Menu Dinâmico Hierárquico
-    opcoes_menu = ["📝 Formulário Público", "🔍 Consulta Pública"]
-    if st.session_state.user_role in ["admin", "owner"]:
-        opcoes_menu.append("⚙️ Painel de Organização")
-    if st.session_state.user_role == "owner":
-        opcoes_menu.append("👥 Gestão de Utilizadores")
-
-    menu = st.radio("Navegação:", opcoes_menu)
-    st.divider()
-    
-    # Sistema Unificado de Input de Chaves
-    if not st.session_state.user_role:
-        with st.expander("🔐 Acesso Organização / Judges"):
-            pwd = st.text_input("Password:", type="password", key="login_global")
-            if st.button("Entrar 🔑", use_container_width=True):
-                # INJETA LOGO NO URL QUANDO FAZ LOGIN COM SUCESSO
-                if pwd.strip() == st.secrets["PASSWORDS"]["OWNER"]:
-                    st.query_params["role"] = "owner"
-                    st.query_params["token"] = generate_daily_token("owner")
-                    st.session_state.user_role = "owner"
-                    st.rerun()
-                elif pwd.strip() == st.secrets["PASSWORDS"]["ADMIN"]:
-                    st.query_params["role"] = "admin"
-                    st.query_params["token"] = generate_daily_token("admin")
-                    st.session_state.user_role = "admin"
-                    st.rerun()
-                elif pwd.strip() == st.secrets["PASSWORDS"]["JUDGE"]:
-                    st.query_params["role"] = "judge"
-                    st.query_params["token"] = generate_daily_token("judge")
-                    st.session_state.user_role = "judge"
-                    st.rerun()
-                else: st.error("Incorreta!")
-    else:
-        st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
+    if st.session_state.is_admin:
+        st.success("🔓 Modo ADMIN Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
-            st.session_state.user_role = None
-            st.query_params.clear() # Limpa imediatamente o token mágico do URL
+            st.session_state.is_admin = False
+            st.query_params.clear()
             st.rerun()
 
 # --- BLOQUEIO DE PÁGINA PARA PÚBLICO ---
-if st.session_state.user_role not in ["admin", "judge", "owner"]:
-    st.warning("🛑 Acesso Restrito: Apenas a Organização e os Juízes (Judges) podem aceder ao Battle Logger.")
+if not st.session_state.is_admin:
+    st.warning("🛑 Acesso Restrito: Apenas a Organização e os Juízes podem aceder ao Battle Logger.")
+    # Fallback caso alguém aceda sem a chave no URL mas queira entrar
+    admin_pwd_input = st.text_input("Introduz a Password de Staff para prosseguir:", type="password")
+    if st.button("Autenticar 🔑", type="primary"):
+        if admin_pwd_input.strip() == secret_admin_pass:
+            st.session_state.is_admin = True
+            st.query_params["admin"] = secret_admin_pass
+            st.success("Autenticado!")
+            st.rerun()
+        else:
+            st.error("Password incorreta!")
     st.stop()
 
 # ==========================================
