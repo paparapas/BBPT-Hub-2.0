@@ -4,43 +4,34 @@ import json
 import base64
 import os
 import re
-from datetime import date  # <--- Essencial ter isto
-import hashlib             # <--- Essencial ter isto
 from db_connection import supabase
 
 # 1. Configuração da Página
 st.set_page_config(page_title="BBPT Hub", page_icon="logo.png", layout="wide")
 
 # ==========================================
-# 🔐 GESTÃO DE SEGURANÇA (URL MAGIC TOKENS)
+# 🔐 AUTENTICAÇÃO ESTÁTICA (LINK ADMIN)
 # ==========================================
-def generate_daily_token(role):
-    # Usa a password do Admin para garantir segurança sem expô-la
-    pwd = st.secrets["PASSWORDS"].get("ADMIN", "bbpt-paparapas")
-    today_str = date.today().isoformat()
-    return hashlib.md5(f"{role}_{pwd}_{today_str}".encode('utf-8')).hexdigest()
+if "is_admin" not in st.session_state:
+    st.session_state.is_admin = False
 
-# 3. Função para gerar links que já incluem o token automaticamente
-def get_authenticated_url(path):
-    if st.session_state.user_role:
-        role = st.session_state.user_role
-        token = generate_daily_token(role)
-        return f"{path}?role={role}&token={token}"
-    return path
+# Lê a password do URL e compara com o secrets
+admin_key_url = st.query_params.get("admin")
+secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
 
-# 1. LER O URL INSTANTANEAMENTE
-if "user_role" not in st.session_state: st.session_state.user_role = None
+if admin_key_url == secret_admin_pass:
+    st.session_state.is_admin = True
 
-url_params = st.query_params
-if "role" in url_params and "token" in url_params:
-    expected_token = generate_daily_token(url_params["role"])
-    if url_params["token"] == expected_token:
-        st.session_state.user_role = url_params["role"]
-    else:
-        st.query_params.clear()
+# 🚫 ESCONDER A NAVEGAÇÃO NATIVA DO STREAMLIT
+# Isto impede que o utilizador clique nos links padrão que limpam o URL
+st.markdown("""
+<style>
+    [data-testid="stSidebarNav"] {display: none !important;}
+</style>
+""", unsafe_allow_html=True)
 
 # ==========================================
-# GESTÃO GLOBAL DE LOGIN E SIDEBAR
+# GESTÃO GLOBAL DA SIDEBAR E NAVEGAÇÃO
 # ==========================================
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
@@ -49,50 +40,49 @@ with st.sidebar:
     if has_logo:
         with open(logo_path, "rb") as image_file: 
             encoded_logo = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'></h1></div>", unsafe_allow_html=True)
+        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'></div>", unsafe_allow_html=True)
     else: 
         st.title("🛡️Hub")
+    
+    st.divider()
+    
+    # Feedback Visual de Autenticação
+    if st.session_state.is_admin:
+        st.success("🔓 Modo ADMIN Ativo")
+    else:
+        st.info("👤 Modo Player")
+        
     st.divider()
 
+    # ==========================================
+    # 🧭 NAVEGAÇÃO CUSTOMIZADA (OPÇÃO 1)
+    # ==========================================
+    st.markdown("### 🧭 Menu Principal")
+    
+    # Função que cria botões HTML. Eles forçam o browser a navegar sem limpar o URL.
+    def nav_link(label, file_path):
+        q_param = f"?admin={secret_admin_pass}" if st.session_state.is_admin else ""
+        st.markdown(f'<a href="/{file_path}{q_param}" target="_self" style="display: block; padding: 0.5rem 1rem; background-color: #2e303e; color: white; text-decoration: none; border: 1px solid #4CAF50; border-radius: 0.25rem; text-align: center; margin-bottom: 0.5rem; font-weight: 600;">{label}</a>', unsafe_allow_html=True)
+
+    # Links disponíveis para todos
+    nav_link("🏠 Hub Histórico (Home)", "")
+    nav_link("📝 Deck Check", "Deck_Check")
+    nav_link("📋 Logs de Batalha", "Battle_Logs")
+    
+    # Links exclusivos para Admin
+    if st.session_state.is_admin:
+        nav_link("⚔️ Battle Logger", "Battle_Logger")
+        nav_link("👥 Gestão Utilizadores", "Users_Management")
+        nav_link("🧩 Inventário", "Inventario")
+
+    st.divider()
+
+    # Módulos Internos do Hub Histórico (Mantidos do teu código original)
     page = st.radio("Módulos do Hub Histórico:", [
         "Liga Critical", "Liga Fénix Negra", "Torneio de Equipas - Liga Versus", 
         "Rankings Globais", "Ad-Hoc: Blader Profile", "Contactos & Organização"
     ])
-    
     st.divider()
-
-    if not st.session_state.user_role:
-        with st.expander("🔐 Acesso Organização / Judges"):
-            # O input TEM de estar aqui fora para poderes escrever nele
-            pwd_input = st.text_input("Password:", type="password", key="login_global")
-            
-            # O botão só processa o que foi escrito no input acima
-            if st.button("Entrar 🔑", use_container_width=True):
-                if pwd_input:
-                    role = None
-                    if pwd_input.strip() == st.secrets["PASSWORDS"].get("OWNER"): role = "owner"
-                    elif pwd_input.strip() == st.secrets["PASSWORDS"].get("ADMIN"): role = "admin"
-                    elif pwd_input.strip() == st.secrets["PASSWORDS"].get("JUDGE"): role = "judge"
-                    
-                    if role:
-                        # 1. Definimos o estado da sessão
-                        st.session_state.user_role = role
-                        # 2. Definimos os parâmetros do URL explicitamente
-                        st.query_params["role"] = role
-                        st.query_params["token"] = generate_daily_token(role)
-                        # 3. Forçamos o reload da página
-                        st.rerun()
-                    else: 
-                        st.error("Password Incorreta!")
-                else:
-                    st.warning("Por favor, introduz a password.")
-    else:
-        role_text = st.session_state.user_role.upper() if st.session_state.user_role else "UNKNOWN"
-        st.success(f"🔓 Modo {role_text} Ativo")
-        if st.button("Sair (Logout) 🔒", use_container_width=True):
-            st.session_state.user_role = None
-            st.query_params.clear() # Isto limpa o token do URL
-            st.rerun()   
 
 # ==========================================
 # 2. CARREGAR DADOS HISTÓRICOS (HÍBRIDO)
