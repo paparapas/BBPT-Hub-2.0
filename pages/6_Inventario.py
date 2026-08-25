@@ -1,26 +1,23 @@
 import streamlit as st
-import os
-import base64
 from db_connection import supabase
 
-# Configuração da Página
 st.set_page_config(page_title="Gestão Inventário", page_icon="logo.png")
 
 # ==========================================
 # 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE
 # ==========================================
+if "is_admin" not in st.session_state: st.session_state.is_admin = False
 secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
 
-if "is_admin" not in st.session_state:
-    st.session_state.is_admin = False
-
-admin_key_url = st.query_params.get("admin")
-
-# Valida o URL. Se estiver limpo, confia na memória da Sessão!
-if admin_key_url == secret_admin_pass:
+if st.query_params.get("admin") == secret_admin_pass:
     st.session_state.is_admin = True
-elif admin_key_url is not None and admin_key_url != secret_admin_pass:
-    st.session_state.is_admin = False
+
+if st.session_state.is_admin and st.query_params.get("admin") != secret_admin_pass:
+    st.query_params["admin"] = secret_admin_pass
+
+if not st.session_state.is_admin:
+    st.warning("🔒 Acesso Exclusivo à Administração BBPT.")
+    st.stop() 
 
 # ==========================================
 # 🔐 VERIFICAÇÃO DE AUTENTICAÇÃO
