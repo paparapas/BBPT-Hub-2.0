@@ -21,14 +21,22 @@ st.set_page_config(page_title="Deck Check & Admin",  page_icon="logo.png", layou
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s [%(levelname)s] %(message)s')
 
 # ==========================================
-# GESTÃO GLOBAL DE LOGIN (SIDEBAR AJUSTADA)
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE
 # ==========================================
-if "user_role" not in st.session_state: st.session_state.user_role = None
+if "is_admin" not in st.session_state: st.session_state.is_admin = False
 
-controller = CookieController()
-c_role = controller.get('user_role')
-if c_role: st.session_state.user_role = c_role
+secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
 
+if st.query_params.get("admin") == secret_admin_pass:
+    st.session_state.is_admin = True
+
+# O Gatekeeper que re-injeta a password na navegação
+if st.session_state.is_admin and st.query_params.get("admin") != secret_admin_pass:
+    st.query_params["admin"] = secret_admin_pass
+
+# ==========================================
+# GESTÃO GLOBAL DA SIDEBAR
+# ==========================================
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
 
@@ -40,34 +48,17 @@ with st.sidebar:
     st.divider()
 
     opcoes_menu = ["📝 Formulário Público", "🔍 Consulta Pública"]
-    if st.session_state.user_role in ["admin", "owner"]: opcoes_menu.append("⚙️ Painel de Organização")
-    menu = st.radio("Navegação:", opcoes_menu)
+    if st.session_state.is_admin: 
+        opcoes_menu.append("⚙️ Painel de Organização")
+        
+    menu = st.radio("Navegação Interna:", opcoes_menu)
     st.divider()
     
-    if not st.session_state.user_role:
-        with st.expander("🔐 Acesso Organização / Judges"):
-            pwd = st.text_input("Password:", type="password", key="login_global")
-            if st.button("Entrar 🔑", use_container_width=True):
-                if pwd.strip() == st.secrets["PASSWORDS"]["OWNER"]:
-                    st.session_state.user_role = "owner"
-                    controller.set('user_role', 'owner', max_age=43200)
-                    st.rerun()
-                elif pwd.strip() == st.secrets["PASSWORDS"]["ADMIN"]:
-                    st.session_state.user_role = "admin"
-                    controller.set('user_role', 'admin', max_age=43200)
-                    st.rerun()
-                elif pwd.strip() == st.secrets["PASSWORDS"]["JUDGE"]:
-                    st.session_state.user_role = "judge"
-                    controller.set('user_role', 'judge', max_age=43200)
-                    st.rerun()
-                else: st.error("Incorreta!")
-    else:
-        st.success(f"🔓 Modo {st.session_state.user_role.upper()} Ativo")
+    if st.session_state.is_admin:
+        st.success("🔓 Modo ADMIN Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
-            st.session_state.user_role = None
-            if "finance_auth" in st.session_state: st.session_state.finance_auth = False
-            try: controller.remove('user_role')
-            except: pass
+            st.session_state.is_admin = False
+            st.query_params.clear()
             st.rerun()
 
 # ==========================================
