@@ -8,17 +8,17 @@ from db_connection import supabase
 st.set_page_config(page_title="Gestão de Utilizadores", page_icon="logo.png", layout="wide")
 
 # ==========================================
-# 🔐 AUTENTICAÇÃO ESTÁTICA (LINK ADMIN)
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE
 # ==========================================
-if "is_admin" not in st.session_state:
-    st.session_state.is_admin = False
-
-admin_key_url = st.query_params.get("admin")
+if "is_admin" not in st.session_state: st.session_state.is_admin = False
 secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
 
-if admin_key_url == secret_admin_pass:
+if st.query_params.get("admin") == secret_admin_pass:
     st.session_state.is_admin = True
 
+if st.session_state.is_admin and st.query_params.get("admin") != secret_admin_pass:
+    st.query_params["admin"] = secret_admin_pass
+    
 # Gestão visual da Sidebar
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
