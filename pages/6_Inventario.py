@@ -1,48 +1,33 @@
 import streamlit as st
-from streamlit_cookies_controller import CookieController
+import os
+import base64
 from db_connection import supabase
 
-# Configuração da Página
 st.set_page_config(page_title="Gestão Inventário", page_icon="logo.png")
 
-# INICIALIZAÇÃO DO CONTROLLER (Fora de qualquer função cacheada para evitar o Warning)
-controller = CookieController()
+# ==========================================
+# 🔐 AUTENTICAÇÃO ESTÁTICA (LINK ADMIN)
+# ==========================================
+if "is_admin" not in st.session_state:
+    st.session_state.is_admin = False
 
-# ==========================================
-# GESTÃO DE ESTADO E AUTENTICAÇÃO
-# ==========================================
-if "user_role" not in st.session_state:
-    st.session_state.user_role = controller.get('user_role')
+admin_key_url = st.query_params.get("admin")
+secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
 
-# ==========================================
-# 🔐 VERIFICAÇÃO DE AUTENTICAÇÃO (OWNER ONLY)
-# ==========================================
-if st.session_state.user_role != "owner":
-    st.warning("🔒 Acesso Exclusivo ao Owner do Ecossistema BBPT.")
-    
-    owner_pwd_input = st.text_input("Introduz a Password de Owner:", type="password")
-    
-    if st.button("Autenticar Owner 🔑", type="primary"):
-        # Lemos a password de forma segura dos secrets
-        pwd_owner = st.secrets.get("PASSWORDS", {}).get("OWNER", "bbpt-owner123")
-        
-        if owner_pwd_input.strip() == pwd_owner:
-            st.session_state.user_role = "owner"
-            try:
-                controller.set('user_role', 'owner', max_age=43200)
-            except:
-                pass
-            st.success("Autenticado!")
-            st.rerun()
-        else:
-            st.error("Password de Owner incorreta!")
+# Se o URL tiver ?admin=TUA_PASSWORD, entra automaticamente
+if admin_key_url == secret_admin_pass:
+    st.session_state.is_admin = True
+
+if not st.session_state.is_admin:
+    st.warning("🔒 Acesso Exclusivo à Administração BBPT.")
+    st.info("Deves aceder a esta página através do teu link de Admin seguro.")
     st.stop() 
 
 # ==========================================
-# 🧩 GESTÃO DE INVENTÁRIO (SÓ CHEGA AQUI SE FOR OWNER)
+# 🧩 GESTÃO DE INVENTÁRIO (SÓ CHEGA AQUI SE FOR ADMIN)
 # ==========================================
 st.title("🧩 Registar Nova Peça")
-st.markdown("Bem-vindo, Owner. Adiciona novas peças diretamente ao Supabase.")
+st.markdown("Bem-vindo, Admin. Adiciona novas peças diretamente ao Supabase.")
 
 with st.form("nova_peca", clear_on_submit=True):
     col1, col2 = st.columns(2)
