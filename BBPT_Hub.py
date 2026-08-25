@@ -10,28 +10,29 @@ from db_connection import supabase
 st.set_page_config(page_title="BBPT Hub", page_icon="logo.png", layout="wide")
 
 # ==========================================
-# 🔐 AUTENTICAÇÃO ESTÁTICA (LINK ADMIN)
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE
 # ==========================================
+# 1. Obter a password dos secrets
+secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
+
+# 2. Inicializar o estado se não existir
 if "is_admin" not in st.session_state:
     st.session_state.is_admin = False
 
-# Lê a password do URL e compara com o secrets
+# 3. Ler o URL atual
 admin_key_url = st.query_params.get("admin")
-secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
 
+# 4. Lógica de Validação e Persistência
 if admin_key_url == secret_admin_pass:
     st.session_state.is_admin = True
-
-# 🚫 ESCONDER A NAVEGAÇÃO NATIVA DO STREAMLIT
-# Isto impede que o utilizador clique nos links padrão que limpam o URL
-st.markdown("""
-<style>
-    [data-testid="stSidebarNav"] {display: none !important;}
-</style>
-""", unsafe_allow_html=True)
+elif st.session_state.is_admin:
+    # O TRUQUE MÁGICO: Se o menu nativo apagou o URL, mas a sessão sabe que és admin, re-injeta no URL!
+    st.query_params["admin"] = secret_admin_pass
+else:
+    st.session_state.is_admin = False
 
 # ==========================================
-# GESTÃO GLOBAL DA SIDEBAR E NAVEGAÇÃO
+# GESTÃO GLOBAL E SIDEBAR
 # ==========================================
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
@@ -40,49 +41,28 @@ with st.sidebar:
     if has_logo:
         with open(logo_path, "rb") as image_file: 
             encoded_logo = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'></div>", unsafe_allow_html=True)
+        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'></h1></div>", unsafe_allow_html=True)
     else: 
         st.title("🛡️Hub")
-    
-    st.divider()
-    
-    # Feedback Visual de Autenticação
-    if st.session_state.is_admin:
-        st.success("🔓 Modo ADMIN Ativo")
-    else:
-        st.info("👤 Modo Player")
-        
     st.divider()
 
-    # ==========================================
-    # 🧭 NAVEGAÇÃO CUSTOMIZADA (OPÇÃO 1)
-    # ==========================================
-    st.markdown("### 🧭 Menu Principal")
-    
-    # Função que cria botões HTML. Eles forçam o browser a navegar sem limpar o URL.
-    def nav_link(label, file_path):
-        q_param = f"?admin={secret_admin_pass}" if st.session_state.is_admin else ""
-        st.markdown(f'<a href="/{file_path}{q_param}" target="_self" style="display: block; padding: 0.5rem 1rem; background-color: #2e303e; color: white; text-decoration: none; border: 1px solid #4CAF50; border-radius: 0.25rem; text-align: center; margin-bottom: 0.5rem; font-weight: 600;">{label}</a>', unsafe_allow_html=True)
-
-    # Links disponíveis para todos
-    nav_link("🏠 Hub Histórico (Home)", "")
-    nav_link("📝 Deck Check", "Deck_Check")
-    nav_link("📋 Logs de Batalha", "Battle_Logs")
-    
-    # Links exclusivos para Admin
-    if st.session_state.is_admin:
-        nav_link("⚔️ Battle Logger", "Battle_Logger")
-        nav_link("👥 Gestão Utilizadores", "Users_Management")
-        nav_link("🧩 Inventário", "Inventario")
-
-    st.divider()
-
-    # Módulos Internos do Hub Histórico (Mantidos do teu código original)
+    # O teu menu original de submódulos continua intacto
     page = st.radio("Módulos do Hub Histórico:", [
         "Liga Critical", "Liga Fénix Negra", "Torneio de Equipas - Liga Versus", 
         "Rankings Globais", "Ad-Hoc: Blader Profile", "Contactos & Organização"
     ])
+    
     st.divider()
+
+    # Feedback de Autenticação (Sem caixas de password!)
+    if st.session_state.is_admin:
+        st.success("🔓 Modo ADMIN Ativo")
+        if st.button("Sair (Logout) 🔒", use_container_width=True):
+            st.session_state.is_admin = False
+            st.query_params.clear() 
+            st.rerun()   
+    else:
+        st.info("👤 Modo Público (Player)")
 
 # ==========================================
 # 2. CARREGAR DADOS HISTÓRICOS (HÍBRIDO)
