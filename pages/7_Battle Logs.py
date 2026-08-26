@@ -13,8 +13,9 @@ st.set_page_config(page_title="BattleLogs", page_icon="📋", layout="wide", ini
 
 st.markdown("""
 <style>
-    header[data-testid="stHeader"] { display: none !important; }
-    .block-container { padding-top: 2rem !important; padding-bottom: 0.5rem !important; max-width: 100% !important; }
+    button[kind="header"] { display: block !important; visibility: visible !important; }
+    [data-testid="stSidebarCollapsedControl"] { display: block !important; visibility: visible !important; position: fixed !important; left: 0 !important; z-index: 999999 !important; }
+    [data-testid="stSidebar"] { display: block !important; }
 </style>
 """, unsafe_allow_html=True)
 
