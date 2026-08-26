@@ -127,7 +127,7 @@ if not has_access:
 # ==========================================
 # ECRÃ DE AUTENTICAÇÃO (BLADER OU ADMIN)
 # ==========================================
-has_access = (st.session_state.role == "admin") or (st.session_state.blader_user is not None)
+has_access = st.session_state.is_admin is not True
 
 if not has_access:
     st.title("📋 Consulta de BattleLogs")
