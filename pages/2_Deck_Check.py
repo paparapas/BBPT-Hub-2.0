@@ -21,18 +21,33 @@ st.set_page_config(page_title="Deck Check & Admin",  page_icon="logo.png", layou
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s [%(levelname)s] %(message)s')
 
 # ==========================================
-# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE (RBAC)
 # ==========================================
 if "is_admin" not in st.session_state: st.session_state.is_admin = False
+if "is_judge" not in st.session_state: st.session_state.is_judge = False
+if "auth_token" not in st.session_state: st.session_state.auth_token = None
 
-secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
+admin_passwords = list(st.secrets.get("ADMINS", {}).values())
+judge_passwords = list(st.secrets.get("JUDGES", {}).values())
 
-if st.query_params.get("admin") == secret_admin_pass:
+admin_key_url = st.query_params.get("admin")
+judge_key_url = st.query_params.get("judge")
+
+if admin_key_url in admin_passwords:
     st.session_state.is_admin = True
+    st.session_state.is_judge = False
+    st.session_state.auth_token = admin_key_url
+elif judge_key_url in judge_passwords:
+    st.session_state.is_judge = True
+    st.session_state.is_admin = False
+    st.session_state.auth_token = judge_key_url
 
-# O Gatekeeper que re-injeta a password na navegação
-if st.session_state.is_admin and st.query_params.get("admin") != secret_admin_pass:
-    st.query_params["admin"] = secret_admin_pass
+if st.session_state.is_admin and st.query_params.get("admin") != st.session_state.auth_token:
+    st.query_params["admin"] = st.session_state.auth_token
+elif st.session_state.is_judge and st.query_params.get("judge") != st.session_state.auth_token:
+    st.query_params["judge"] = st.session_state.auth_token
+elif not st.session_state.is_admin and not st.session_state.is_judge:
+    st.session_state.auth_token = None
 
 # ==========================================
 # GESTÃO GLOBAL DA SIDEBAR
@@ -48,6 +63,7 @@ with st.sidebar:
     st.divider()
 
     opcoes_menu = ["📝 Formulário Público", "🔍 Consulta Pública"]
+    # Mostra a opção de Admin apenas se a sessão for ADMIN (Juiz não vê)
     if st.session_state.is_admin: 
         opcoes_menu.append("⚙️ Painel de Organização")
         
@@ -58,8 +74,18 @@ with st.sidebar:
         st.success("🔓 Modo ADMIN Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.is_admin = False
+            st.session_state.auth_token = None
             st.query_params.clear()
             st.rerun()
+    elif st.session_state.is_judge:
+        st.success("⚖️ Modo JUIZ Ativo")
+        if st.button("Sair (Logout) 🔒", use_container_width=True):
+            st.session_state.is_judge = False
+            st.session_state.auth_token = None
+            st.query_params.clear()
+            st.rerun()
+    else:
+        st.info("👤 Modo Público (Player)")
 
 # ==========================================
 # INTEGRAÇÃO SUPABASE (AGORA SUPER RÁPIDA - TTL=600)
