@@ -37,18 +37,33 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE (RBAC)
 # ==========================================
-if "is_admin" not in st.session_state:
-    st.session_state.is_admin = False
+if "is_admin" not in st.session_state: st.session_state.is_admin = False
+if "is_judge" not in st.session_state: st.session_state.is_judge = False
+if "auth_token" not in st.session_state: st.session_state.auth_token = None
 
-secret_admin_pass = st.secrets.get("PASSWORDS", {}).get("ADMIN", "bbpt-paparapas")
+admin_passwords = list(st.secrets.get("ADMINS", {}).values())
+judge_passwords = list(st.secrets.get("JUDGES", {}).values())
 
-if st.query_params.get("admin") == secret_admin_pass:
+admin_key_url = st.query_params.get("admin")
+judge_key_url = st.query_params.get("judge")
+
+if admin_key_url in admin_passwords:
     st.session_state.is_admin = True
+    st.session_state.is_judge = False
+    st.session_state.auth_token = admin_key_url
+elif judge_key_url in judge_passwords:
+    st.session_state.is_judge = True
+    st.session_state.is_admin = False
+    st.session_state.auth_token = judge_key_url
 
-if st.session_state.is_admin and st.query_params.get("admin") != secret_admin_pass:
-    st.query_params["admin"] = secret_admin_pass
+if st.session_state.is_admin and st.query_params.get("admin") != st.session_state.auth_token:
+    st.query_params["admin"] = st.session_state.auth_token
+elif st.session_state.is_judge and st.query_params.get("judge") != st.session_state.auth_token:
+    st.query_params["judge"] = st.session_state.auth_token
+elif not st.session_state.is_admin and not st.session_state.is_judge:
+    st.session_state.auth_token = None
 
 # ==========================================
 # GESTÃO GLOBAL DA SIDEBAR
@@ -67,22 +82,39 @@ with st.sidebar:
         st.success("🔓 Modo ADMIN Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
             st.session_state.is_admin = False
+            st.session_state.auth_token = None
             st.query_params.clear()
             st.rerun()
+    elif st.session_state.is_judge:
+        st.success("⚖️ Modo JUIZ Ativo")
+        if st.button("Sair (Logout) 🔒", use_container_width=True):
+            st.session_state.is_judge = False
+            st.session_state.auth_token = None
+            st.query_params.clear()
+            st.rerun()
+    else:
+        st.info("👤 Modo Público (Player)")
 
-# --- BLOQUEIO DE PÁGINA PARA PÚBLICO ---
-if not st.session_state.is_admin:
+# --- BLOQUEIO DE PÁGINA PARA PÚBLICO (ACEITA AMBOS) ---
+if not (st.session_state.is_admin or st.session_state.is_judge):
     st.warning("🛑 Acesso Restrito: Apenas a Organização e os Juízes podem aceder ao Battle Logger.")
-    # Fallback caso alguém aceda sem a chave no URL mas queira entrar
-    admin_pwd_input = st.text_input("Introduz a Password de Staff para prosseguir:", type="password")
+    
+    admin_pwd_input = st.text_input("Introduz a Chave de Acesso para prosseguir:", type="password")
     if st.button("Autenticar 🔑", type="primary"):
-        if admin_pwd_input.strip() == secret_admin_pass:
+        if admin_pwd_input.strip() in admin_passwords:
             st.session_state.is_admin = True
-            st.query_params["admin"] = secret_admin_pass
-            st.success("Autenticado!")
+            st.session_state.auth_token = admin_pwd_input.strip()
+            st.query_params["admin"] = admin_pwd_input.strip()
+            st.success("Bem-vindo, Admin!")
+            st.rerun()
+        elif admin_pwd_input.strip() in judge_passwords:
+            st.session_state.is_judge = True
+            st.session_state.auth_token = admin_pwd_input.strip()
+            st.query_params["judge"] = admin_pwd_input.strip()
+            st.success("Bem-vindo, Juiz!")
             st.rerun()
         else:
-            st.error("Password incorreta!")
+            st.error("Chave incorreta!")
     st.stop()
 
 # ==========================================
