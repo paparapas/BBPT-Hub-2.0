@@ -84,7 +84,7 @@ with st.form("nova_peca", clear_on_submit=True):
         spin = st.selectbox("Rotação:", ["Right", "Left", "Dual"])
     
     with col2:
-        sys = st.selectbox("Sistema:", ["BX", "UX", "CX", "CX Expanded", "UX Expanded", ""])
+        sys = st.selectbox("Sistema:", ["BX", "UX", "CX", "CX Expanded", "UX Expanded", "BX Expanded", ""])
         img_url = st.text_input("URL da Imagem (ImgBB - Link Direto):")
     
     submit = st.form_submit_button("Gravar no Supabase 🚀")
