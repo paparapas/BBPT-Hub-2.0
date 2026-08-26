@@ -153,10 +153,12 @@ def save_submission_cloud(player_name, combos, img_file, event_name):
     img_url = upload_to_imgbb(img_file)
     c_strs = []
     for c in combos:
-        if c['type'] == 'Standard (BX / UX)': keys = ['main_blade', 'ratchet', 'bit']
+        # Adicionámos o BX Expanded aqui
+        if c['type'] in ['Standard (BX / UX)', 'BX Expanded']: keys = ['main_blade', 'ratchet', 'bit']
         elif c['type'] == 'UX Expanded': keys = ['main_blade', 'bit']
         elif c['type'] == 'CX': keys = ['lock_chip', 'main_blade', 'assist_blade', 'ratchet', 'bit']
         else: keys = ['lock_chip', 'metal_blade', 'over_blade', 'assist_blade', 'ratchet', 'bit']
+        
         parts = [str(c.get(k, '')) for k in keys if c.get(k, '') not in ["Integrada", "Integrada na Blade"]]
         c_strs.append(" | ".join(parts))
         
@@ -192,7 +194,8 @@ for i in range(4):
 def load_parts():
     try:
         res = supabase.table("parts").select("*").execute()
-        p_dict = {"bx_ux_blades": [], "ux_expanded_blades": [], "cx_blades": [], "ratchets": [], "bits": [], "assist_blades": [], "metal_blades": [], "over_blades": [], "lock_chips": []}
+        # Adicionámos "bx_expanded_blades" ao dicionário
+        p_dict = {"bx_ux_blades": [], "ux_expanded_blades": [], "bx_expanded_blades": [], "cx_blades": [], "ratchets": [], "bits": [], "assist_blades": [], "metal_blades": [], "over_blades": [], "lock_chips": []}
         for p in res.data:
             name, ptype, sys = str(p["name"]).strip(), p["part_type"], p["system_type"]
             if ptype == "Bit": p_dict["bits"].append(name)
@@ -206,10 +209,12 @@ def load_parts():
                     p_dict["cx_blades"].append(name)
                 elif sys == "UX Expanded" or sys == "Expanded": 
                     p_dict["ux_expanded_blades"].append(name)
+                elif sys == "BX Expanded": # <-- NOVA CONDIÇÃO AQUI
+                    p_dict["bx_expanded_blades"].append(name)
                 else: 
                     p_dict["bx_ux_blades"].append(name)
         return {k: sorted(list(set(v))) for k, v in p_dict.items()}, {}
-    except: return {k: [] for k in ["bx_ux_blades", "ux_expanded_blades", "cx_blades", "ratchets", "bits", "assist_blades", "metal_blades", "over_blades", "lock_chips"]}, {}
+    except: return {k: [] for k in ["bx_ux_blades", "ux_expanded_blades", "bx_expanded_blades", "cx_blades", "ratchets", "bits", "assist_blades", "metal_blades", "over_blades", "lock_chips"]}, {}
 
 @st.cache_data(ttl=600) 
 def get_dynamic_player_list():
@@ -225,7 +230,9 @@ def parse_smart_combo(text, parts_dict, alias_map):
     words, text_cl = text.split(), "".join([re.sub(r'[^a-zA-Z0-9]', '', w).lower() for w in text.split()])
     words_cl = [re.sub(r'[^a-zA-Z0-9]', '', w).lower() for w in words]
     temp_dict = parts_dict.copy()
-    temp_dict["all_main_blades"] = parts_dict.get("bx_ux_blades", []) + parts_dict.get("cx_blades", []) + parts_dict.get("ux_expanded_blades", [])
+    
+    # Adicionámos as bx_expanded_blades à pool total de pesquisa
+    temp_dict["all_main_blades"] = parts_dict.get("bx_ux_blades", []) + parts_dict.get("cx_blades", []) + parts_dict.get("ux_expanded_blades", []) + parts_dict.get("bx_expanded_blades", [])
     cats = [("over_blades", "over_blade"), ("metal_blades", "metal_blade"), ("all_main_blades", "main_blade"), ("assist_blades", "assist_blade"), ("ratchets", "ratchet"), ("bits", "bit"), ("lock_chips", "lock_chip")]
     
     for cat, key in cats:
@@ -246,10 +253,13 @@ def parse_smart_combo(text, parts_dict, alias_map):
                 r_max = match_score / len(p_words); best = p
         parsed[key] = best
 
+    # Deteção do novo tipo
     if parsed["over_blade"] != "--" or parsed["metal_blade"] != "--": parsed["type"] = "CX Expanded"
     elif parsed["main_blade"] in temp_dict.get("ux_expanded_blades", []): parsed["type"] = "UX Expanded"
+    elif parsed["main_blade"] in temp_dict.get("bx_expanded_blades", []): parsed["type"] = "BX Expanded" # <-- NOVA REGRA
     elif parsed["assist_blade"] != "--" or parsed["main_blade"] in parts_dict.get("cx_blades", []): parsed["type"] = "CX" 
     else: parsed["type"] = "Standard (BX / UX)"
+    
     if parsed["type"] in ["CX", "CX Expanded"] and parsed["lock_chip"] == "--" and words: parsed["lock_chip"] = words[0].capitalize()
     return parsed
 
@@ -402,15 +412,24 @@ if menu == "📝 Formulário Público":
     for i in range(st.session_state.num_combos):
         with st.container(border=True):
             t1, t2 = st.columns([1, 3]); t1.markdown(f"#### Combo {i+1}")
-            ct = t2.selectbox("Tipo", ["Standard (BX / UX)", "CX", "CX Expanded", "UX Expanded"], key=f"c_{i}_type", label_visibility="collapsed")
+            
+            # 1. Adicionar à Dropdown
+            ct = t2.selectbox("Tipo", ["Standard (BX / UX)", "BX Expanded", "CX", "CX Expanded", "UX Expanded"], key=f"c_{i}_type", label_visibility="collapsed")
+            
             is_int = st.session_state.get(f"c_{i}_bit", "--") in ["Turbo", "Operate"]
             r_opts = ["Integrada"] if is_int else ["--"] + parts["ratchets"]
             
-            if ct == "Standard (BX / UX)":
+            # 2. Renderizar a vista (juntámos BX Expanded com o Standard)
+            if ct in ["Standard (BX / UX)", "BX Expanded"]:
                 c1, c2, c3 = st.columns([2, 1, 1])
-                c1.selectbox("Blade", ["--"]+parts["bx_ux_blades"], key=f"c_{i}_main_blade")
-                c3.selectbox("Bit", ["--"]+parts["bits"], key=f"c_{i}_bit")
+                
+                # Se for BX Expanded mostra apenas lâminas BX Expanded. Se for Standard mostra as outras.
+                blade_options = parts["bx_expanded_blades"] if ct == "BX Expanded" else parts["bx_ux_blades"]
+                
+                c1.selectbox("Blade", ["--"] + blade_options, key=f"c_{i}_main_blade")
+                c3.selectbox("Bit", ["--"] + parts["bits"], key=f"c_{i}_bit")
                 c2.selectbox("Ratchet", r_opts, key=f"c_{i}_ratchet", disabled=is_int)
+                
             elif ct == "CX":
                 c1, c2, c3, c4, c5 = st.columns([1.5, 2, 2, 1.2, 1.2])
                 if parts["lock_chips"]: c1.selectbox("Chip", ["--"]+parts["lock_chips"], key=f"c_{i}_lock_chip")
@@ -453,7 +472,7 @@ if menu == "📝 Formulário Público":
         # 1. CICLO DE ANÁLISE DOS COMBOS
         for i in range(st.session_state.num_combos):
             ct = st.session_state[f"c_{i}_type"]; cd = {"type": ct, "combo_number": i+1}
-            ks = ["main_blade", "ratchet", "bit"] if ct in ["Standard (BX / UX)", "UX Expanded"] else ["lock_chip", "main_blade", "assist_blade", "ratchet", "bit"] if ct == "CX" else ["lock_chip", "metal_blade" , "over_blade" , "assist_blade", "ratchet", "bit"]
+            ks = ["main_blade", "ratchet", "bit"] if ct in ["Standard (BX / UX)", "UX Expanded", "BX Expanded"] else ["lock_chip", "main_blade", "assist_blade", "ratchet", "bit"] if ct == "CX" else ["lock_chip", "metal_blade" , "over_blade" , "assist_blade", "ratchet", "bit"]
             
             for k in ks:
                 v = st.session_state.get(f"c_{i}_{k}", "--")
