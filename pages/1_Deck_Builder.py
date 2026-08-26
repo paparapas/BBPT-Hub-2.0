@@ -138,11 +138,9 @@ def load_categories():
             name = c["name"]
             url = c["image_url"]
             
-            # Mapeamento robusto
             if name in ["Right Spin", "Left Spin", "Attack", "Defense", "Stamina", "Balance"]:
                 icons[name] = url
             
-            # Procura o logo pela correspondência parcial
             if "Basic" in name: line_logos["Basic (BX)"] = url
             if "Unique" in name: line_logos["Unique (UX)"] = url
             if "Custom" in name: line_logos["Custom (CX)"] = url
@@ -158,7 +156,7 @@ ICONS, LINE_LOGOS = load_categories()
 @st.cache_data(ttl=300)
 def load_builder_data():
     parts_dict = {
-        "bx_blades": [], "ux_blades": [], "ux_expanded_blades": [], 
+        "bx_blades": [], "ux_blades": [], "ux_expanded_blades": [], "bx_expanded_blades": [], 
         "cx_blades": [], "ratchets": [], "bits": [], 
         "assist_blades": [], "metal_blades": [], "over_blades": [], "lock_chips": []
     }
@@ -172,17 +170,14 @@ def load_builder_data():
             ptype = p["part_type"]
             sys = p.get("system_type", "")
             
-            # Spin Direction
             spin_raw = str(p.get("spin_direction", "Right")).strip().title()
             spin_val = "Left" if spin_raw == "Left" else "Right"
             spin_dict[name] = f"{spin_val} Spin"
             
-            # Image URL
             img_url = p.get("image_url")
             if img_url and str(img_url).startswith("http"):
                 images_dict[name] = str(img_url)
                 
-            # Classificar
             if ptype == "Bit": parts_dict["bits"].append(name)
             elif ptype == "Ratchet": parts_dict["ratchets"].append(name)
             elif ptype == "Lock Chip": parts_dict["lock_chips"].append(name)
@@ -193,61 +188,12 @@ def load_builder_data():
                 if sys == "CX": parts_dict["cx_blades"].append(name)
                 elif sys == "UX": parts_dict["ux_blades"].append(name)
                 elif sys == "UX Expanded": parts_dict["ux_expanded_blades"].append(name)
+                elif sys == "BX Expanded": parts_dict["bx_expanded_blades"].append(name)
                 else: parts_dict["bx_blades"].append(name)
 
         return {k: sorted(list(set(v))) for k, v in parts_dict.items()}, images_dict, spin_dict
     except Exception as e:
         st.error(f"Erro ao carregar Peças: {e}")
-        return parts_dict, {}, {}
-
-parts, images_map, spin_map = load_builder_data()
-
-# ==========================================
-# LEITURA DA BASE DE DADOS SUPABASE
-# ==========================================
-@st.cache_data(ttl=300)
-def load_builder_data():
-    parts_dict = {
-        "bx_blades": [], "ux_blades": [], "ux_expanded_blades": [], 
-        "cx_blades": [], "ratchets": [], "bits": [], 
-        "assist_blades": [], "metal_blades": [], "over_blades": [], "lock_chips": []
-    }
-    images_dict = {}
-    spin_dict = {}
-    
-    try:
-        res = supabase.table("parts").select("*").execute()
-        for p in res.data:
-            name = str(p["name"]).strip()
-            ptype = p["part_type"]
-            sys = p.get("system_type", "")
-            
-            # Spin Direction
-            spin_raw = str(p.get("spin_direction", "Right")).strip().title()
-            spin_val = "Left" if spin_raw == "Left" else "Right"
-            spin_dict[name] = f"{spin_val} Spin"
-            
-            # Image URL
-            img_url = p.get("image_url")
-            if img_url and str(img_url).startswith("http"):
-                images_dict[name] = str(img_url)
-                
-            # Classificar as peças
-            if ptype == "Bit": parts_dict["bits"].append(name)
-            elif ptype == "Ratchet": parts_dict["ratchets"].append(name)
-            elif ptype == "Lock Chip": parts_dict["lock_chips"].append(name)
-            elif ptype == "Assist Blade": parts_dict["assist_blades"].append(name)
-            elif ptype == "Metal Blade": parts_dict["metal_blades"].append(name)
-            elif ptype == "Over Blade": parts_dict["over_blades"].append(name)
-            elif ptype == "Blade":
-                if sys == "CX": parts_dict["cx_blades"].append(name)
-                elif sys == "UX": parts_dict["ux_blades"].append(name)
-                elif sys == "UX Expanded": parts_dict["ux_expanded_blades"].append(name)
-                else: parts_dict["bx_blades"].append(name)
-
-        return {k: sorted(list(set(v))) for k, v in parts_dict.items()}, images_dict, spin_dict
-    except Exception as e:
-        st.error(f"Erro ao carregar do Supabase: {e}")
         return parts_dict, {}, {}
 
 parts, images_map, spin_map = load_builder_data()
@@ -279,7 +225,6 @@ if st.session_state.logged_in_user is None:
         if st.form_submit_button("Entrar"):
             pass_hash = hashlib.md5(pass_input.encode()).hexdigest()
             try:
-                # Procura o utilizador e a password no Supabase
                 res = supabase.table("bladers").select("*").ilike("alias", user_input.strip()).execute()
                 if res.data:
                     user_data = res.data[0]
@@ -307,7 +252,6 @@ else:
         nome_display = s.replace("_", " ").title()
         if "user_row" in st.session_state and st.session_state.user_row.get(s):
             try:
-                # Dependendo de como o Supabase envia o JSON, pode já ser um dict ou uma string
                 slot_data = st.session_state.user_row[s]
                 if isinstance(slot_data, str):
                     slot_data = json.loads(slot_data)
@@ -343,7 +287,6 @@ else:
             
         with st.spinner("A gravar..."):
             try:
-                # Atualiza apenas a coluna do Slot no Supabase
                 supabase.table("bladers").update({slot_db_column: deck_to_save}).eq("alias", st.session_state.logged_in_user).execute()
                 st.session_state.user_row[slot_db_column] = deck_to_save
                 st.session_state.deck_name = deck_name_input.strip()
@@ -395,7 +338,7 @@ def randomize_deck():
     st.session_state.deck_size = 3
     st.session_state.deck_name = ""
     used_blades, used_ratchets, used_bits, used_chips, used_assist, used_metal = set(), set(), set(), set(), set(), set()
-    types = ["Basic (BX)", "Unique (UX)", "Custom (CX)", "Expand (CXE)", "UX Expanded"]
+    types = ["Basic (BX)", "Unique (UX)", "BX Expanded", "Custom (CX)", "Expand (CXE)", "UX Expanded"]
     b_types = ["Attack", "Defense", "Stamina", "Balance"]
     
     def pick_unique(pool, used_set):
@@ -412,16 +355,16 @@ def randomize_deck():
         for k in ["main_blade", "ratchet", "bit", "lock_chip", "assist_blade", "metal_blade", "over_blade"]:
             st.session_state[f"b_c_{i}_{k}"] = "--"
             
-        if ctype == "Basic (BX)":
-            st.session_state[f"b_c_{i}_main_blade"] = pick_unique(parts["bx_blades"], used_blades)
+        if ctype in ["Basic (BX)", "Unique (UX)", "BX Expanded"]:
+            if ctype == "Basic (BX)": pool = parts["bx_blades"]
+            elif ctype == "Unique (UX)": pool = parts["ux_blades"]
+            else: pool = parts.get("bx_expanded_blades", [])
+                
+            st.session_state[f"b_c_{i}_main_blade"] = pick_unique(pool, used_blades)
             st.session_state[f"b_c_{i}_bit"] = pick_unique(parts["bits"], used_bits)
             is_int = st.session_state[f"b_c_{i}_bit"] in ["Turbo", "Operate"]
             st.session_state[f"b_c_{i}_ratchet"] = "Integrada" if is_int else pick_unique(parts["ratchets"], used_ratchets)
-        elif ctype == "Unique (UX)":
-            st.session_state[f"b_c_{i}_main_blade"] = pick_unique(parts["ux_blades"], used_blades)
-            st.session_state[f"b_c_{i}_bit"] = pick_unique(parts["bits"], used_bits)
-            is_int = st.session_state[f"b_c_{i}_bit"] in ["Turbo", "Operate"]
-            st.session_state[f"b_c_{i}_ratchet"] = "Integrada" if is_int else pick_unique(parts["ratchets"], used_ratchets)
+            
         elif ctype == "Custom (CX)":
             st.session_state[f"b_c_{i}_lock_chip"] = pick_unique(parts["lock_chips"], used_chips)
             st.session_state[f"b_c_{i}_main_blade"] = pick_unique(parts["cx_blades"], used_blades)
@@ -429,6 +372,7 @@ def randomize_deck():
             st.session_state[f"b_c_{i}_bit"] = pick_unique(parts["bits"], used_bits)
             is_int = st.session_state[f"b_c_{i}_bit"] in ["Turbo", "Operate"]
             st.session_state[f"b_c_{i}_ratchet"] = "Integrada" if is_int else pick_unique(parts["ratchets"], used_ratchets)
+            
         elif ctype == "Expand (CXE)":
             st.session_state[f"b_c_{i}_lock_chip"] = pick_unique(parts["lock_chips"], used_chips)
             st.session_state[f"b_c_{i}_metal_blade"] = pick_unique(parts["metal_blades"], used_metal)
@@ -437,6 +381,7 @@ def randomize_deck():
             st.session_state[f"b_c_{i}_bit"] = pick_unique(parts["bits"], used_bits)
             is_int = st.session_state[f"b_c_{i}_bit"] in ["Turbo", "Operate"]
             st.session_state[f"b_c_{i}_ratchet"] = "Integrada" if is_int else pick_unique(parts["ratchets"], used_ratchets)
+            
         elif ctype == "UX Expanded":
             st.session_state[f"b_c_{i}_main_blade"] = pick_unique(parts.get("ux_expanded_blades", []), used_blades)
             bits_validos = [b for b in parts["bits"] if b not in ["Turbo", "Operate"]]
@@ -475,29 +420,37 @@ for i in range(st.session_state.deck_size):
         with c_title:
             st.markdown(f"#### 🌀 Combo {i+1}")
         with c_type:
-            ct = st.selectbox("Linha", ["Basic (BX)", "Unique (UX)", "Custom (CX)", "Expand (CXE)", "UX Expanded"], key=f"b_c_{i}_type", label_visibility="collapsed")
+            ct = st.selectbox("Linha", ["Basic (BX)", "Unique (UX)", "BX Expanded", "Custom (CX)", "Expand (CXE)", "UX Expanded"], key=f"b_c_{i}_type", label_visibility="collapsed")
+            
             if ct == "Expand (CXE)":
-                st.markdown(f"<img src='{LINE_LOGOS['Custom (CX)']}' style='height: 24px; margin-top: 5px; margin-right: 5px;'><img src='{LINE_LOGOS['Expand (CXE)']}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
+                st.markdown(f"<img src='{LINE_LOGOS.get('Custom (CX)', '')}' style='height: 24px; margin-top: 5px; margin-right: 5px;'><img src='{LINE_LOGOS.get('Expand (CXE)', '')}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
             elif ct == "UX Expanded":
-                st.markdown(f"<img src='{LINE_LOGOS['Unique (UX)']}' style='height: 24px; margin-top: 5px; margin-right: 5px;'><img src='{LINE_LOGOS['Expand (CXE)']}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
+                st.markdown(f"<img src='{LINE_LOGOS.get('Unique (UX)', '')}' style='height: 24px; margin-top: 5px; margin-right: 5px;'><img src='{LINE_LOGOS.get('Expand (CXE)', '')}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
+            elif ct == "BX Expanded":
+                st.markdown(f"<img src='{LINE_LOGOS.get('Basic (BX)', '')}' style='height: 24px; margin-top: 5px; margin-right: 5px;'><img src='{LINE_LOGOS.get('Expand (CXE)', '')}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
             else:
-                st.markdown(f"<img src='{LINE_LOGOS[ct]}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
+                st.markdown(f"<img src='{LINE_LOGOS.get(ct, '')}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
+                
         with c_spin:
-            current_blade = st.session_state.get(f"b_c_{i}_over_blade", "--") if "Expand" in ct else st.session_state.get(f"b_c_{i}_main_blade", "--")
+            current_blade = st.session_state.get(f"b_c_{i}_over_blade", "--") if "Expand" in ct and ct != "UX Expanded" else st.session_state.get(f"b_c_{i}_main_blade", "--")
             sp = spin_map.get(current_blade, "Right Spin")
             st.session_state[f"b_c_{i}_spin"] = sp
-            st.markdown(f"<img src='{ICONS[sp]}' class='light-backdrop-icon' style='height: 24px; margin-top: 5px;' title='{sp}'>", unsafe_allow_html=True)
+            st.markdown(f"<img src='{ICONS.get(sp, '')}' class='light-backdrop-icon' style='height: 24px; margin-top: 5px;' title='{sp}'>", unsafe_allow_html=True)
+            
         with c_bt:
             bt = st.selectbox("Tipo", ["Attack", "Defense", "Stamina", "Balance"], key=f"b_c_{i}_bt", label_visibility="collapsed")
-            st.markdown(f"<img src='{ICONS[bt]}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
+            st.markdown(f"<img src='{ICONS.get(bt, '')}' style='height: 24px; margin-top: 5px;'>", unsafe_allow_html=True)
             
         st.write("") 
         
         is_int_bit = st.session_state.get(f"b_c_{i}_bit", "--") in ["Turbo", "Operate"]
         ratchet_opts = ["Integrada"] if is_int_bit else ["--"] + parts["ratchets"]
         
-        if ct in ["Basic (BX)", "Unique (UX)"]:
-            blade_list = parts["bx_blades"] if ct == "Basic (BX)" else parts["ux_blades"]
+        if ct in ["Basic (BX)", "Unique (UX)", "BX Expanded"]:
+            if ct == "Basic (BX)": blade_list = parts["bx_blades"]
+            elif ct == "Unique (UX)": blade_list = parts["ux_blades"]
+            else: blade_list = parts.get("bx_expanded_blades", [])
+                
             c1, c2, c3 = st.columns([2, 1, 1])
             c1.selectbox("Blade", ["--"]+blade_list, key=f"b_c_{i}_main_blade")
             c3.selectbox("Bit", ["--"]+parts["bits"], key=f"b_c_{i}_bit")
@@ -566,7 +519,7 @@ for i in range(st.session_state.deck_size):
     sp = st.session_state[f"b_c_{i}_spin"]
     bt = st.session_state[f"b_c_{i}_bt"]
     
-    ks = ["main_blade", "ratchet", "bit"] if ct in ["Basic (BX)", "Unique (UX)", "UX Expanded"] else ["lock_chip", "main_blade", "assist_blade", "ratchet", "bit"] if ct == "Custom (CX)" else ["lock_chip", "metal_blade" , "over_blade" , "assist_blade", "ratchet", "bit"]
+    ks = ["main_blade", "ratchet", "bit"] if ct in ["Basic (BX)", "Unique (UX)", "UX Expanded", "BX Expanded"] else ["lock_chip", "main_blade", "assist_blade", "ratchet", "bit"] if ct == "Custom (CX)" else ["lock_chip", "metal_blade" , "over_blade" , "assist_blade", "ratchet", "bit"]
     
     combo_str_parts = []
     for k in ks:
@@ -584,7 +537,7 @@ for i in range(st.session_state.deck_size):
     deck_text_export += f"🔹 **Combo {i+1}:** [{sp}] [{bt}] {' | '.join(combo_str_parts)}\n"
 
     if not missing_parts and not has_duplicates:
-        b = st.session_state[f"b_c_{i}_over_blade"] if "Expand" in ct and ct != "UX Expanded" else st.session_state.get(f"b_c_{i}_main_blade", "--")
+        b = st.session_state[f"b_c_{i}_over_blade"] if "Expand" in ct and ct not in ["UX Expanded", "BX Expanded"] else st.session_state.get(f"b_c_{i}_main_blade", "--")
         if b != '--':
             base = re.sub(r'\s*\(.*?\)\s*', '', str(b)).strip().lower()
             if base in used_blades: has_duplicates = True; dup_error_msg = f"A Blade '{b}' está repetida!"
@@ -620,7 +573,7 @@ for i in range(st.session_state.deck_size):
             used_chips.add(c_low)
 
         img_html = ""
-        if ct in ["Basic (BX)", "Unique (UX)", "UX Expanded"]:
+        if ct in ["Basic (BX)", "Unique (UX)", "UX Expanded", "BX Expanded"]:
             hero_blade = st.session_state[f"b_c_{i}_main_blade"]
             url_blade = images_map.get(hero_blade, "https://via.placeholder.com/150")
             img_html = f'<img class="combo-blade-img" src="{url_blade}" alt="Blade" referrerpolicy="no-referrer">'
@@ -641,21 +594,23 @@ for i in range(st.session_state.deck_size):
 
         logos_html = ""
         if ct == "Basic (BX)": 
-            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS["Basic (BX)"]}" alt="Basic">'
+            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS.get("Basic (BX)", "")}" alt="Basic">'
         elif ct == "Unique (UX)": 
-            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS["Unique (UX)"]}" alt="Unique">'
+            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS.get("Unique (UX)", "")}" alt="Unique">'
+        elif ct == "BX Expanded": 
+            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS.get("Basic (BX)", "")}" alt="Basic"><img class="combo-line-img" src="{LINE_LOGOS.get("Expand (CXE)", "")}" alt="Expand">'
         elif ct == "Custom (CX)": 
-            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS["Custom (CX)"]}" alt="Custom">'
+            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS.get("Custom (CX)", "")}" alt="Custom">'
         elif ct == "Expand (CXE)": 
-            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS["Custom (CX)"]}" alt="Custom"><img class="combo-line-img" src="{LINE_LOGOS["Expand (CXE)"]}" alt="Expand">'
+            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS.get("Custom (CX)", "")}" alt="Custom"><img class="combo-line-img" src="{LINE_LOGOS.get("Expand (CXE)", "")}" alt="Expand">'
         elif ct == "UX Expanded": 
-            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS["Unique (UX)"]}" alt="Unique"><img class="combo-line-img" src="{LINE_LOGOS["Expand (CXE)"]}" alt="Expand">'
+            logos_html += f'<img class="combo-line-img" src="{LINE_LOGOS.get("Unique (UX)", "")}" alt="Unique"><img class="combo-line-img" src="{LINE_LOGOS.get("Expand (CXE)", "")}" alt="Expand">'
 
         combo_data_for_visual.append({
             "image_html": img_html,
             "logos_html": logos_html,
-            "spin": ICONS[sp],
-            "type": ICONS[bt],
+            "spin": ICONS.get(sp, ""),
+            "type": ICONS.get(bt, ""),
             "name": " ".join(combo_str_parts).replace("--", "")
         })
 
