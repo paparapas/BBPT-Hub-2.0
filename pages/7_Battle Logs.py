@@ -9,7 +9,7 @@ import hashlib
 from db_connection import supabase
 
 # 🛑 FORÇAR O MODO "WIDE" E AJUSTAR PADRÕES 🛑
-st.set_page_config(page_title="BattleLogs", page_icon="📋", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="BattleLogs", page_icon="📋", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown("""
 <style>
@@ -19,53 +19,110 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 🔐 GESTÃO DE SEGURANÇA (URL MAGIC TOKENS)
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE (RBAC)
 # ==========================================
-# A senha única de administração
-ADMIN_PASSWORD = st.secrets["PASSWORDS"].get("ADMIN", "bbpt-paparapas")
-
-def generate_daily_token(role):
-    # Gera um token que mistura a password com a data de hoje. Expira à meia-noite.
-    today_str = date.today().isoformat()
-    secret_string = f"{role}_{ADMIN_PASSWORD}_{today_str}"
-    return hashlib.md5(secret_string.encode('utf-8')).hexdigest()
-
-# 1. LER O URL INSTANTANEAMENTE
-if "role" not in st.session_state: st.session_state.role = None
+if "is_admin" not in st.session_state: st.session_state.is_admin = False
+if "is_judge" not in st.session_state: st.session_state.is_judge = False
+if "auth_token" not in st.session_state: st.session_state.auth_token = None
 if "blader_user" not in st.session_state: st.session_state.blader_user = None
 
-url_params = st.query_params
-if "role" in url_params and "token" in url_params:
-    expected_token = generate_daily_token(url_params["role"])
-    # Se o crachá do URL bater certo com o gerado para o dia de hoje
-    if url_params["token"] == expected_token:
-        st.session_state.role = url_params["role"]
-    else:
-        # Se for um token antigo ou adulterado, limpa-o imediatamente
-        st.query_params.clear()
+admin_passwords = list(st.secrets.get("ADMINS", {}).values())
+judge_passwords = list(st.secrets.get("JUDGES", {}).values())
+
+admin_key_url = st.query_params.get("admin")
+judge_key_url = st.query_params.get("judge")
+
+if admin_key_url in admin_passwords:
+    st.session_state.is_admin = True
+    st.session_state.is_judge = False
+    st.session_state.auth_token = admin_key_url
+elif judge_key_url in judge_passwords:
+    st.session_state.is_judge = True
+    st.session_state.is_admin = False
+    st.session_state.auth_token = judge_key_url
+
+if st.session_state.is_admin and st.query_params.get("admin") != st.session_state.auth_token:
+    st.query_params["admin"] = st.session_state.auth_token
+elif st.session_state.is_judge and st.query_params.get("judge") != st.session_state.auth_token:
+    st.query_params["judge"] = st.session_state.auth_token
+elif not st.session_state.is_admin and not st.session_state.is_judge:
+    st.session_state.auth_token = None
         
-# 2. LOGOUT GLOBAL FUNCIONA PARA ADMIN E BLADER
 logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
 has_logo = os.path.exists(logo_path)
 
 with st.sidebar:
     if has_logo:
-        with open(logo_path, "rb") as image_file: 
-            encoded_logo = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'><h1 style='display:inline;font-size:1.8rem;'></h1></div>", unsafe_allow_html=True)
-    else: 
-        st.title("🛡️ BBPT App")
+        with open(logo_path, "rb") as image_file: encoded_logo = base64.b64encode(image_file.read()).decode()
+        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'></h1></div>", unsafe_allow_html=True)
     st.divider()
     
-    if st.session_state.role: st.success(f"🔓 Modo {st.session_state.role.upper()} Ativo")
+    if st.session_state.is_admin: st.success("🔓 Modo ADMIN Ativo")
+    elif st.session_state.is_judge: st.success("⚖️ Modo JUIZ Ativo")
     elif st.session_state.blader_user: st.success(f"👤 Blader: {st.session_state.blader_user} Ativo")
         
-    if st.session_state.role or st.session_state.blader_user:
+    if st.session_state.is_admin or st.session_state.is_judge or st.session_state.blader_user:
         if st.button("Sair (Logout) 🔒", use_container_width=True):
-            st.session_state.role = None
+            st.session_state.is_admin = False
+            st.session_state.is_judge = False
+            st.session_state.auth_token = None
             st.session_state.blader_user = None
-            st.query_params.clear() # Limpa imediatamente o token mágico do URL
+            st.query_params.clear() 
             st.rerun()
+
+has_access = st.session_state.is_admin or (st.session_state.blader_user is not None)
+
+if not has_access:
+    st.title("📋 Consulta de BattleLogs")
+    st.warning("🔐 Esta página requer autenticação.")
+    
+    if st.session_state.is_judge:
+        st.info("⚖️ Olá Juiz, a extração de Logs está restrita à equipa de Administração.")
+        st.stop()
+        
+    tab_blader, tab_org = st.tabs(["👤 Login Blader", "🛡️ Login Staff"])
+    with tab_org:
+        with st.form("login_org_form"):
+            pwd_org = st.text_input("Chave de Acesso Admin:", type="password")
+            submit_org = st.form_submit_button("Entrar 🔑", use_container_width=True)
+            if submit_org:
+                if pwd_org.strip() in admin_passwords:
+                    st.session_state.is_admin = True
+                    st.session_state.auth_token = pwd_org.strip()
+                    st.query_params["admin"] = pwd_org.strip()
+                    st.rerun()
+                else: st.error("❌ Chave Incorreta ou sem privilégios de Admin!")
+                
+    with tab_blader:
+        with st.form("login_blader_form"):
+            blader_alias = st.text_input("Nickname / Alias do Blader:").strip()
+            blader_pwd = st.text_input("Password:", type="password")
+            submit_blader = st.form_submit_button("Entrar como Blader 🚀", use_container_width=True)
+            if submit_blader:
+                if not blader_alias or not blader_pwd:
+                    st.error("⚠️ Preenche todos os campos!")
+                else:
+                    try:
+                        raw_input = re.sub(r'^\d+[\.\s]*', '', blader_alias).strip().lower()
+                        res = supabase.table("bladers").select("*").ilike("alias", blader_alias).execute()
+                        if not res.data:
+                            KNOWN_ALIASES = {"onez": "OneZarolho", "enzo": "OneZarolho", "onezarolho": "OneZarolho", "4exter": "Dexter", "exter": "Dexter", "paparapas": "Paparapas", "miguelbigg": "MiguelBigG", "velos77": "Velos77", "brunoveloso": "Velos77", "haalkein": "HaalKein", "hallkein": "HaalKein", "gordinho_pt": "Gordinho_PT", "gordo_pt": "Gordinho_PT"}
+                            if raw_input in KNOWN_ALIASES:
+                                official_alias = KNOWN_ALIASES[raw_input]
+                                res = supabase.table("bladers").select("*").eq("alias", official_alias).execute()
+                        if res.data:
+                            user_data = res.data[0]
+                            pass_na_bd = user_data.get("password_hash")
+                            input_pwd_md5 = hashlib.md5(blader_pwd.encode('utf-8')).hexdigest()
+                            if pass_na_bd == input_pwd_md5:
+                                st.session_state.blader_user = user_data["alias"]
+                                st.success(f"Bem-vindo, {user_data['alias']}! A carregar os logs...")
+                                time.sleep(1)
+                                st.rerun()
+                            else: st.error("❌ Password incorreta para este Blader!")
+                        else: st.error("❌ Blader não encontrado na base de dados!")
+                    except Exception as e: st.error(f"❌ Erro na ligação: {e}")
+    st.stop()
 
 # ==========================================
 # ECRÃ DE AUTENTICAÇÃO (BLADER OU ADMIN)
