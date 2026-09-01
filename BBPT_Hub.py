@@ -229,12 +229,37 @@ elif page == "Ad-Hoc: Blader Profile":
 elif page == "Contactos & Organização":
     st.title("📞 Contactos & Organização")
     st.subheader("🌐 Comunidade e Redes Sociais")
+    
+    # Função auxiliar para carregar as imagens e desenhar o botão HTML
+    def render_social_button(link, img_file, text):
+        img_path = img_file if os.path.exists(img_file) else f"../{img_file}"
+        img_tag = ""
+        if os.path.exists(img_path):
+            with open(img_path, "rb") as f:
+                b64 = base64.b64encode(f.read()).decode()
+            img_tag = f"<img src='data:image/png;base64,{b64}' style='height: 22px; margin-right: 10px; object-fit: contain;'>"
+            
+        return f"""
+        <a href="{link}" target="_blank" style="
+            display: flex; align-items: center; justify-content: center;
+            background-color: #1f2333; color: white; text-decoration: none;
+            padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
+            font-size: 16px; font-weight: 600; width: 100%; box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        ">
+            {img_tag}{text}
+        </a>
+        """
+
     c1, c2, c3, c4 = st.columns(4) 
-    c1.link_button("📸 Instagram", "https://www.instagram.com/beyblade_pt", use_container_width=True)
-    c2.link_button("💬 Whatsapp", "https://chat.whatsapp.com/GCLf0RjTFjFHzc1yK2VjPo", use_container_width=True)
-    c3.link_button("📺 YouTube", "https://www.youtube.com/@BeybladePortugal", use_container_width=True)
-    c4.link_button("📺 Discord", "https://discord.com/invite/KssWPXxFnq", use_container_width=True)
+    with c1: st.markdown(render_social_button("https://www.instagram.com/beyblade_pt", "instagram.png", "Instagram"), unsafe_allow_html=True)
+    with c2: st.markdown(render_social_button("https://chat.whatsapp.com/GCLf0RjTFjFHzc1yK2VjPo", "whatsapp.png", "WhatsApp"), unsafe_allow_html=True)
+    with c3: st.markdown(render_social_button("https://www.youtube.com/@BeybladePortugal", "youtube.png", "YouTube"), unsafe_allow_html=True)
+    with c4: st.markdown(render_social_button("https://discord.com/invite/KssWPXxFnq", "discord.png", "Discord"), unsafe_allow_html=True)
+    
     st.divider()
+    
+    st.subheader("👥 Quadro da Organização e Gestão")
     conteudo_org = load_communications("organizacao.txt")
     if conteudo_org:
         for seccao in conteudo_org.split("==="):
