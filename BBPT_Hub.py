@@ -31,12 +31,10 @@ if theme == "light":
 else:
     logo_b64 = get_image_b64("logodark.png") if os.path.exists("logodark.png") else get_image_b64("logo.png")
 
-# FOTOS LATERAIS E PARCEIRO
-foto1_b64 = get_image_b64("foto1")  # Tem de ser a tua foto real (foto1.jpg ou foto1.png)
-foto2_b64 = get_image_b64("foto2")  # Tem de ser a tua segunda foto real
-nexus_b64 = get_image_b64("parceiro_beybladenexus_oficial.png") # O logo da Nexus para ficar debaixo de HUB
+# VARIÁVEIS DAS IMAGENS
+nexus_b64 = get_image_b64("parceiro_beybladenexus_oficial.png")
+foto2_b64 = get_image_b64("foto2")
 
-# ÍCONES DE ACESSO RÁPIDO
 fenix_b64 = get_image_b64("fenix.png")
 deck_b64 = get_image_b64("deck_build_image")
 bp_b64 = get_image_b64("BBPT_BP_Format.PNG")
@@ -56,7 +54,17 @@ html_content = f"""
 .hero-side {{
     flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid var(--card-bg);
 }}
-.hero-side img {{
+.hero-side-left {{
+    background: white; display: flex; justify-content: center; align-items: center; padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}}
+.hero-side-left:hover {{
+    transform: translateY(-3px); box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+}}
+.hero-side-left img {{
+    max-width: 100%; max-height: 100%; object-fit: contain;
+}}
+.hero-side-right img {{
     width: 100%; height: 100%; object-fit: cover;
 }}
 .hero-center {{
@@ -68,17 +76,10 @@ html_content = f"""
     color: var(--text-color); margin: 0 0 5px 0; font-size: 2rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
 }}
 .hero-hub-text {{
-    color: var(--text-color); margin: 5px 0 15px 0; font-size: 2.5rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--text-color); margin: 5px 0 0 0; font-size: 2.5rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
 }}
 .hero-logo {{
-    max-width: 85%; max-height: 160px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.2));
-}}
-.nexus-logo {{
-    max-width: 150px; max-height: 60px; object-fit: contain; margin-top: 10px; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3));
-    transition: transform 0.2s ease;
-}}
-.nexus-logo:hover {{
-    transform: scale(1.05); /* Pequeno zoom ao passar o rato */
+    max-width: 85%; max-height: 180px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.2));
 }}
 
 /* === AD GRID (ACESSO RÁPIDO) === */
@@ -118,19 +119,20 @@ html_content = f"""
 </style>
 
 <div class="hero-container">
-<div class="hero-side">
-<img src="data:image/jpeg;base64,{foto1_b64}" alt="BBPT Foto 1">
-</div>
+<!-- Lado Esquerdo: Logo da Beyblade Nexus com link interativo -->
+<a href="https://www.beybladenexus.com/" target="_blank" class="hero-side hero-side-left" title="Visitar Beyblade Nexus">
+<img src="data:image/png;base64,{nexus_b64}" alt="Parceiro Nexus">
+</a>
+
+<!-- Centro: Jogo de palavras com o Logo do Hub -->
 <div class="hero-center">
 <h2 class="hero-title">BEM-VINDOS AO</h2>
 <img class="hero-logo" src="data:image/png;base64,{logo_b64}" alt="BBPT Logo">
 <h2 class="hero-hub-text">HUB</h2>
-<!-- AQUI ENTRA O LINK PARA A BEYBLADE NEXUS -->
-<a href="https://www.beybladenexus.com/" target="_blank" title="Visitar Beyblade Nexus">
-<img class="nexus-logo" src="data:image/png;base64,{nexus_b64}" alt="Parceiro Nexus">
-</a>
 </div>
-<div class="hero-side">
+
+<!-- Lado Direito: Foto 2 -->
+<div class="hero-side hero-side-right">
 <img src="data:image/jpeg;base64,{foto2_b64}" alt="BBPT Foto 2">
 </div>
 </div>
