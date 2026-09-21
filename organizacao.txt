@@ -1,4 +1,4 @@
-### 👑 Tournament Organisers (TOs)
+### 👑 Tournament Organisers (TOs) (***EM ATUALIZAÇÃO***)
 Responsáveis pela gestão logística, agendamento e saúde geral da Liga.
 * **Osga** (Admin/TO)
 * **Benitez** (Admin/TO)
@@ -6,7 +6,6 @@ Responsáveis pela gestão logística, agendamento e saúde geral da Liga.
 * **Dexter** (Admin/TO)
 * **Z|ro** (TO)
 * **Xazus** (TO)
-* **MiguelBigG** (TO)
 * **Paparapas** (TO)
 
 
