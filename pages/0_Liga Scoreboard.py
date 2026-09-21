@@ -21,7 +21,7 @@ if os.path.exists(logo_path):
 @st.cache_data
 def load_data():
     try:
-        with open('bbpt_master_db.json', 'r', encoding='utf-8') as f: return json.load(f)
+        with open('bbpt_master_db_season2.json', 'r', encoding='utf-8') as f: return json.load(f)
     except FileNotFoundError: return None
 
 db = load_data()
