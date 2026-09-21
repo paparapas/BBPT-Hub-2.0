@@ -56,7 +56,6 @@ with st.sidebar:
         st.title("🛡️Hub")
     st.divider()
     
-    st.divider()
     # Feedback de Autenticação na Sidebar
     if st.session_state.is_admin:
         st.success("🔓 Modo ADMIN Ativo")
