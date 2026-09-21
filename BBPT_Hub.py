@@ -142,15 +142,15 @@ html_content = f"""
 <div class="ad-grid">
 <a href="Liga_Scoreboard" target="_self" class="ad-card">
 <img class="ad-img contain-bg-white" src="data:image/png;base64,{fenix_b64}">
-<div class="ad-title">🏆 Scoreboard Liga Fénix</div>
+<div class="ad-title">Scoreboard Liga Fénix</div>
 </a>
 <a href="Deck_Builder" target="_self" class="ad-card">
 <img class="ad-img pos-top" src="data:image/png;base64,{deck_b64}">
-<div class="ad-title">⚙️ Construir o teu Deck</div>
+<div class="ad-title">Construir o teu Deck</div>
 </a>
 <a href="Documentos" target="_self" class="ad-card">
 <img class="ad-img contain-bg-white" src="data:image/png;base64,{bp_b64}">
-<div class="ad-title">📋 Lista BP & Calendário</div>
+<div class="ad-title">Lista BP & Calendário</div>
 </a>
 </div>
 """
