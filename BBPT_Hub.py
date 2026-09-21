@@ -52,7 +52,7 @@ html_content = f"""
     display: flex; flex-direction: row; gap: 15px; align-items: stretch; margin-bottom: 40px; min-height: 350px;
 }}
 .hero-side {{
-    flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid var(--card-bg);
+    flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none;
 }}
 .hero-side-left {{
     background: white; display: flex; justify-content: center; align-items: center; padding: 20px;
@@ -89,13 +89,13 @@ html_content = f"""
 .ad-card {{
     border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
     transition: transform 0.2s ease, box-shadow 0.2s ease; background-color: var(--card-bg); 
-    cursor: pointer; text-decoration: none; display: flex; flex-direction: column; border: 1px solid var(--border-col);
+    cursor: pointer; text-decoration: none; display: flex; flex-direction: column; border: none;
 }}
 .ad-card:hover {{
     transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); text-decoration: none;
 }}
 .ad-img {{
-    width: 100%; height: 180px; object-fit: cover; border-bottom: 3px solid #7a161c;
+    width: 100%; height: 180px; object-fit: cover; border-bottom: none;
 }}
 .ad-img.contain-bg-white {{
     object-fit: contain; background-color: white;
