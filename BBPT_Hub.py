@@ -65,7 +65,7 @@ html_content = f"""
 .hero-center {{
     flex: 1.8; background-color: var(--background-color); border-radius: 12px; padding: 20px; 
     text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; flex-direction: column; 
-    justify-content: center; align-items: center; border: 2px solid var(--border-col);
+    justify-content: center; align-items: center; border: none; position: relative;
 }}
 .hero-title {{
     color: var(--text-color); margin: 0 0 5px 0; font-size: 2rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
