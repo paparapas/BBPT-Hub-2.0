@@ -16,20 +16,20 @@ if os.path.exists(logo_path):
         st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-bottom:20px;'></div>", unsafe_allow_html=True)
 
 # ==========================================
-# CARREGAR DADOS
+# CARREGAR DADOS DA SEASON 2 (Isolado)
 # ==========================================
 @st.cache_data
-def load_data():
+def load_season2_data():
     try:
-        with open('bbpt_master_db_season2.json', 'r', encoding='utf-8') as f: return json.load(f)
+        with open('bbpt_season2_db.json', 'r', encoding='utf-8') as f: return json.load(f)
     except FileNotFoundError: return None
 
-db = load_data()
+db = load_season2_data()
 
 st.title("📈 Liga Scoreboard")
 st.markdown("Acompanha aqui a pontuação da temporada corrente.")
 
-# Dropdown de Ligas Ativas (podes acrescentar outras no futuro)
+# Dropdown de Ligas Ativas
 liga_selecionada = st.selectbox("Escolhe a Liga Corrente:", ["Liga Fénix Negra - Season 2"])
 st.divider()
 
@@ -39,13 +39,25 @@ st.divider()
 if liga_selecionada == "Liga Fénix Negra - Season 2":
     
     if not db or "nova_liga" not in db:
-        st.warning("⚠️ Ainda não há dados processados para a Nova Liga.")
+        st.warning("⚠️ Ainda não há dados processados para a Nova Liga (executa o script de sincronização).")
         st.stop()
 
     nova_liga_data = db["nova_liga"]
     metrics = nova_liga_data.get("advanced_metrics", {})
     
-    st.markdown("<h2 style='text-align: center; color: #b0b0b0; font-size: 2rem; margin-bottom: 20px;'>LIGA FÉNIX NEGRA</h2>", unsafe_allow_html=True)
+    # --- CABEÇALHO PERSONALIZADO: LOGÓTIPO + TÍTULO VERMELHO GIGANTE ---
+    fenix_logo_path = "fenix.jpg" if os.path.exists("fenix.jpg") else "../fenix.jpg"
+    if os.path.exists(fenix_logo_path):
+        with open(fenix_logo_path, "rb") as img_file:
+            encoded_fenix = base64.b64encode(img_file.read()).decode()
+        st.markdown(f"""
+        <div style="display: flex; align-items: center; margin-bottom: 25px;">
+            <img src="data:image/jpeg;base64,{encoded_fenix}" width="85" style="margin-right: 20px; object-fit: contain;">
+            <h1 style="margin: 0; padding: 0; font-size: 3rem; color: #7a161c; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Liga Fénix Negra</h1>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown("<h1 style='font-size: 3rem; color: #7a161c; font-weight: 900; text-transform: uppercase;'>Liga Fénix Negra</h1>", unsafe_allow_html=True)
     
     # 🏆 QUADRO DE MÉTRICAS (KINGS)
     c1, c2 = st.columns(2)
