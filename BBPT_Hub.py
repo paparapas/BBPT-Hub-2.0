@@ -38,7 +38,7 @@ fenix_b64 = get_image_b64("fenix.png")
 deck_b64 = get_image_b64("deck_build_image")
 bp_b64 = get_image_b64("BBPT_BP_Format.PNG")
 
-# RENDERIZAR O HTML E CSS RESPONSIVO (Sem espaços à esquerda para não quebrar o Markdown)
+# RENDERIZAR O HTML E CSS RESPONSIVO
 html_content = f"""
 <style>
 :root {{
@@ -51,15 +51,9 @@ html_content = f"""
     display: flex; flex-direction: row; gap: 15px; align-items: stretch; margin-bottom: 40px; min-height: 350px;
 }}
 .hero-side {{
-    flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none;
+    flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: 1px solid var(--card-bg);
 }}
-.hero-side-left {{
-    background: white; display: flex; justify-content: center; align-items: center; padding: 20px;
-}}
-.hero-side-left img {{
-    max-width: 100%; max-height: 100%; object-fit: contain;
-}}
-.hero-side-right img {{
+.hero-side img {{
     width: 100%; height: 100%; object-fit: cover;
 }}
 .hero-center {{
@@ -71,10 +65,17 @@ html_content = f"""
     color: var(--text-color); margin: 0 0 5px 0; font-size: 2rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
 }}
 .hero-hub-text {{
-    color: var(--text-color); margin: 5px 0 0 0; font-size: 2.5rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--text-color); margin: 5px 0 15px 0; font-size: 2.5rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
 }}
 .hero-logo {{
-    max-width: 85%; max-height: 180px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.2));
+    max-width: 85%; max-height: 160px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.2));
+}}
+.nexus-logo {{
+    max-width: 150px; max-height: 60px; object-fit: contain; margin-top: 10px; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.3));
+    transition: transform 0.2s ease;
+}}
+.nexus-logo:hover {{
+    transform: scale(1.05); /* Pequeno zoom ao passar o rato */
 }}
 
 /* === AD GRID (ACESSO RÁPIDO) === */
@@ -84,7 +85,7 @@ html_content = f"""
 .ad-card {{
     border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.15); 
     transition: transform 0.2s ease, box-shadow 0.2s ease; background-color: var(--card-bg); 
-    cursor: pointer; text-decoration: none; display: flex; flex-direction: column; border: none;
+    cursor: pointer; text-decoration: none; display: flex; flex-direction: column; border: 1px solid var(--border-col);
 }}
 .ad-card:hover {{
     transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); text-decoration: none;
@@ -103,7 +104,7 @@ html_content = f"""
     font-size: 1.1rem; text-decoration: none; flex-grow: 1; display: flex; align-items: center; justify-content: center;
 }}
 
-/* === MOBILE RESPONSIVENESS (Ecrãs menores que 800px) === */
+/* === MOBILE RESPONSIVENESS === */
 @media (max-width: 800px) {{
     .hero-container {{ flex-direction: column; height: auto; }}
     .hero-side, .hero-center {{ min-height: 200px; width: 100%; }}
@@ -114,15 +115,19 @@ html_content = f"""
 </style>
 
 <div class="hero-container">
-<div class="hero-side hero-side-left">
-<img src="data:image/png;base64,{foto1_b64}" alt="Parceiro Nexus">
+<div class="hero-side">
+<img src="data:image/jpeg;base64,{foto1_b64}" alt="BBPT Foto 1">
 </div>
 <div class="hero-center">
 <h2 class="hero-title">BEM-VINDOS AO</h2>
 <img class="hero-logo" src="data:image/png;base64,{logo_b64}" alt="BBPT Logo">
 <h2 class="hero-hub-text">HUB</h2>
+<!-- AQUI ENTRA O LINK PARA A BEYBLADE NEXUS -->
+<a href="https://www.beybladenexus.com/" target="_blank" title="Visitar Beyblade Nexus">
+<img class="nexus-logo" src="data:image/png;base64,{nexus_b64}" alt="Parceiro Nexus">
+</a>
 </div>
-<div class="hero-side hero-side-right">
+<div class="hero-side">
 <img src="data:image/jpeg;base64,{foto2_b64}" alt="BBPT Foto 2">
 </div>
 </div>
