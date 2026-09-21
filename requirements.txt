@@ -9,3 +9,4 @@ requests
 streamlit-keyup
 supabase
 openpyxl
+streamlit-javascript
