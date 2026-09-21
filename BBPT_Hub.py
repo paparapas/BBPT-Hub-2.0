@@ -1,9 +1,6 @@
 import streamlit as st
-import pandas as pd
-import json
 import base64
 import os
-import re
 from db_connection import supabase
 
 # 1. Configuração da Página
@@ -51,11 +48,12 @@ with st.sidebar:
     if has_logo:
         with open(logo_path, "rb") as image_file: 
             encoded_logo = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'></h1></div>", unsafe_allow_html=True)
+        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-bottom:20px;'></div>", unsafe_allow_html=True)
     else: 
         st.title("🛡️Hub")
-    st.divider()
     
+    st.divider()
+
     # Feedback de Autenticação na Sidebar
     if st.session_state.is_admin:
         st.success("🔓 Modo ADMIN Ativo")
@@ -98,44 +96,8 @@ with st.sidebar:
                     st.error("Password Incorreta!")
 
 # ==========================================
-# 2. CARREGAR DADOS HISTÓRICOS (HÍBRIDO)
+# PAINEL DA NOVA TEMPORADA (LANDING PAGE)
 # ==========================================
-@st.cache_data
-def load_data():
-    try:
-        with open('bbpt_master_db.json', 'r', encoding='utf-8') as f: return json.load(f)
-    except FileNotFoundError: return None
-
-def load_communications(file_path):
-    if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f: return f.read().strip()
-    return None
-
-db = load_data()
-
-if not db:
-    st.error("⚠️ Base de dados histórica não encontrada.")
-    st.stop()
-
-# ==========================================
-# FUNÇÕES REUTILIZÁVEIS DE RENDERIZAÇÃO
-# ==========================================
-def render_advanced_metrics(metrics, league_mode=True):
-    title_suffix = "League" if league_mode else "Global Rankings"
-    st.subheader(f"📈 {title_suffix} Advanced Metrics")
-    st.markdown(f"### 👑 Kings of the {title_suffix}")
-    for king in metrics.get('kings', []): st.write(king)
-    st.markdown(f"### ⚔️ Upset of the {title_suffix}")
-    st.info(metrics.get('upset_season', 'N/A'))
-    st.markdown("### 🛡️ The Gatekeeper")
-    st.warning(metrics.get('gatekeeper', 'N/A'))
-    st.markdown("### 📊 Meta-Health (Média de Pontos Combinados)")
-    st.success(metrics.get('meta_health', 'N/A'))
-    st.markdown("*(Jogos normais até 4 pts | Top Cut até 5 pts | Finais até 7 pts)*\n* **Alta (> 6.5 Pts):** Meta de Ataque\n* **Média (5.0 - 6.5 Pts):** Meta Equilibrada\n* **Baixa (< 5.0 Pts):** Meta de Defesa")
-
-# ==========================================
-# RENDERIZAÇÃO DOS MÓDULOS
-# ==========================================
-if page is None:
-    st.title("🏆 BBPT Hub")
-    st.info("A Nova Temporada está a chegar. Explora os menus na barra lateral e superior!")
+st.title("🏆 BBPT Hub")
+st.info("A Nova Temporada está a chegar. Explora os menus na barra lateral e superior!")
+# Aqui será construído o Dashboard da nova liga mais tarde.
