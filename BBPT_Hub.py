@@ -139,27 +139,3 @@ def render_advanced_metrics(metrics, league_mode=True):
 if page is None:
     st.title("🏆 BBPT Hub")
     st.info("A Nova Temporada está a chegar. Explora os menus na barra lateral e superior!")
-
-elif page == "Torneio de Equipas - Liga Versus":
-    st.title("🤝 Torneio de Equipas - Fénix Negra")
-    comunicado = load_communications("comunicacoesEquipasVersus.txt")
-    if comunicado: st.info(f"📢 **Quadro de Avisos:**\n\n{comunicado}")
-    st.divider()
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("📊 Standings Finais")
-        try: st.image("foto_equipas.jpg", use_container_width=True)
-        except Exception: st.warning("⚠️ Imagem não encontrada.")
-    with col2:
-        st.subheader("📺 VOD do Torneio")
-        st.video("https://youtu.be/vsbuwPL5uzs?si=egyuV9P3j8Gdfc6z", start_time=1319)
-
-elif page == "Rankings Globais":
-    st.title("🌐 BBPT Global Power Rankings")
-    comunicado = load_communications("comunicacoesGlobal.txt")
-    if comunicado: st.info(f"📢 **Quadro de Avisos Global:**\n\n{comunicado}")
-    df_rankings = pd.DataFrame(db['global_versus']['rankings'])
-    if not df_rankings.empty: df_rankings.set_index('Rank', inplace=True)
-    st.dataframe(df_rankings, use_container_width=True)
-    st.divider()
-    render_advanced_metrics(db['global_versus'].get('advanced_metrics', {}), league_mode=False)
