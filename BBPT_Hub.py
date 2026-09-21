@@ -55,19 +55,8 @@ with st.sidebar:
     else: 
         st.title("🛡️Hub")
     st.divider()
-
-    # Módulos arquivados apenas acessíveis a Admins
-    if st.session_state.is_admin:
-        page = st.radio("Arquivo Histórico (Admin):", [
-            "Torneio de Equipas - Liga Versus", 
-            "Rankings Globais", 
-            "Ad-Hoc: Blader Profile"
-        ])
-    else:
-        page = None
     
     st.divider()
-
     # Feedback de Autenticação na Sidebar
     if st.session_state.is_admin:
         st.success("🔓 Modo ADMIN Ativo")
@@ -175,25 +164,3 @@ elif page == "Rankings Globais":
     st.dataframe(df_rankings, use_container_width=True)
     st.divider()
     render_advanced_metrics(db['global_versus'].get('advanced_metrics', {}), league_mode=False)
-
-elif page == "Ad-Hoc: Blader Profile":
-    st.title("👤 Blader Intelligence Profile")
-    player_list = sorted(list(db['global_versus']['profiles'].keys()))
-    selected_player = st.selectbox("Selecione o Blader:", player_list)
-    if selected_player:
-        p_data = db['global_versus']['profiles'][selected_player]
-        win_rate = p_data.get('win_rate', 0)
-        total_matches = int(p_data.get('total_matches', 0))
-        total_wins = sum(int(m.get('Wins', 0)) for m in p_data.get('matchups', []))
-        st.markdown(f"## *{selected_player}*")
-        st.divider()
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Overall Win Rate", f"{win_rate}%")
-        c2.metric("Total Wins", total_wins)
-        c3.metric("Total Matches", total_matches)
-        st.divider()
-        st.subheader("🎯 Player Matchups")
-        df_matchups = pd.DataFrame(p_data.get('matchups', []))
-        if not df_matchups.empty:
-            df_matchups['Win Rate %'] = (df_matchups['Wins'] / df_matchups['Games']) * 100
-            st.dataframe(df_matchups[['Opponent', 'Games', 'Wins', 'Win Rate %']], use_container_width=True)
