@@ -108,12 +108,12 @@ def get_image_b64(filepath):
     # Pixel transparente de fallback caso a imagem falhe
     return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
 
-# Carregar as imagens baseadas nos nomes que me deste
+# Carregar as imagens baseadas nos nomes exatos
 logo_b64 = get_image_b64("logo.png")
-foto1_b64 = get_image_b64("foto1")
+foto1_b64 = get_image_b64("parceiro_beybladenexus_oficial.png")
 foto2_b64 = get_image_b64("foto2")
 
-fenix_b64 = get_image_b64("fenix.jpg")
+fenix_b64 = get_image_b64("fenix.png")
 deck_b64 = get_image_b64("deck_build_image")
 bp_b64 = get_image_b64("BBPT_BP_Format.PNG")
 
@@ -158,7 +158,7 @@ st.markdown(f"""
 </style>
 
 <div class="hero-container">
-    <div class="hero-side"><img src="data:image/jpeg;base64,{foto1_b64}" alt="BBPT Foto 1"></div>
+    <div class="hero-side"><img src="data:image/png;base64,{foto1_b64}" alt="Parceiro Nexus"></div>
     <div class="hero-center">
         <h2 class="hero-title">BEM-VINDOS AO HUB</h2>
         <img class="hero-logo" src="data:image/png;base64,{logo_b64}" alt="BBPT Logo">
@@ -172,12 +172,10 @@ st.subheader("🎯 Acesso Rápido")
 
 col1, col2, col3 = st.columns(3)
 
-# ATENÇÃO: Os links (href) assumem o nome base do ficheiro Python no Streamlit. 
-# Ex: "pages/4_Liga_Scoreboard.py" -> O link é "Liga_Scoreboard"
 with col1:
     st.markdown(f"""
     <a href="Liga_Scoreboard" target="_self" class="ad-card">
-        <img class="ad-img" src="data:image/jpeg;base64,{fenix_b64}">
+        <img class="ad-img" src="data:image/png;base64,{fenix_b64}">
         <div class="ad-title">🏆 Scoreboard Liga Fénix</div>
     </a>
     """, unsafe_allow_html=True)
