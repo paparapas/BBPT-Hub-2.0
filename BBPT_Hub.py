@@ -8,16 +8,33 @@ from streamlit_javascript import st_javascript
 st.set_page_config(page_title="BBPT Hub", page_icon="logo.png", layout="wide")
 
 # ==========================================
-# CAPTURAR TOKEN ATUAL DA URL (PRESERVAR SESSÃO)
+# 🔐 AUTENTICAÇÃO ESTÁTICA & PERSISTENTE (RBAC)
 # ==========================================
-current_admin = st.query_params.get("admin", "")
-current_judge = st.query_params.get("judge", "")
+if "is_admin" not in st.session_state: st.session_state.is_admin = False
+if "is_judge" not in st.session_state: st.session_state.is_judge = False
+if "auth_token" not in st.session_state: st.session_state.auth_token = None
 
-query_suffix = ""
-if current_admin:
-    query_suffix = f"?admin={current_admin}"
-elif current_judge:
-    query_suffix = f"?judge={current_judge}"
+admin_passwords = list(st.secrets.get("ADMINS", {}).values())
+judge_passwords = list(st.secrets.get("JUDGES", {}).values())
+
+admin_key_url = st.query_params.get("admin")
+judge_key_url = st.query_params.get("judge")
+
+if admin_key_url in admin_passwords:
+    st.session_state.is_admin = True
+    st.session_state.is_judge = False
+    st.session_state.auth_token = admin_key_url
+elif judge_key_url in judge_passwords:
+    st.session_state.is_judge = True
+    st.session_state.is_admin = False
+    st.session_state.auth_token = judge_key_url
+
+if st.session_state.is_admin and st.query_params.get("admin") != st.session_state.auth_token:
+    st.query_params["admin"] = st.session_state.auth_token
+elif st.session_state.is_judge and st.query_params.get("judge") != st.session_state.auth_token:
+    st.query_params["judge"] = st.session_state.auth_token
+elif not st.session_state.is_admin and not st.session_state.is_judge:
+    st.session_state.auth_token = None
 
 # ==========================================
 # PAINEL DA NOVA TEMPORADA (HOMEPAGE)
