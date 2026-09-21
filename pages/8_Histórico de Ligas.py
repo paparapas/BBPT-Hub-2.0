@@ -122,8 +122,8 @@ if not db:
     st.error("⚠️ Base de dados histórica não encontrada.")
     st.stop()
 
-# Navegação interna da página
-liga = st.radio("Escolhe a Temporada:", ["Liga Critical - Season I", "Liga Fénix Negra - Season I"], horizontal=True)
+# Navegação interna escalável via dropdown list
+liga = st.selectbox("Escolhe a Temporada:", ["Liga Critical - Season I", "Liga Fénix Negra - Season I"])
 st.divider()
 
 if liga == "Liga Critical - Season I":
