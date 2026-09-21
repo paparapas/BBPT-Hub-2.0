@@ -96,8 +96,106 @@ with st.sidebar:
                     st.error("Password Incorreta!")
 
 # ==========================================
-# PAINEL DA NOVA TEMPORADA (LANDING PAGE)
+# PAINEL DA NOVA TEMPORADA (HOMEPAGE)
 # ==========================================
-st.title("🏆 BBPT Hub")
-st.info("A Nova Temporada está a chegar. Explora os menus na barra lateral e superior!")
-# Aqui será construído o Dashboard da nova liga mais tarde.
+if page is None:
+    
+    # 1. Função auxiliar para carregar imagens em Base64 (à prova de falhas)
+    def get_image_b64(filepath):
+        if os.path.exists(filepath):
+            with open(filepath, "rb") as f: return base64.b64encode(f.read()).decode()
+        for ext in ['.jpg', '.png', '.jpeg', '.JPG', '.PNG']:
+            if os.path.exists(filepath + ext):
+                with open(filepath + ext, "rb") as f: return base64.b64encode(f.read()).decode()
+        # Pixel transparente de fallback caso a imagem falhe
+        return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+
+    # Carregar as imagens baseadas nos nomes que me deste
+    logo_b64 = get_image_b64("logo.png")
+    foto1_b64 = get_image_b64("foto1")
+    foto2_b64 = get_image_b64("foto2")
+    
+    fenix_b64 = get_image_b64("fenix.jpg")
+    deck_b64 = get_image_b64("deck_build_image")
+    bp_b64 = get_image_b64("BBPT_BP_Format.PNG")
+
+    # 2. RENDERIZAR O "HERO BANNER" (Inspirado na Pokebox)
+    st.markdown(f"""
+    <style>
+    .hero-container {{
+        display: flex; flex-direction: row; gap: 15px; align-items: stretch; margin-bottom: 40px; height: 350px;
+    }}
+    .hero-side {{
+        flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.05);
+    }}
+    .hero-side img {{
+        width: 100%; height: 100%; object-fit: cover;
+    }}
+    .hero-center {{
+        flex: 1.8; background: linear-gradient(135deg, #161925 0%, #1f2333 100%); border-radius: 12px; padding: 20px; 
+        text-align: center; box-shadow: 0 6px 12px rgba(0,0,0,0.3); display: flex; flex-direction: column; 
+        justify-content: center; align-items: center; border: 2px solid rgba(255,255,255,0.05);
+    }}
+    .hero-title {{
+        color: #ffffff; margin: 0 0 15px 0; font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+    }}
+    .hero-logo {{
+        max-width: 80%; max-height: 200px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.4));
+    }}
+    
+    /* Ad Banners Hover Effect */
+    .ad-card {{
+        border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background-color: #1f2333; cursor: pointer; text-decoration: none; display: block; border: 1px solid rgba(255,255,255,0.05);
+    }}
+    .ad-card:hover {{
+        transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.5); text-decoration: none;
+    }}
+    .ad-img {{
+        width: 100%; height: 200px; object-fit: cover; border-bottom: 3px solid #7a161c;
+    }}
+    .ad-title {{
+        color: white; text-align: center; padding: 15px 10px; font-weight: 700; font-size: 1.1rem; text-decoration: none;
+    }}
+    </style>
+
+    <div class="hero-container">
+        <div class="hero-side"><img src="data:image/jpeg;base64,{foto1_b64}" alt="BBPT Foto 1"></div>
+        <div class="hero-center">
+            <h2 class="hero-title">BEM-VINDOS AO HUB</h2>
+            <img class="hero-logo" src="data:image/png;base64,{logo_b64}" alt="BBPT Logo">
+        </div>
+        <div class="hero-side"><img src="data:image/jpeg;base64,{foto2_b64}" alt="BBPT Foto 2"></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # 3. RENDERIZAR OS "ANÚNCIOS" INTERATIVOS (Links por imagem)
+    st.subheader("🎯 Acesso Rápido")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    # ATENÇÃO: Os links (href) assumem o nome base do ficheiro Python no Streamlit. 
+    # Ex: "pages/4_Liga_Scoreboard.py" -> O link é "Liga_Scoreboard"
+    with col1:
+        st.markdown(f"""
+        <a href="Liga_Scoreboard" target="_self" class="ad-card">
+            <img class="ad-img" src="data:image/jpeg;base64,{fenix_b64}">
+            <div class="ad-title">🏆 Scoreboard Liga Fénix</div>
+        </a>
+        """, unsafe_allow_html=True)
+        
+    with col2:
+        st.markdown(f"""
+        <a href="Deck_Builder" target="_self" class="ad-card">
+            <img class="ad-img" src="data:image/png;base64,{deck_b64}" style="object-position: top;">
+            <div class="ad-title">⚙️ Construir o teu Deck</div>
+        </a>
+        """, unsafe_allow_html=True)
+        
+    with col3:
+        st.markdown(f"""
+        <a href="Documentos" target="_self" class="ad-card">
+            <img class="ad-img" src="data:image/png;base64,{bp_b64}" style="object-fit: contain; background: white;">
+            <div class="ad-title">📋 Lista BP & Calendário</div>
+        </a>
+        """, unsafe_allow_html=True)
