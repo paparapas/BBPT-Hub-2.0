@@ -2,6 +2,7 @@ import streamlit as st
 import base64
 import os
 from db_connection import supabase
+from streamlit_javascript import st_javascript
 
 # 1. Configuração da Página
 st.set_page_config(page_title="BBPT Hub", page_icon="logo.png", layout="wide")
@@ -13,14 +14,12 @@ if "is_admin" not in st.session_state: st.session_state.is_admin = False
 if "is_judge" not in st.session_state: st.session_state.is_judge = False
 if "auth_token" not in st.session_state: st.session_state.auth_token = None
 
-# Carrega as listas de passwords dos Secrets
 admin_passwords = list(st.secrets.get("ADMINS", {}).values())
 judge_passwords = list(st.secrets.get("JUDGES", {}).values())
 
 admin_key_url = st.query_params.get("admin")
 judge_key_url = st.query_params.get("judge")
 
-# 1. Validar entrada via URL
 if admin_key_url in admin_passwords:
     st.session_state.is_admin = True
     st.session_state.is_judge = False
@@ -30,7 +29,6 @@ elif judge_key_url in judge_passwords:
     st.session_state.is_admin = False
     st.session_state.auth_token = judge_key_url
 
-# 2. Gatekeeper: Re-injetar URL durante a navegação
 if st.session_state.is_admin and st.query_params.get("admin") != st.session_state.auth_token:
     st.query_params["admin"] = st.session_state.auth_token
 elif st.session_state.is_judge and st.query_params.get("judge") != st.session_state.auth_token:
@@ -54,7 +52,6 @@ with st.sidebar:
     
     st.divider()
 
-    # Feedback de Autenticação na Sidebar
     if st.session_state.is_admin:
         st.success("🔓 Modo ADMIN Ativo")
         if st.button("Sair (Logout) 🔒", use_container_width=True):
@@ -98,18 +95,26 @@ with st.sidebar:
 # PAINEL DA NOVA TEMPORADA (HOMEPAGE)
 # ==========================================
 
-# 1. Função auxiliar para carregar imagens em Base64 (à prova de falhas)
 def get_image_b64(filepath):
     if os.path.exists(filepath):
         with open(filepath, "rb") as f: return base64.b64encode(f.read()).decode()
     for ext in ['.jpg', '.png', '.jpeg', '.JPG', '.PNG']:
         if os.path.exists(filepath + ext):
             with open(filepath + ext, "rb") as f: return base64.b64encode(f.read()).decode()
-    # Pixel transparente de fallback caso a imagem falhe
     return "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
 
-# Carregar as imagens baseadas nos nomes exatos
-logo_b64 = get_image_b64("logo.png")
+# DETEÇÃO DE TEMA (CLARO/ESCURO)
+try:
+    theme = st_javascript("""window.getComputedStyle(window.parent.document.getElementsByTagName("body")[0]).getPropertyValue("color-scheme")""")
+except Exception:
+    theme = "dark" # Default fallback
+
+if theme == "light":
+    logo_b64 = get_image_b64("logo.png")
+else:
+    # Se estiver em dark mode, tenta carregar o logodark.png, se não encontrar usa o normal
+    logo_b64 = get_image_b64("logodark.png") if os.path.exists("logodark.png") else get_image_b64("logo.png")
+
 foto1_b64 = get_image_b64("parceiro_beybladenexus_oficial.png")
 foto2_b64 = get_image_b64("foto2")
 
@@ -117,57 +122,65 @@ fenix_b64 = get_image_b64("fenix.png")
 deck_b64 = get_image_b64("deck_build_image")
 bp_b64 = get_image_b64("BBPT_BP_Format.PNG")
 
-# 2. RENDERIZAR O "HERO BANNER" (Inspirado na Pokebox)
+# 2. RENDERIZAR O "HERO BANNER"
 st.markdown(f"""
 <style>
 .hero-container {{
     display: flex; flex-direction: row; gap: 15px; align-items: stretch; margin-bottom: 40px; height: 350px;
 }}
 .hero-side {{
-    flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.05);
+    flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 12px rgba(0,0,0,0.15); border: 1px solid var(--secondary-background-color);
 }}
-.hero-side img {{
+/* Ajuste específico para a foto 1 não ficar cortada */
+.hero-side-left img {{
+    width: 100%; height: 100%; object-fit: contain; background: white; padding: 10px;
+}}
+.hero-side-right img {{
     width: 100%; height: 100%; object-fit: cover;
 }}
 .hero-center {{
-    flex: 1.8; background: linear-gradient(135deg, #161925 0%, #1f2333 100%); border-radius: 12px; padding: 20px; 
-    text-align: center; box-shadow: 0 6px 12px rgba(0,0,0,0.3); display: flex; flex-direction: column; 
-    justify-content: center; align-items: center; border: 2px solid rgba(255,255,255,0.05);
+    flex: 1.8; background-color: var(--background-color); border-radius: 12px; padding: 20px; 
+    text-align: center; box-shadow: 0 6px 12px rgba(0,0,0,0.15); display: flex; flex-direction: column; 
+    justify-content: center; align-items: center; border: 2px solid var(--primary-color);
 }}
 .hero-title {{
-    color: #ffffff; margin: 0 0 15px 0; font-size: 2.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text-color); margin: 0 0 5px 0; font-size: 2rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;
+}}
+.hero-hub-text {{
+    color: var(--text-color); margin: 5px 0 0 0; font-size: 2.5rem; font-weight: 900; letter-spacing: 4px; text-transform: uppercase;
 }}
 .hero-logo {{
-    max-width: 80%; max-height: 200px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.4));
+    max-width: 85%; max-height: 180px; object-fit: contain; filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.2));
 }}
 
 /* Ad Banners Hover Effect */
 .ad-card {{
-    border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.3); transition: transform 0.2s ease, box-shadow 0.2s ease;
-    background-color: #1f2333; cursor: pointer; text-decoration: none; display: block; border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.15); transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background-color: var(--secondary-background-color); cursor: pointer; text-decoration: none; display: block; border: 1px solid var(--secondary-background-color);
 }}
 .ad-card:hover {{
-    transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.5); text-decoration: none;
+    transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.3); text-decoration: none;
 }}
 .ad-img {{
     width: 100%; height: 200px; object-fit: cover; border-bottom: 3px solid #7a161c;
 }}
 .ad-title {{
-    color: white; text-align: center; padding: 15px 10px; font-weight: 700; font-size: 1.1rem; text-decoration: none;
+    color: var(--text-color); text-align: center; padding: 15px 10px; font-weight: 700; font-size: 1.1rem; text-decoration: none;
 }}
 </style>
 
 <div class="hero-container">
-    <div class="hero-side"><img src="data:image/png;base64,{foto1_b64}" alt="Parceiro Nexus"></div>
+    <div class="hero-side hero-side-left"><img src="data:image/png;base64,{foto1_b64}" alt="Parceiro Nexus"></div>
     <div class="hero-center">
-        <h2 class="hero-title">BEM-VINDOS AO HUB</h2>
+        <h2 class="hero-title">BEM-VINDOS AO</h2>
         <img class="hero-logo" src="data:image/png;base64,{logo_b64}" alt="BBPT Logo">
+        <h2 class="hero-hub-text">HUB</h2>
     </div>
-    <div class="hero-side"><img src="data:image/jpeg;base64,{foto2_b64}" alt="BBPT Foto 2"></div>
+    <div class="hero-side hero-side-right"><img src="data:image/jpeg;base64,{foto2_b64}" alt="BBPT Foto 2"></div>
 </div>
 """, unsafe_allow_html=True)
 
-# 3. RENDERIZAR OS "ANÚNCIOS" INTERATIVOS (Links por imagem)
+# 3. RENDERIZAR OS "ANÚNCIOS" INTERATIVOS
 st.subheader("🎯 Acesso Rápido")
 
 col1, col2, col3 = st.columns(3)
