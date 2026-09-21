@@ -31,9 +31,12 @@ if theme == "light":
 else:
     logo_b64 = get_image_b64("logodark.png") if os.path.exists("logodark.png") else get_image_b64("logo.png")
 
-foto1_b64 = get_image_b64("parceiro_beybladenexus_oficial.png")
-foto2_b64 = get_image_b64("foto2")
+# FOTOS LATERAIS E PARCEIRO
+foto1_b64 = get_image_b64("foto1")  # Tem de ser a tua foto real (foto1.jpg ou foto1.png)
+foto2_b64 = get_image_b64("foto2")  # Tem de ser a tua segunda foto real
+nexus_b64 = get_image_b64("parceiro_beybladenexus_oficial.png") # O logo da Nexus para ficar debaixo de HUB
 
+# ÍCONES DE ACESSO RÁPIDO
 fenix_b64 = get_image_b64("fenix.png")
 deck_b64 = get_image_b64("deck_build_image")
 bp_b64 = get_image_b64("BBPT_BP_Format.PNG")
