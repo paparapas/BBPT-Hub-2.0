@@ -8,6 +8,18 @@ from streamlit_javascript import st_javascript
 st.set_page_config(page_title="BBPT Hub", page_icon="logo.png", layout="wide")
 
 # ==========================================
+# CAPTURAR TOKEN ATUAL DA URL (PRESERVAR SESSÃO)
+# ==========================================
+current_admin = st.query_params.get("admin", "")
+current_judge = st.query_params.get("judge", "")
+
+query_suffix = ""
+if current_admin:
+    query_suffix = f"?admin={current_admin}"
+elif current_judge:
+    query_suffix = f"?judge={current_judge}"
+
+# ==========================================
 # PAINEL DA NOVA TEMPORADA (HOMEPAGE)
 # ==========================================
 
