@@ -668,7 +668,6 @@ elif st.session_state.phase == 'battle':
         st.markdown("""
         <style>
             .block-container, [data-testid="stMainBlockContainer"] { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
-            .st-key-card_p1, .st-key-card_p2 { padding: 0.5rem !important; gap: 0.2rem !important; }
             .stButton button { min-height: 45px !important; height: auto !important; border-radius: 6px !important; white-space: normal !important; padding: 2px !important; }
             .stButton button p { font-size: clamp(12px, 2.5vw, 15px) !important; font-weight: 800 !important; line-height: 1 !important; margin: 0 !important; }
             .st-key-grid_p1 [data-testid="stHorizontalBlock"], .st-key-grid_p2 [data-testid="stHorizontalBlock"], .st-key-bottom_btns [data-testid="stHorizontalBlock"] {
@@ -690,9 +689,14 @@ elif st.session_state.phase == 'battle':
         for side, color in (('p1', '#4CAF50'), ('p2', '#FF4B4B')):
             with cols[side]:
                 with st.container(border=True, key=f"card_{side}"):
-                    st.markdown(f"<h4 style='text-align: center; margin: 0; padding: 0; line-height: 1.2;'>{s[f'{side}_name']}{warning_badge(s[f'{side}_warnings'])}</h4>", unsafe_allow_html=True)
-                    st.markdown(f"<h1 style='text-align: center; font-size: clamp(3rem, 8vw, 4rem); color: {color}; line-height: 0.9; margin: 0; padding: 0;'>{s[f'{side}_score']}</h1>", unsafe_allow_html=True)
-                    st.markdown(f"<p style='text-align: center; color: gray; font-size: 0.75rem; margin: 0 0 5px 0; padding: 0; line-height: 1;'>🛡️ {beys[side]}</p>", unsafe_allow_html=True)
+                    # Nome + placar + Bey num único bloco: sem espaços entre elementos, nada se sobrepõe
+                    st.markdown(f"""
+                    <div style='text-align: center;'>
+                        <div style='font-size: 1.25rem; font-weight: 700; line-height: 1.2;'>{s[f'{side}_name']}{warning_badge(s[f'{side}_warnings'])}</div>
+                        <div style='font-size: clamp(3rem, 8vw, 4rem); font-weight: 800; color: {color}; line-height: 1;'>{s[f'{side}_score']}</div>
+                        <div style='color: gray; font-size: 0.75rem; line-height: 1.2; margin-bottom: 4px;'>🛡️ {beys[side]}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
                     
                     with st.container(key=f"grid_{side}"):
                         b1, b2 = st.columns(2)
