@@ -16,6 +16,7 @@ from PIL import Image
 from fpdf import FPDF
 from streamlit_cookies_controller import CookieController
 from db_connection import supabase
+from assets import img_src
 
 st.set_page_config(page_title="Deck Check & Admin",  page_icon="logo.png", layout="wide")
 logging.basicConfig(level=logging.ERROR, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -52,13 +53,11 @@ elif not st.session_state.is_admin and not st.session_state.is_judge:
 # ==========================================
 # GESTÃO GLOBAL DA SIDEBAR
 # ==========================================
-logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
-has_logo = os.path.exists(logo_path)
+logo_src = img_src("logo.png")
 
 with st.sidebar:
-    if has_logo:
-        with open(logo_path, "rb") as image_file: encoded_logo = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-right:10px;'><h1 style='display:inline;font-size:1.8rem;'></h1></div>", unsafe_allow_html=True)
+    if logo_src:
+        st.markdown(f"<div><img src='{logo_src}' width='150' style='margin-right:10px;'><h1 style='display:inline;font-size:1.8rem;'></h1></div>", unsafe_allow_html=True)
     else: st.title("🛡️ BBPT App")
     st.divider()
 
@@ -107,17 +106,18 @@ def set_active_tournament(event_name):
         res = supabase.table("tournaments").select("id").eq("name", event_name).execute()
         if res.data: supabase.table("tournaments").update({"is_active": True, "checkin_open": True}).eq("id", res.data[0]["id"]).execute()
         else: supabase.table("tournaments").insert({"name": event_name, "is_active": True, "checkin_open": True}).execute()
-        st.cache_data.clear() # Limpa a cache para atualizar logo
+        # Limpa só as listas de torneios (antes limpava TODAS as caches da app, para todos)
+        get_active_tournaments.clear(); get_past_events_list.clear()
         return True
     except Exception as e: return False
 
 def toggle_checkin(t_id, status):
     supabase.table("tournaments").update({"checkin_open": status}).eq("id", t_id).execute()
-    st.cache_data.clear()
+    get_active_tournaments.clear()
 
 def archive_tournament(t_id):
     supabase.table("tournaments").update({"is_active": False, "checkin_open": False}).eq("id", t_id).execute()
-    st.cache_data.clear()
+    get_active_tournaments.clear()
 
 @st.cache_data(ttl=600) 
 def get_all_records_cached(event_name):
@@ -176,7 +176,8 @@ def save_submission_cloud(player_name, combos, img_file, event_name):
         
         reg_data = {"tournament_id": res_t.data[0]["id"], "blader_id": blader_id, "combo_1": c_strs[0], "combo_2": c_strs[1], "combo_3": c_strs[2], "combo_4": c_strs[3], "image_url": img_url}
         supabase.table("tournament_registrations").upsert(reg_data, on_conflict="tournament_id, blader_id").execute()
-        st.cache_data.clear() # Fundamental para que os dados apareçam imediatamente no lobby
+        # Só as caches afetadas pela submissão (decks do evento + lista de jogadores, caso seja novo)
+        get_all_records_cached.clear(); get_dynamic_player_list.clear()
     except Exception as e: raise Exception(f"Erro ao salvar na DB: {e}")
 
 # ==========================================
@@ -628,7 +629,7 @@ elif menu == "⚙️ Painel de Organização":
                         if btn_col1.button("✅ Confirmar", key=f"del_yes_{d['id']}", type="primary", use_container_width=True):
                             supabase.table("tournament_registrations").delete().eq("id", d["id"]).execute()
                             st.session_state[confirm_key] = False
-                            st.cache_data.clear()
+                            get_all_records_cached.clear()
                             st.rerun()
                         if btn_col2.button("❌ Cancelar", key=f"del_no_{d['id']}", type="secondary", use_container_width=True):
                             st.session_state[confirm_key] = False

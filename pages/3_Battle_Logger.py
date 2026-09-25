@@ -6,6 +6,7 @@ import copy
 import uuid
 from datetime import datetime, timezone
 from db_connection import supabase
+from assets import img_src
 
 # 🛑 FORÇAR O MODO "WIDE" E REMOVER ESPAÇOS BRANCOS 🛑
 st.set_page_config(page_title="Battle Logger", page_icon="logo.png", layout="wide", initial_sidebar_state="expanded")
@@ -66,16 +67,11 @@ elif not st.session_state.is_admin and not st.session_state.is_judge:
 # ==========================================
 # GESTÃO GLOBAL DA SIDEBAR
 # ==========================================
-logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
-has_logo = os.path.exists(logo_path)
-
-@st.cache_data
-def get_logo_b64(path):
-    with open(path, "rb") as image_file: return base64.b64encode(image_file.read()).decode()
+logo_src = img_src("logo.png")
 
 with st.sidebar:
-    if has_logo:
-        st.markdown(f"<div><img src='data:image/png;base64,{get_logo_b64(logo_path)}' width='150' style='margin-right:10px;'></div>", unsafe_allow_html=True)
+    if logo_src:
+        st.markdown(f"<div><img src='{logo_src}' width='150' style='margin-right:10px;'></div>", unsafe_allow_html=True)
     else: st.title("🛡️ BBPT App")
     st.divider()
 

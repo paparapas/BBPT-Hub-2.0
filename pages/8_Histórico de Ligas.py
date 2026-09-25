@@ -3,6 +3,7 @@ import pandas as pd
 import json
 import base64
 import os
+from assets import img_src
 
 st.set_page_config(page_title="Histórico de Ligas", page_icon="logo.png", layout="wide")
 
@@ -38,11 +39,10 @@ elif not st.session_state.is_admin and not st.session_state.is_judge:
 # ==========================================
 # GESTÃO GLOBAL DA SIDEBAR
 # ==========================================
-logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
-if os.path.exists(logo_path):
+logo_src = img_src("logo.png")
+if logo_src:
     with st.sidebar:
-        with open(logo_path, "rb") as image_file: encoded_logo = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-bottom:20px;'></div>", unsafe_allow_html=True)
+        st.markdown(f"<div><img src='{logo_src}' width='150' style='margin-bottom:20px;'></div>", unsafe_allow_html=True)
 
 if st.session_state.is_admin:
     st.sidebar.success("🔓 ADMIN")
@@ -80,11 +80,10 @@ def render_advanced_metrics(metrics, league_mode=True):
 
 def render_league_page(league_name, league_key, comm_file):
     nome_ficheiro = "fenix.png" if "versus" in league_name.lower() or "fenix" in league_key.lower() else "critical.png"
-    img_path = nome_ficheiro if os.path.exists(nome_ficheiro) else f"../{nome_ficheiro}"
+    league_src = img_src(nome_ficheiro)
     
-    if os.path.exists(img_path):
-        with open(img_path, "rb") as image_file: encoded_string = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"""<div style="display: flex; align-items: center; margin-bottom: 15px;"><img src="data:image/png;base64,{encoded_string}" width="70" style="margin-right: 15px;"><h1 style="margin: 0; padding: 0; font-size: 2.8rem;">{league_name}</h1></div>""", unsafe_allow_html=True)
+    if league_src:
+        st.markdown(f"""<div style="display: flex; align-items: center; margin-bottom: 15px;"><img src="{league_src}" width="70" style="margin-right: 15px;"><h1 style="margin: 0; padding: 0; font-size: 2.8rem;">{league_name}</h1></div>""", unsafe_allow_html=True)
     else: st.markdown(f"<h1 style='font-size: 2.8rem;'>🏆 {league_name}</h1>", unsafe_allow_html=True)
     
     comunicado = load_communications(comm_file)

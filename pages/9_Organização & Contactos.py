@@ -1,6 +1,7 @@
 import streamlit as st
 import base64
 import os
+from assets import img_src
 
 st.set_page_config(page_title="Contactos & Organização", page_icon="logo.png", layout="wide")
 
@@ -36,11 +37,10 @@ elif not st.session_state.is_admin and not st.session_state.is_judge:
 # ==========================================
 # GESTÃO GLOBAL DA SIDEBAR
 # ==========================================
-logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
-if os.path.exists(logo_path):
+logo_src = img_src("logo.png")
+if logo_src:
     with st.sidebar:
-        with open(logo_path, "rb") as image_file: encoded_logo = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-bottom:20px;'></div>", unsafe_allow_html=True)
+        st.markdown(f"<div><img src='{logo_src}' width='150' style='margin-bottom:20px;'></div>", unsafe_allow_html=True)
 
 if st.session_state.is_admin: st.sidebar.success("🔓 ADMIN")
 elif st.session_state.is_judge: st.sidebar.success("⚖️ JUIZ")
@@ -59,11 +59,10 @@ st.markdown("Junta-te à comunidade oficial BBPT!")
 st.write("")
 
 def render_social_button(link, img_file, text):
-    img_path = img_file if os.path.exists(img_file) else f"../{img_file}"
+    src = img_src(img_file)
     img_tag = ""
-    if os.path.exists(img_path):
-        with open(img_path, "rb") as f: b64 = base64.b64encode(f.read()).decode()
-        img_tag = f"<img src='data:image/png;base64,{b64}' style='height: 22px; margin-right: 10px; object-fit: contain;'>"
+    if src:
+        img_tag = f"<img src='{src}' style='height: 22px; margin-right: 10px; object-fit: contain;'>"
         
     return f"""
     <a href="{link}" target="_blank" style="

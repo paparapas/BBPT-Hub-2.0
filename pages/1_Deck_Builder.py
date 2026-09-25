@@ -198,6 +198,9 @@ def load_builder_data():
 
 parts, images_map, spin_map = load_builder_data()
 
+# Imagem vazia (transparente) para peças sem foto. O antigo via.placeholder.com deixou de existir.
+NO_IMG = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+
 # ==========================================
 # GESTOR DE ESTADO E LOGIN (SIDEBAR)
 # ==========================================
@@ -408,7 +411,7 @@ def render_part_card(part_name, category):
     if part_name == "--":
         st.markdown(f'<div class="part-card" style="opacity: 0.4;"><div style="height: 80px; display: flex; align-items: center; justify-content: center; color: #999;">?</div><div class="part-category">{category}</div><div class="part-name">---</div></div>', unsafe_allow_html=True)
         return
-    img_url = images_map.get(part_name, "https://via.placeholder.com/150?text=No+Image")
+    img_url = images_map.get(part_name, NO_IMG)
     st.markdown(f'<div class="part-card"><img src="{img_url}" alt="{part_name}" referrerpolicy="no-referrer"><div class="part-category">{category}</div><div class="part-name" title="{part_name}">{part_name}</div></div>', unsafe_allow_html=True)
 
 # ==========================================
@@ -575,21 +578,21 @@ for i in range(st.session_state.deck_size):
         img_html = ""
         if ct in ["Basic (BX)", "Unique (UX)", "UX Expanded", "BX Expanded"]:
             hero_blade = st.session_state[f"b_c_{i}_main_blade"]
-            url_blade = images_map.get(hero_blade, "https://via.placeholder.com/150")
+            url_blade = images_map.get(hero_blade, NO_IMG)
             img_html = f'<img class="combo-blade-img" src="{url_blade}" alt="Blade" referrerpolicy="no-referrer">'
         elif ct == "Custom (CX)":
             m_blade = st.session_state[f"b_c_{i}_main_blade"]
             l_chip = st.session_state[f"b_c_{i}_lock_chip"]
-            url_main = images_map.get(m_blade, "https://via.placeholder.com/150")
-            url_chip = images_map.get(l_chip, "https://via.placeholder.com/150")
+            url_main = images_map.get(m_blade, NO_IMG)
+            url_chip = images_map.get(l_chip, NO_IMG)
             img_html = f'<div class="composite-blade-container"><img class="composite-layer layer-main" src="{url_main}" alt="Main" referrerpolicy="no-referrer"><img class="composite-layer layer-chip" src="{url_chip}" alt="Chip" referrerpolicy="no-referrer"></div>'
         else: # Expand (CXE)
             o_blade = st.session_state[f"b_c_{i}_over_blade"]
             mt_blade = st.session_state[f"b_c_{i}_metal_blade"]
             l_chip = st.session_state[f"b_c_{i}_lock_chip"]
-            url_over = images_map.get(o_blade, "https://via.placeholder.com/150")
-            url_metal = images_map.get(mt_blade, "https://via.placeholder.com/150")
-            url_chip = images_map.get(l_chip, "https://via.placeholder.com/150")
+            url_over = images_map.get(o_blade, NO_IMG)
+            url_metal = images_map.get(mt_blade, NO_IMG)
+            url_chip = images_map.get(l_chip, NO_IMG)
             img_html = f'<div class="composite-blade-container"><img class="composite-layer layer-metal" src="{url_metal}" alt="Metal" referrerpolicy="no-referrer"><img class="composite-layer layer-main" src="{url_over}" alt="Over" referrerpolicy="no-referrer"><img class="composite-layer layer-chip" src="{url_chip}" alt="Chip" referrerpolicy="no-referrer"></div>'
 
         logos_html = ""

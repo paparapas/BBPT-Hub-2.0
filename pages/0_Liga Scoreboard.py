@@ -3,17 +3,17 @@ import pandas as pd
 import json
 import base64
 import os
+from assets import img_src
 
 st.set_page_config(page_title="Liga Scoreboard", page_icon="logo.png", layout="wide")
 
 # ==========================================
 # GESTÃO GLOBAL DA SIDEBAR
 # ==========================================
-logo_path = "logo.png" if os.path.exists("logo.png") else "../logo.png"
-if os.path.exists(logo_path):
+logo_src = img_src("logo.png")
+if logo_src:
     with st.sidebar:
-        with open(logo_path, "rb") as image_file: encoded_logo = base64.b64encode(image_file.read()).decode()
-        st.markdown(f"<div><img src='data:image/png;base64,{encoded_logo}' width='150' style='margin-bottom:20px;'></div>", unsafe_allow_html=True)
+        st.markdown(f"<div><img src='{logo_src}' width='150' style='margin-bottom:20px;'></div>", unsafe_allow_html=True)
 
 # ==========================================
 # CARREGAR DADOS DA SEASON 2 (Isolado)
@@ -46,13 +46,12 @@ if liga_selecionada == "Liga Fénix Negra - Season 2":
     metrics = nova_liga_data.get("advanced_metrics", {})
     
     # --- CABEÇALHO PERSONALIZADO: LOGÓTIPO + TÍTULO VERMELHO GIGANTE ---
-    fenix_logo_path = "fenix.jpg" if os.path.exists("fenix.jpg") else "../fenix.jpg"
-    if os.path.exists(fenix_logo_path):
-        with open(fenix_logo_path, "rb") as img_file:
-            encoded_fenix = base64.b64encode(img_file.read()).decode()
+    # NOTA: o código procurava "fenix.jpg", que não existe no repositório. Agora usa fenix.png.
+    fenix_src = img_src("fenix.png")
+    if fenix_src:
         st.markdown(f"""
         <div style="display: flex; align-items: center; margin-bottom: 25px;">
-            <img src="data:image/jpeg;base64,{encoded_fenix}" width="85" style="margin-right: 20px; object-fit: contain;">
+            <img src="{fenix_src}" width="85" style="margin-right: 20px; object-fit: contain;">
             <h1 style="margin: 0; padding: 0; font-size: 3rem; color: #7a161c; font-weight: 900; text-transform: uppercase; letter-spacing: 1px;">Liga Fénix Negra</h1>
         </div>
         """, unsafe_allow_html=True)
